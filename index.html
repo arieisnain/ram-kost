@@ -118,28 +118,45 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <nav class="px-3 py-5 space-y-1">
+                <nav class="px-3 py-4 space-y-1">
                     <div class="px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Menu Manajemen</div>
                     
-                    <a href="#dashboard" onclick="switchNavSection('dashboard')" class="nav-link-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors">
+                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors text-left">
                         <i class="fa-solid fa-chart-pie w-5 text-center text-emerald-600"></i>
                         <span>Dashboard &amp; Okupansi</span>
-                    </a>
+                    </button>
                     
-                    <a href="#kamar" onclick="switchNavSection('kamar')" class="nav-link-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                    <button onclick="switchView('kamar')" id="nav-kamar" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-bed w-5 text-center text-slate-400"></i>
                         <span>Kamar &amp; Penghuni</span>
-                    </a>
+                    </button>
 
-                    <a href="javascript:void(0)" onclick="openQuickReceiptModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                    <button onclick="switchView('denah')" id="nav-denah" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
+                        <i class="fa-solid fa-table-cells-large w-5 text-center text-slate-400"></i>
+                        <span>Denah Visual Kamar</span>
+                    </button>
+
+                    <button onclick="switchView('expenses')" id="nav-expenses" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
+                        <i class="fa-solid fa-money-bill-transfer w-5 text-center text-slate-400"></i>
+                        <span>Buku Kas &amp; Pengeluaran</span>
+                    </button>
+
+                    <div class="pt-2 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi Cepat</div>
+
+                    <button onclick="openQuickReceiptModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-receipt w-5 text-center text-slate-400"></i>
                         <span>Buat Nota / Kuitansi</span>
-                    </a>
+                    </button>
 
-                    <a href="javascript:void(0)" onclick="openSettingsModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                    <button onclick="openExpenseModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
+                        <i class="fa-solid fa-receipt-text w-5 text-center text-slate-400"></i>
+                        <span>Catat Pengeluaran</span>
+                    </button>
+
+                    <button onclick="openSettingsModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
-                        <span>Pengaturan Kost &amp; Logo</span>
-                    </a>
+                        <span>Pengaturan Usaha &amp; Logo</span>
+                    </button>
                 </nav>
             </div>
 
@@ -175,36 +192,41 @@
                         <div class="flex items-center gap-2">
                             <h2 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight" id="topbarStoreTitle">KOST MAGNOLIA RESIDENCE</h2>
                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online Database
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-500 hidden sm:block">Sistem Pembukuan &amp; Manajemen Kamar Kost Otomatis</p>
+                        <p class="text-[11px] text-slate-500 hidden sm:block">Sistem Pembukuan &amp; Manajemen Kamar Kost Terpadu</p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-2.5">
                     <!-- Global Search -->
-                    <div class="relative hidden sm:block w-48 md:w-60">
+                    <div class="relative hidden sm:block w-44 md:w-56">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                         <input 
                             type="text" 
                             id="searchInput" 
                             oninput="handleSearch(this.value)" 
-                            placeholder="Cari kamar / penyewa..." 
+                            placeholder="Cari kamar / nama..." 
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all"
                         >
                     </div>
 
-                    <!-- Quick Print Button -->
-                    <button onclick="openQuickReceiptModal()" class="px-3 py-1.5 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-receipt text-slate-500 text-xs"></i>
-                        <span class="hidden md:inline">Kuitansi</span>
+                    <!-- Sync Button -->
+                    <button onclick="syncAllData()" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold shadow-2xs transition-all" title="Sinkronkan data cloud">
+                        <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
                     </button>
 
-                    <!-- Add New Button -->
+                    <!-- Add Expense Button -->
+                    <button onclick="openExpenseModal()" class="hidden md:flex px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-minus text-xs"></i>
+                        <span>Pengeluaran</span>
+                    </button>
+
+                    <!-- Add New Room/Tenant Button -->
                     <button onclick="showNewModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Tambah Sewa</span>
+                        <span>Tambah Kamar</span>
                     </button>
 
                     <!-- Settings Button (Icon) -->
@@ -220,24 +242,58 @@
                 <!-- ── 4 KPI OVERVIEW CARDS (TABLET & DESKTOP BENTO) ────────── -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4.5">
                     
-                    <!-- Card 1: Pemasukan -->
+                    <!-- Card 1: Pemasukan Sewa -->
                     <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Bulan Ini</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Sewa</span>
                             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-2xs">
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
                         </div>
                         <div class="mt-2.5">
-                            <h3 id="kpiRevenue" class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 18.750.000</h3>
+                            <h3 id="kpiRevenue" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
                             <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded-md">+8.2%</span>
-                                <span class="text-slate-400 truncate">vs target bulanan</span>
+                                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded-md">Total Diterima</span>
+                                <span class="text-slate-400 truncate">sewa aktif</span>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Card 2: Okupansi -->
+                    <!-- Card 2: Pengeluaran Operasional -->
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pengeluaran Kost</span>
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm shadow-2xs">
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                        </div>
+                        <div class="mt-2.5">
+                            <h3 id="kpiExpense" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
+                                <span class="font-bold text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded-md" id="kpiExpenseCount">0 Pos</span>
+                                <span class="text-slate-400 truncate">biaya operasional</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Laba Bersih -->
+                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Laba Bersih</span>
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-2xs">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="mt-2.5">
+                            <h3 id="kpiNetProfit" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
+                                <span class="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded-md" id="kpiProfitMargin">0% Margin</span>
+                                <span class="text-slate-400 truncate">profitabilitas</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 4: Okupansi & Kamar Siap -->
                     <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Okupansi Kamar</span>
@@ -246,118 +302,210 @@
                             </div>
                         </div>
                         <div class="mt-2.5">
-                            <h3 id="kpiOccupancy" class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">16 / 20 Kamar</h3>
+                            <h3 id="kpiOccupancy" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">0 / 0 Kamar</h3>
                             <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded-md">80%</span>
-                                <span class="text-slate-400 truncate">kamar terisi</span>
+                                <span class="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded-md" id="kpiOccupancyPct">0%</span>
+                                <span class="text-slate-400 truncate" id="kpiEmptySubtitle">0 Kamar Tersedia</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Card 3: Jatuh Tempo -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Jatuh Tempo</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm shadow-2xs">
-                                <i class="fa-regular fa-bell"></i>
-                            </div>
-                        </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiDue" class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">4 Kamar</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded-md">Tagihan</span>
-                                <span class="text-slate-400 truncate">siap kirim WA</span>
-                            </div>
-                        </div>
+
+                </div>
+
+                <!-- ── VIEW SWITCHER TABS ───────────────────────────────────── -->
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-2 overflow-x-auto gap-2">
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="switchView('kamar')" id="tabBtn-kamar" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-bed"></i>
+                            <span>Daftar Kamar &amp; Penghuni</span>
+                        </button>
+                        <button onclick="switchView('denah')" id="tabBtn-denah" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells-large text-emerald-600"></i>
+                            <span>Denah Visual Status</span>
+                        </button>
+                        <button onclick="switchView('expenses')" id="tabBtn-expenses" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-wave text-rose-600"></i>
+                            <span>Buku Kas Pengeluaran</span>
+                        </button>
                     </div>
-                    
-                    <!-- Card 4: Kamar Siap -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Kamar Kosong</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm shadow-2xs">
-                                <i class="fa-solid fa-door-open"></i>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                            <span class="hidden sm:inline">Export Excel/CSV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ========================================================== -->
+                <!-- VIEW 1: DATA MANAGEMENT SECTION (FILTER & TABLE/CARDS)     -->
+                <!-- ========================================================== -->
+                <div id="view-kamar-container" class="space-y-4">
+                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+                        
+                        <!-- Toolbar Filter & Search -->
+                        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <!-- Filter Tabs -->
+                            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="filterTabGroup">
+                                <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
+                                    Semua (<span id="countFilterSemua">0</span>)
+                                </button>
+                                <button onclick="setFilter('Terisi', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
+                                    Terisi (<span id="countFilterTerisi">0</span>)
+                                </button>
+                                <button onclick="setFilter('Tersedia', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
+                                    Kosong / Tersedia (<span id="countFilterTersedia">0</span>)
+                                </button>
+                                <button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
+                                    Jatuh Tempo (<span id="countFilterDue">0</span>)
+                                </button>
+                                <button onclick="setFilter('Menunggak', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
+                                    Menunggak (<span id="countFilterLate">0</span>)
+                                </button>
+                                <button onclick="setFilter('Booking', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
+                                    Booking / DP (<span id="countFilterBooking">0</span>)
+                                </button>
+                            </div>
+
+                            <!-- Mobile Quick Search -->
+                            <div class="sm:hidden relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                <input 
+                                    type="text" 
+                                    oninput="handleSearch(this.value)" 
+                                    placeholder="Cari kamar / nama penyewa..." 
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                                >
                             </div>
                         </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiAvailable" class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight">3 Kamar Siap</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded-md">Tersedia</span>
-                                <span class="text-slate-400 truncate">1 perbaikan</span>
+
+                        <!-- DESKTOP & TABLET VIEW: FULL DATA TABLE (HIDDEN ON MOBILE) -->
+                        <div class="hidden md:block overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50/70 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        <th class="px-5 py-3.5">Kamar</th>
+                                        <th class="px-5 py-3.5">Penyewa &amp; Kontak</th>
+                                        <th class="px-5 py-3.5">Tipe Kamar &amp; Fasilitas</th>
+                                        <th class="px-5 py-3.5">Lokasi</th>
+                                        <th class="px-5 py-3.5">Biaya Sewa</th>
+                                        <th class="px-5 py-3.5">Status Pembayaran</th>
+                                        <th class="px-5 py-3.5">Jatuh Tempo</th>
+                                        <th class="px-5 py-3.5 text-center">Aksi Manajemen</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+                                    <!-- Populated dynamically by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- MOBILE FRIENDLY VIEW: RESPONSIVE CARDS (BLOCK ON MOBILE) -->
+                        <div id="mobileCardsContainer" class="md:hidden divide-y divide-slate-100 p-3 space-y-3">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+
+                        <!-- Table Footer / Summary -->
+                        <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                            <div id="tableCounter">Memuat data penyewa...</div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i> Database Terkoneksi Realtime
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ── DATA MANAGEMENT SECTION (FILTER & ACTIONS) ──────────── -->
-                <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
-                    
-                    <!-- Toolbar Filter & Search -->
-                    <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <!-- Filter Tabs -->
-                        <div class="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0" id="filterTabGroup">
-                            <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
-                                Semua
-                            </button>
-                            <button onclick="setFilter('Lunas', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                Lunas
-                            </button>
-                            <button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                Jatuh Tempo
-                            </button>
-                            <button onclick="setFilter('Menunggak', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                Menunggak
-                            </button>
-                            <button onclick="setFilter('Booking Baru', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                Booking Baru
+                <!-- ========================================================== -->
+                <!-- VIEW 2: DENAH VISUAL STATUS KAMAR (ROOM GRID BENTO)        -->
+                <!-- ========================================================== -->
+                <div id="view-denah-container" class="space-y-4 hidden">
+                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 sm:p-6 space-y-6">
+                        
+                        <!-- Denah Header & Legend -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <i class="fa-solid fa-table-cells-large text-emerald-600"></i>
+                                    Denah Visual Status Kamar
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Pantau status seluruh kamar secara visual per lantai dalam sekali pandang.</p>
+                            </div>
+                            
+                            <!-- Status Badges Legend -->
+                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terisi (Lunas)
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Jatuh Tempo
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-semibold">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500"></span> Menunggak
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Siap Huni (Kosong)
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Floors Grid Container -->
+                        <div id="denahFloorsContainer" class="space-y-6">
+                            <!-- Populated dynamically by JS per Floor -->
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ========================================================== -->
+                <!-- VIEW 3: BUKU KAS & PENGELUARAN OPERASIONAL KOST            -->
+                <!-- ========================================================== -->
+                <div id="view-expenses-container" class="space-y-4 hidden">
+                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+                        
+                        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                            <div>
+                                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <i class="fa-solid fa-money-bill-wave text-rose-600"></i>
+                                    Buku Kas Pengeluaran Operasional
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Catat seluruh biaya listrik PLN, air PDAM, internet Wi-Fi, kebersihan, dan servis fasilitas.</p>
+                            </div>
+                            <button onclick="openExpenseModal()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center gap-2 self-start sm:self-auto transition-all">
+                                <i class="fa-solid fa-plus"></i> Catat Pengeluaran Baru
                             </button>
                         </div>
 
-                        <!-- Right Utility Actions -->
-                        <div class="flex items-center gap-2 self-end md:self-auto">
-                            <button onclick="syncData()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors" title="Muat ulang data terbaru">
-                                <i class="fa-solid fa-arrows-rotate text-emerald-600"></i>
-                                <span class="hidden sm:inline">Sinkronkan</span>
-                            </button>
-                            <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors">
-                                <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                                <span>Export CSV</span>
-                            </button>
+                        <!-- Expenses Table (Desktop & Tablet) -->
+                        <div class="hidden sm:block overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        <th class="px-5 py-3.5">Tanggal</th>
+                                        <th class="px-5 py-3.5">Kategori</th>
+                                        <th class="px-5 py-3.5">Deskripsi Pengeluaran</th>
+                                        <th class="px-5 py-3.5">Catatan</th>
+                                        <th class="px-5 py-3.5 text-right">Nominal (Rp)</th>
+                                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expensesTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
 
-                    <!-- DESKTOP & TABLET VIEW: FULL DATA TABLE (HIDDEN ON MOBILE) -->
-                    <div class="hidden md:block overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50/70 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                    <th class="px-5 py-3.5">Kamar</th>
-                                    <th class="px-5 py-3.5">Penyewa &amp; Kontak</th>
-                                    <th class="px-5 py-3.5">Tipe Kamar &amp; Fasilitas</th>
-                                    <th class="px-5 py-3.5">Lokasi</th>
-                                    <th class="px-5 py-3.5">Biaya Sewa</th>
-                                    <th class="px-5 py-3.5">Status Pembayaran</th>
-                                    <th class="px-5 py-3.5">Jatuh Tempo</th>
-                                    <th class="px-5 py-3.5 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dataTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
-                                <!-- Populated dynamically by JS -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- MOBILE FRIENDLY VIEW: RESPONSIVE CARDS (BLOCK ON MOBILE) -->
-                    <div id="mobileCardsContainer" class="md:hidden divide-y divide-slate-100 p-3 space-y-3">
-                        <!-- Populated dynamically by JS -->
-                    </div>
-
-                    <!-- Table Footer / Summary -->
-                    <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-                        <div id="tableCounter">Memuat data penyewa...</div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-[11px] text-slate-400">Pembaruan otomatis realtime</span>
+                        <!-- Mobile Expenses Cards (< 640px) -->
+                        <div id="mobileExpensesContainer" class="sm:hidden divide-y divide-slate-100 p-3 space-y-3">
+                            <!-- Injected by JS -->
                         </div>
+
+                        <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                            <span id="expensesSummaryLabel">Total 0 pos pengeluaran</span>
+                            <span id="expensesSummaryTotal" class="font-extrabold text-slate-900 text-sm">Rp 0</span>
+                        </div>
+
                     </div>
                 </div>
 
@@ -367,20 +515,20 @@
 
     <!-- ── MOBILE BOTTOM NAVIGATION BAR (< 768px) ───────────────────────── -->
     <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 z-40 px-3 py-2 flex items-center justify-around shadow-lg">
-        <a href="#dashboard" onclick="switchNavSection('dashboard')" class="flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]">
+        <button onclick="switchView('dashboard')" id="mobileNav-dashboard" class="flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]">
             <i class="fa-solid fa-chart-pie text-base"></i>
             <span>Dashboard</span>
-        </a>
-        <a href="#kamar" onclick="switchNavSection('kamar')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
+        </button>
+        <button onclick="switchView('kamar')" id="mobileNav-kamar" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
             <i class="fa-solid fa-bed text-base"></i>
             <span>Kamar</span>
-        </a>
+        </button>
         <button onclick="showNewModal()" class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center -mt-5 shadow-lg shadow-emerald-600/30">
             <i class="fa-solid fa-plus text-base"></i>
         </button>
-        <button onclick="openQuickReceiptModal()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
-            <i class="fa-solid fa-receipt text-base"></i>
-            <span>Kuitansi</span>
+        <button onclick="switchView('expenses')" id="mobileNav-expenses" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
+            <i class="fa-solid fa-money-bill-wave text-base"></i>
+            <span>Buku Kas</span>
         </button>
         <button onclick="openSettingsModal()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
             <i class="fa-solid fa-gear text-base"></i>
@@ -485,7 +633,7 @@
                                 <span id="receiptDiscountText">- Rp 0</span>
                             </div>
                             <div id="receiptTaxRow" class="flex justify-between text-slate-500 text-[10px] hidden">
-                                <span>Biaya Layanan</span>
+                                <span>Biaya Layanan/Air</span>
                                 <span id="receiptTaxText">+ Rp 0</span>
                             </div>
                             <div class="flex justify-between font-extrabold text-sm text-slate-900 pt-1.5 border-t border-slate-200">
@@ -546,10 +694,10 @@
                                 <input type="number" id="editDiscountInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 outline-none">
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1">Biaya Kebersihan/Air</label>
+                                <label class="block font-bold text-slate-700 mb-1">Biaya Tambahan/Air</label>
                                 <div class="flex items-center gap-2 pt-1.5">
                                     <input type="checkbox" id="editTaxCheckbox" onchange="recalculateReceipt()" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 h-4 w-4">
-                                    <span class="text-slate-600 text-xs">Tambah Biaya Layanan</span>
+                                    <span class="text-slate-600 text-xs">+ Rp 25.000 Kebersihan</span>
                                 </div>
                             </div>
                         </div>
@@ -589,69 +737,102 @@
     <!-- ================================================================== -->
     <!-- MODAL 2: TAMBAH DATA SEWA KAMAR BARU                               -->
     <!-- ================================================================== -->
-    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
                 <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Data Kamar &amp; Penyewa
+                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Kamar &amp; Data Sewa
                 </h3>
                 <button onclick="closeNewModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
             <form onsubmit="handleNewSubmit(event)" class="p-6 space-y-4 text-xs">
+                
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Nomor Kamar *</label>
-                        <input type="text" id="newRoomId" required placeholder="Contoh: KMR-106" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
+                        <input type="text" id="newRoomId" required placeholder="Contoh: KMR-106" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 uppercase font-mono font-bold">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Lantai / Lokasi</label>
-                        <input type="text" id="newRack" placeholder="Lantai 1 / Blok A" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                        <label class="block font-bold text-slate-700 mb-1">Lantai / Lokasi *</label>
+                        <select id="newRack" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
+                            <option value="Lantai 1">Lantai 1</option>
+                            <option value="Lantai 2">Lantai 2</option>
+                            <option value="Lantai 3">Lantai 3</option>
+                            <option value="Paviliun / Blok Belakang">Paviliun / Blok Belakang</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Nama Penyewa *</label>
-                        <input type="text" id="newCustomer" required placeholder="Nama lengkap" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">No. WhatsApp *</label>
-                        <input type="text" id="newPhone" required placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                    </div>
-                </div>
-
+                <!-- Tipe Kamar & Fasilitas -->
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Tipe Kamar &amp; Fasilitas *</label>
-                    <input type="text" id="newService" required placeholder="Kamar Deluxe AC + KM Dalam" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    <input type="text" id="newService" required placeholder="Contoh: Kamar Deluxe AC + KM Dalam + WiFi" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                </div>
+
+                <!-- Opsi Kamar Kosong atau Langsung Isi Penyewa -->
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-800 text-xs">Kondisi Kamar Saat Ini</span>
+                        <div class="flex items-center gap-3">
+                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="newRoomCondition" value="terisi" checked onchange="toggleNewTenantFields(true)" class="text-emerald-600 focus:ring-emerald-500">
+                                <span class="font-bold text-emerald-700">Sudah Terisi</span>
+                            </label>
+                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="newRoomCondition" value="kosong" onchange="toggleNewTenantFields(false)" class="text-blue-600 focus:ring-blue-500">
+                                <span class="font-bold text-blue-700">Kosong / Siap Huni</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Details (Collapsible if Empty Room) -->
+                    <div id="newTenantFieldsSection" class="space-y-3 pt-1 border-t border-slate-200/60">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Nama Penyewa</label>
+                                <input type="text" id="newCustomer" placeholder="Nama lengkap penyewa" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">No. WhatsApp</label>
+                                <input type="text" id="newPhone" placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
+                                <select id="newPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
+                                    <option value="Lunas">Lunas</option>
+                                    <option value="Belum Lunas">Belum Lunas</option>
+                                    <option value="DP Terbayar">DP / Booking</option>
+                                    <option value="Menunggak">Menunggak</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Tanggal Jatuh Tempo</label>
+                                <input type="text" id="newDueDate" placeholder="Contoh: 05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Biaya Sewa Bulanan (Rp) *</label>
-                        <input type="number" id="newAmount" required min="100000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
+                        <input type="number" id="newAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
-                        <select id="newPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
-                            <option value="Lunas">Lunas</option>
-                            <option value="Belum Lunas">Belum Lunas</option>
-                            <option value="DP Terbayar">DP Terbayar</option>
-                            <option value="Menunggak">Menunggak</option>
-                        </select>
+                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan / Token Listrik</label>
+                        <input type="text" id="newDetail" placeholder="Deposit Rp 500rb / Token Mandiri" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                     </div>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Catatan Jatuh Tempo</label>
-                    <input type="text" id="newDueDate" placeholder="Jatuh Tempo: 05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
 
                 <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
                     <button type="button" onclick="closeNewModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
                     <button type="submit" id="submitBtn" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
-                        <span>Simpan Data Sewa</span>
+                        <span>Simpan Data Kamar</span>
                     </button>
                 </div>
             </form>
@@ -659,10 +840,162 @@
     </div>
 
     <!-- ================================================================== -->
-    <!-- MODAL 3: PENGATURAN TOKO & LOGO (HANYA DI MENU INI)               -->
+    <!-- MODAL 3: EDIT DATA KAMAR & PENGHUNI (UPDATE / RENEWAL)             -->
     <!-- ================================================================== -->
-    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+    <div id="editRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Edit Kamar &amp; Data Sewa
+                </h3>
+                <button onclick="closeEditModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleEditSubmit(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="editRoomOriginalId">
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nomor Kamar</label>
+                        <input type="text" id="editRoomId" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Lantai / Lokasi</label>
+                        <select id="editRack" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
+                            <option value="Lantai 1">Lantai 1</option>
+                            <option value="Lantai 2">Lantai 2</option>
+                            <option value="Lantai 3">Lantai 3</option>
+                            <option value="Paviliun / Blok Belakang">Paviliun / Blok Belakang</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Tipe Kamar &amp; Fasilitas</label>
+                    <input type="text" id="editService" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nama Penghuni</label>
+                        <input type="text" id="editCustomer" required class="w-full border border-slate-200 rounded-xl px-3 py-2 font-semibold outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">No. WhatsApp</label>
+                        <input type="text" id="editPhone" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Harga Sewa Bulanan (Rp)</label>
+                        <input type="number" id="editAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
+                        <select id="editPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-bold outline-none">
+                            <option value="Lunas">Lunas</option>
+                            <option value="Belum Lunas">Belum Lunas</option>
+                            <option value="DP Terbayar">DP / Booking</option>
+                            <option value="Menunggak">Menunggak</option>
+                            <option value="Tersedia">Kosong / Siap Huni</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Jatuh Tempo</label>
+                        <input type="text" id="editDueDate" placeholder="Jatuh Tempo: 05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
+                        <input type="text" id="editDetail" placeholder="KTP / Token Mandiri" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-3 flex items-center justify-between border-t border-slate-100">
+                    <button type="button" onclick="checkoutCurrentRoom()" class="px-3 py-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 font-bold flex items-center gap-1.5 transition-colors" title="Kosongkan kamar ini">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Kosongkan Kamar</span>
+                    </button>
+                    
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
+                        <button type="submit" id="editSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
+                            <span>Simpan Perubahan</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 4: CATAT PENGELUARAN OPERASIONAL KOST (BUKU KAS)             -->
+    <!-- ================================================================== -->
+    <div id="expenseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran Operasional
+                </h3>
+                <button onclick="closeExpenseModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleExpenseSubmit(event)" class="p-6 space-y-4 text-xs">
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Judul / Keperluan Pengeluaran *</label>
+                    <input type="text" id="expenseTitle" required placeholder="Contoh: Token Listrik Lorong & Pompa Air" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Kategori Biaya *</label>
+                        <select id="expenseCategory" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
+                            <option value="Listrik">Listrik &amp; Token</option>
+                            <option value="Air">Air &amp; PDAM</option>
+                            <option value="Internet">Internet &amp; Wi-Fi</option>
+                            <option value="Kebersihan">Kebersihan &amp; Sampah</option>
+                            <option value="Perbaikan">Servis &amp; Perbaikan</option>
+                            <option value="Gaji">Gaji Staff / Penjaga</option>
+                            <option value="Lainnya">Lain-lain</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal *</label>
+                        <input type="date" id="expenseDate" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nominal Biaya (Rp) *</label>
+                    <input type="number" id="expenseAmount" required min="1000" placeholder="250000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-sm text-slate-900 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan / No. Bukti</label>
+                    <input type="text" id="expenseNotes" placeholder="No. Struk Toko / Pembayaran via transfer" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" id="expenseSubmitBtn" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-sm shadow-rose-600/20">
+                        <span>Simpan Pengeluaran</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 5: PENGATURAN TOKO & LOGO (HANYA DI MENU INI)               -->
+    <!-- ================================================================== -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
                 <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-sliders text-emerald-600"></i> Pengaturan Usaha Kost &amp; Logo
@@ -713,6 +1046,29 @@
                     <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap</label>
                     <input type="text" id="settingStoreAddress" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
+                
+                <!-- 3. REKENING PEMBAYARAN UNTUK WHATSAPP -->
+                <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2.5">
+                    <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-building-columns text-emerald-600"></i> Rekening Bank untuk Tagihan WhatsApp
+                    </span>
+                    <p class="text-[11px] text-slate-500">Nomor rekening ini akan otomatis disisipkan saat mengirim pengingat sewa ke WhatsApp penyewa.</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Bank</label>
+                            <input type="text" id="settingBankName" placeholder="BCA / Mandiri" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1">No. Rekening</label>
+                            <input type="text" id="settingBankNumber" placeholder="8220918223" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1">Atas Nama</label>
+                            <input type="text" id="settingBankHolder" placeholder="Budi Santoso" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">No. Kontak Pengelola / WA</label>
@@ -725,6 +1081,16 @@
                             <option value="80mm">Thermal 80mm (Standar)</option>
                             <option value="a4">Kertas Standar A4</option>
                         </select>
+                    </div>
+                </div>
+
+                <!-- 4. BACKUP & RESTORE DATA -->
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span class="text-slate-500 font-semibold">Cadangan Data Mandiri:</span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="exportBackupJSON()" class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700">
+                            <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
+                        </button>
                     </div>
                 </div>
 
@@ -744,7 +1110,8 @@
         // Supabase Cloud Configuration (Dedicated ram-kost project)
         const SUPABASE_URL = 'https://fufabclsvmaqsbvermha.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1ZmFiY2xzdm1hcXNidmVybWhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMTEwMzMsImV4cCI6MjEwNzU4NzAzM30.0hFMs0xBOOyfky6O0iUvpGtCcEZJGNjoS1zlYxBxCec';
-        const SUPABASE_TABLE = 'kost_rooms';
+        const SUPABASE_TABLE_ROOMS = 'kost_rooms';
+        const SUPABASE_TABLE_EXPENSES = 'kost_expenses';
 
         let supabaseClient = null;
         try {
@@ -756,6 +1123,7 @@
         }
 
         const APP_STORAGE_KEY = 'ram-kost_data_v2';
+        const APP_EXPENSES_KEY = 'ram-kost_expenses_v2';
         const APP_SETTINGS_KEY = 'ram-kost_settings_v2';
         const APP_LOGO_KEY = 'ram-kost_logo_v2';
 
@@ -763,96 +1131,151 @@
             storeName: "KOST MAGNOLIA RESIDENCE",
             address: "Jl. Melati No. 12B, Syamsudin Noor",
             phone: "0813-8899-0011",
+            bankName: "BCA",
+            bankNumber: "822-0918-223",
+            bankHolder: "Bpk. Hendra (Pengelola Kost)",
             defaultPaper: "58mm"
         };
 
         const INITIAL_DATA = [
-            { id: "KMR-101", customer: "Agus Setiawan", phone: "081299881122", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 1 · Listrik Token Mandiri", rack: "Lantai 1", amount: 1500000, pay_status: "Lunas", work_status: "Lunas", date: "Jatuh Tempo: 01 Nov 2026" },
-            { id: "KMR-102", customer: "Fajar Nugroho", phone: "085277665544", service: "Kamar Executive Balkon", detail: "Lt. 1 · Smart TV & Water Heater", rack: "Lantai 1", amount: 2200000, pay_status: "Belum Lunas", work_status: "Jatuh Tempo", date: "Jatuh Tempo: 18 Okt 2026" },
-            { id: "KMR-201", customer: "Indah Permatasari", phone: "081344556677", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 2 · Parkir Mobil", rack: "Lantai 2", amount: 1600000, pay_status: "Lunas", work_status: "Lunas", date: "Jatuh Tempo: 05 Nov 2026" },
-            { id: "KMR-203", customer: "Dimas Anggara", phone: "087811223399", service: "Kamar Standar Non-AC", detail: "Lt. 2 · KM Luar Bersih", rack: "Lantai 2", amount: 850000, pay_status: "Menunggak", work_status: "Menunggak", date: "Jatuh Tempo: 10 Okt 2026" },
+            { id: "KMR-101", customer: "Agus Setiawan", phone: "081299881122", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 1 · Listrik Token Mandiri", rack: "Lantai 1", amount: 1500000, pay_status: "Lunas", work_status: "Terisi", date: "Jatuh Tempo: 01 Nov 2026" },
+            { id: "KMR-102", customer: "Fajar Nugroho", phone: "085277665544", service: "Kamar Executive Balkon", detail: "Lt. 1 · Smart TV & Water Heater", rack: "Lantai 1", amount: 2200000, pay_status: "Belum Lunas", work_status: "Terisi", date: "Jatuh Tempo: 18 Okt 2026" },
+            { id: "KMR-103", customer: "Belum Berpenghuni", phone: "", service: "Kamar Standar Non-AC", detail: "Lt. 1 · Kasur Springbed, Lemari 2 Pintu", rack: "Lantai 1", amount: 850000, pay_status: "Tersedia", work_status: "Tersedia", date: "Siap Huni" },
+            { id: "KMR-201", customer: "Indah Permatasari", phone: "081344556677", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 2 · Parkir Mobil", rack: "Lantai 2", amount: 1600000, pay_status: "Lunas", work_status: "Terisi", date: "Jatuh Tempo: 05 Nov 2026" },
+            { id: "KMR-203", customer: "Dimas Anggara", phone: "087811223399", service: "Kamar Standar Non-AC", detail: "Lt. 2 · KM Luar Bersih", rack: "Lantai 2", amount: 850000, pay_status: "Menunggak", work_status: "Terisi", date: "Jatuh Tempo: 10 Okt 2026" },
             { id: "KMR-205", customer: "Calon Penyewa (Rizky)", phone: "082199882233", service: "Kamar Standar Non-AC", detail: "Masuk 1 Nov 2026 · DP Rp 300rb", rack: "Lantai 2", amount: 850000, pay_status: "DP Terbayar", work_status: "Booking Baru", date: "Mulai: 01 Nov 2026" }
+        ];
+
+        const INITIAL_EXPENSES = [
+            { id: "EXP-202610-01", title: "Token Listrik Area Publik & Pompa Air", category: "Listrik", amount: 450000, expense_date: "2026-10-02", notes: "Token PLN lorong utama dan area parkir" },
+            { id: "EXP-202610-02", title: "Langganan Internet Wi-Fi 100 Mbps", category: "Internet", amount: 385000, expense_date: "2026-10-05", notes: "Tagihan Indihome bulanan kost" },
+            { id: "EXP-202610-03", title: "Iuran Kebersihan & Retribusi Sampah", category: "Kebersihan", amount: 150000, expense_date: "2026-10-08", notes: "Iuran RT & pengangkutan sampah 2x seminggu" },
+            { id: "EXP-202610-04", title: "Servis Rutin Cuci AC Kamar 101 & 102", category: "Perbaikan", amount: 250000, expense_date: "2026-10-12", notes: "Cuci AC & isi freon teknisi langganan" }
         ];
 
         // State Variables
         let appData = [];
+        let appExpenses = [];
         let appSettings = {};
         let currentFilter = 'Semua';
         let searchQuery = '';
+        let currentActiveView = 'kamar'; // 'kamar' | 'denah' | 'expenses'
         let currentReceiptItem = null;
         let receiptRows = [];
 
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
+            // Set default date for expense form
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const expDateInput = document.getElementById('expenseDate');
+            if (expDateInput) expDateInput.value = todayStr;
+
             loadSettings();
             loadLogo();
-            await syncData();
+            await syncAllData();
         });
 
-        async function syncData() {
-            const counter = document.getElementById('tableCounter');
-            if (counter) counter.innerText = 'Menyinkronkan data terbaru...';
+        // Sync Both Rooms & Expenses
+        async function syncAllData() {
+            const syncIcon = document.getElementById('syncIcon');
+            if (syncIcon) syncIcon.classList.add('fa-spin');
             
+            const counter = document.getElementById('tableCounter');
+            if (counter) counter.innerText = 'Menyinkronkan data cloud...';
+
+            await Promise.all([syncRoomsData(), syncExpensesData()]);
+
+            if (syncIcon) syncIcon.classList.remove('fa-spin');
+            renderAllViews();
+            updateKPIs();
+        }
+
+        async function syncRoomsData() {
             if (supabaseClient) {
                 try {
-                    const { data, error } = await supabaseClient.from(SUPABASE_TABLE).select('*').order('created_at', { ascending: false });
+                    const { data, error } = await supabaseClient.from(SUPABASE_TABLE_ROOMS).select('*').order('created_at', { ascending: false });
                     if (!error && data && data.length > 0) {
                         appData = data.map(item => ({
                             id: item.id,
-                            customer: item.customer_name || item.customer,
-                            phone: item.customer_phone || item.phone,
-                            service: item.service_name || item.service,
+                            customer: item.customer_name || item.customer || 'Tersedia',
+                            phone: item.customer_phone || item.phone || '',
+                            service: item.service_name || item.service || 'Kamar Standar',
                             detail: item.detail || '',
                             rack: item.rack_location || item.rack || 'Lantai 1',
                             amount: Number(item.amount) || 0,
                             pay_status: item.payment_status || item.pay_status || 'Lunas',
-                            work_status: item.work_status || 'Aktif',
+                            work_status: item.work_status || (item.pay_status === 'Tersedia' ? 'Tersedia' : 'Terisi'),
                             date: item.date || 'Jatuh Tempo: 01 Nov 2026'
                         }));
-                        saveData();
-                        renderTable();
-                        updateKPIs();
+                        saveRoomsLocal();
                         return;
                     }
                 } catch (err) {
-                    console.warn('Sinkronisasi cloud dialihkan ke cache lokal');
+                    console.warn('Sinkronisasi kamar cloud dialihkan ke cache lokal');
                 }
             }
-            loadLocalData();
-            renderTable();
-            updateKPIs();
+            loadRoomsLocal();
         }
 
-        function loadLocalData() {
+        async function syncExpensesData() {
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from(SUPABASE_TABLE_EXPENSES).select('*').order('expense_date', { ascending: false });
+                    if (!error && data && data.length > 0) {
+                        appExpenses = data.map(item => ({
+                            id: item.id,
+                            title: item.title,
+                            category: item.category,
+                            amount: Number(item.amount) || 0,
+                            expense_date: item.expense_date,
+                            notes: item.notes || ''
+                        }));
+                        saveExpensesLocal();
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Sinkronisasi pengeluaran cloud dialihkan ke cache');
+                }
+            }
+            loadExpensesLocal();
+        }
+
+        function loadRoomsLocal() {
             const stored = localStorage.getItem(APP_STORAGE_KEY);
             if (stored) {
-                try {
-                    appData = JSON.parse(stored);
-                } catch (e) {
-                    appData = [...INITIAL_DATA];
-                }
+                try { appData = JSON.parse(stored); } catch (e) { appData = [...INITIAL_DATA]; }
             } else {
                 appData = [...INITIAL_DATA];
-                saveData();
+                saveRoomsLocal();
             }
+        }
+
+        function loadExpensesLocal() {
+            const stored = localStorage.getItem(APP_EXPENSES_KEY);
+            if (stored) {
+                try { appExpenses = JSON.parse(stored); } catch (e) { appExpenses = [...INITIAL_EXPENSES]; }
+            } else {
+                appExpenses = [...INITIAL_EXPENSES];
+                saveExpensesLocal();
+            }
+        }
+
+        function saveRoomsLocal() {
+            localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function saveExpensesLocal() {
+            localStorage.setItem(APP_EXPENSES_KEY, JSON.stringify(appExpenses));
         }
 
         function loadSettings() {
             const stored = localStorage.getItem(APP_SETTINGS_KEY);
             if (stored) {
-                try {
-                    appSettings = JSON.parse(stored);
-                } catch (e) {
-                    appSettings = { ...DEFAULT_SETTINGS };
-                }
+                try { appSettings = JSON.parse(stored); } catch (e) { appSettings = { ...DEFAULT_SETTINGS }; }
             } else {
                 appSettings = { ...DEFAULT_SETTINGS };
             }
             updateStoreLabels();
-        }
-
-        function saveData() {
-            localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData));
         }
 
         function updateStoreLabels() {
@@ -882,15 +1305,9 @@
             const settingsPlace = document.getElementById('settingsLogoPlaceholder');
 
             if (customLogo) {
-                if (receiptImg) {
-                    receiptImg.src = customLogo;
-                    receiptImg.classList.remove('hidden');
-                }
+                if (receiptImg) { receiptImg.src = customLogo; receiptImg.classList.remove('hidden'); }
                 if (receiptDef) receiptDef.classList.add('hidden');
-                if (settingsImg) {
-                    settingsImg.src = customLogo;
-                    settingsImg.classList.remove('hidden');
-                }
+                if (settingsImg) { settingsImg.src = customLogo; settingsImg.classList.remove('hidden'); }
                 if (settingsPlace) settingsPlace.classList.add('hidden');
             } else {
                 if (receiptImg) receiptImg.classList.add('hidden');
@@ -917,32 +1334,142 @@
             loadLogo();
         }
 
+        // View Switcher (Dashboard / Kamar / Denah / Expenses)
+        function switchView(viewName) {
+            currentActiveView = viewName;
+            
+            // Toggle view containers
+            const viewKamar = document.getElementById('view-kamar-container');
+            const viewDenah = document.getElementById('view-denah-container');
+            const viewExpenses = document.getElementById('view-expenses-container');
+
+            if (viewKamar) viewKamar.classList.toggle('hidden', viewName === 'denah' || viewName === 'expenses');
+            if (viewDenah) viewDenah.classList.toggle('hidden', viewName !== 'denah');
+            if (viewExpenses) viewExpenses.classList.toggle('hidden', viewName !== 'expenses');
+
+            // Update Tab Buttons (Desktop/Tablet)
+            document.querySelectorAll('.view-tab-btn').forEach(btn => {
+                btn.className = "view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2";
+            });
+            const activeTabBtn = document.getElementById(`tabBtn-${viewName}`);
+            if (activeTabBtn) {
+                activeTabBtn.className = "view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white transition-all flex items-center gap-2";
+            }
+
+            // Update Sidebar Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left";
+            });
+            const activeNavBtn = document.getElementById(`nav-${viewName}`);
+            if (activeNavBtn) {
+                activeNavBtn.className = "nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors text-left";
+            }
+
+            // Update Mobile Bottom Nav Active Color
+            ['dashboard', 'kamar', 'expenses'].forEach(v => {
+                const el = document.getElementById(`mobileNav-${v}`);
+                if (el) {
+                    if (v === viewName || (viewName === 'denah' && v === 'kamar')) {
+                        el.className = "flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]";
+                    } else {
+                        el.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]";
+                    }
+                }
+            });
+
+            // Close mobile sidebar if open
+            const sb = document.getElementById('mainSidebar');
+            if (sb && !sb.classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
+
+            // Smooth scroll to top of workspace
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderAllViews();
+        }
+
+        // Render All Dynamic Views
+        function renderAllViews() {
+            renderTable();
+            renderDenah();
+            renderExpenses();
+            updateKPIs();
+        }
+
         // Dynamic KPI Recalculation
         function updateKPIs() {
             let totalRevenue = 0;
             let occupiedRooms = 0;
+            let emptyRooms = 0;
             let dueRooms = 0;
+            let lateRooms = 0;
+            let bookingRooms = 0;
 
             appData.forEach(item => {
-                totalRevenue += Number(item.amount) || 0;
-                if (item.pay_status === 'Lunas' || item.work_status === 'Lunas') {
-                    occupiedRooms++;
-                }
-                if (item.work_status === 'Jatuh Tempo' || item.pay_status === 'Menunggak' || item.pay_status === 'Belum Lunas') {
-                    dueRooms++;
-                }
+                const isPaid = item.pay_status === 'Lunas';
+                const isEmpty = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni') || item.customer === '-';
+                const isBooking = item.pay_status.includes('DP') || item.work_status.includes('Booking');
+                const isLate = item.pay_status === 'Menunggak';
+                const isDue = item.pay_status === 'Belum Lunas' || item.date.toLowerCase().includes('jatuh tempo');
+
+                if (isPaid) totalRevenue += Number(item.amount) || 0;
+                else if (isBooking) totalRevenue += 300000; // DP Terbayar rata-rata
+
+                if (isEmpty) emptyRooms++;
+                else occupiedRooms++;
+
+                if (isLate) lateRooms++;
+                if (isDue && !isPaid) dueRooms++;
+                if (isBooking) bookingRooms++;
             });
 
+            // Total Expenses
+            let totalExpenses = appExpenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
+            let netProfit = totalRevenue - totalExpenses;
+            let profitMargin = totalRevenue > 0 ? Math.round((netProfit / totalRevenue) * 100) : 0;
+            let occupancyPct = appData.length > 0 ? Math.round((occupiedRooms / appData.length) * 100) : 0;
+
+            // DOM Update
             const revEl = document.getElementById('kpiRevenue');
+            const expEl = document.getElementById('kpiExpense');
+            const expCountEl = document.getElementById('kpiExpenseCount');
+            const netProfitEl = document.getElementById('kpiNetProfit');
+            const marginEl = document.getElementById('kpiProfitMargin');
             const occEl = document.getElementById('kpiOccupancy');
-            const dueEl = document.getElementById('kpiDue');
+            const occPctEl = document.getElementById('kpiOccupancyPct');
+            const emptySubEl = document.getElementById('kpiEmptySubtitle');
 
             if (revEl) revEl.innerText = 'Rp ' + totalRevenue.toLocaleString('id-ID');
-            if (occEl) occEl.innerText = `${occupiedRooms} / 20 Kamar`;
-            if (dueEl) dueEl.innerText = `${dueRooms} Kamar`;
+            if (expEl) expEl.innerText = 'Rp ' + totalExpenses.toLocaleString('id-ID');
+            if (expCountEl) expCountEl.innerText = `${appExpenses.length} Pos`;
+            
+            if (netProfitEl) {
+                netProfitEl.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
+                netProfitEl.className = netProfit >= 0 ? "text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight" : "text-base sm:text-2xl font-extrabold text-rose-600 tracking-tight";
+            }
+            if (marginEl) marginEl.innerText = `${profitMargin}% Margin`;
+
+            if (occEl) occEl.innerText = `${occupiedRooms} / ${appData.length} Kamar`;
+            if (occPctEl) occPctEl.innerText = `${occupancyPct}%`;
+            if (emptySubEl) emptySubEl.innerText = `${emptyRooms} Kamar Siap Huni`;
+
+            // Filter Badges Count Update
+            const countSemua = document.getElementById('countFilterSemua');
+            const countTerisi = document.getElementById('countFilterTerisi');
+            const countTersedia = document.getElementById('countFilterTersedia');
+            const countDue = document.getElementById('countFilterDue');
+            const countLate = document.getElementById('countFilterLate');
+            const countBooking = document.getElementById('countFilterBooking');
+
+            if (countSemua) countSemua.innerText = appData.length;
+            if (countTerisi) countTerisi.innerText = occupiedRooms;
+            if (countTersedia) countTersedia.innerText = emptyRooms;
+            if (countDue) countDue.innerText = dueRooms;
+            if (countLate) countLate.innerText = lateRooms;
+            if (countBooking) countBooking.innerText = bookingRooms;
         }
 
-        // Table & Mobile Cards Rendering
+        // Table & Mobile Cards Filtering & Rendering
         function setFilter(tab, btn) {
             currentFilter = tab;
             document.querySelectorAll('.filter-tab').forEach(b => {
@@ -957,6 +1484,7 @@
         function handleSearch(query) {
             searchQuery = query.toLowerCase().trim();
             renderTable();
+            renderDenah();
         }
 
         function renderTable() {
@@ -965,13 +1493,22 @@
             if (!tbody) return;
 
             let filtered = appData.filter(item => {
-                if (currentFilter !== 'Semua') {
-                    const matchWork = item.work_status && item.work_status.toLowerCase().includes(currentFilter.toLowerCase());
-                    const matchPay = item.pay_status && item.pay_status.toLowerCase().includes(currentFilter.toLowerCase());
-                    if (!matchWork && !matchPay) return false;
+                const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                
+                if (currentFilter === 'Terisi') {
+                    if (isAvailable) return false;
+                } else if (currentFilter === 'Tersedia') {
+                    if (!isAvailable) return false;
+                } else if (currentFilter === 'Jatuh Tempo') {
+                    if (item.pay_status !== 'Belum Lunas' && !item.date.toLowerCase().includes('jatuh tempo')) return false;
+                } else if (currentFilter === 'Menunggak') {
+                    if (item.pay_status !== 'Menunggak') return false;
+                } else if (currentFilter === 'Booking') {
+                    if (!item.pay_status.includes('DP') && !item.work_status.includes('Booking')) return false;
                 }
+
                 if (searchQuery) {
-                    const str = (item.id + ' ' + item.customer + ' ' + item.service + ' ' + (item.phone || '')).toLowerCase();
+                    const str = (item.id + ' ' + item.customer + ' ' + item.service + ' ' + (item.phone || '') + ' ' + (item.rack || '')).toLowerCase();
                     if (!str.includes(searchQuery)) return false;
                 }
                 return true;
@@ -981,7 +1518,7 @@
                 const emptyHtml = `
                     <div class="text-center py-10 text-slate-400">
                         <i class="fa-solid fa-inbox text-3xl mb-2"></i>
-                        <p class="font-medium text-xs">Tidak ada data kamar atau transaksi yang sesuai.</p>
+                        <p class="font-medium text-xs">Tidak ada data kamar yang sesuai dengan filter.</p>
                     </div>
                 `;
                 tbody.innerHTML = `<tr><td colspan="8">${emptyHtml}</td></tr>`;
@@ -992,22 +1529,35 @@
 
             // 1. Desktop & Tablet Table Rows
             tbody.innerHTML = filtered.map(item => {
+                const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                
                 let payBadge = 'bg-slate-100 text-slate-600';
                 if (item.pay_status === 'Lunas') payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                else if (item.pay_status === 'Belum Lunas' || item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                else if (item.pay_status === 'Belum Lunas') payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                else if (item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
+                else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
+                else if (isAvailable) payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
 
                 return `
                     <tr class="hover:bg-slate-50/80 transition-colors">
                         <td class="px-5 py-3.5 font-extrabold text-slate-900 font-mono">
-                            <span class="hover:underline cursor-pointer" onclick="openReceiptForItem('${item.id}')">${item.id}</span>
+                            <span class="hover:underline cursor-pointer" onclick="openEditModal('${item.id}')">${item.id}</span>
                         </td>
                         <td class="px-5 py-3.5">
-                            <div class="font-bold text-slate-800">${item.customer}</div>
-                            <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
-                                <i class="fa-brands fa-whatsapp text-emerald-600"></i>
-                                <span>${item.phone || '-'}</span>
-                            </div>
+                            ${isAvailable ? `
+                                <span class="font-semibold text-slate-400 italic">Kamar Kosong / Siap Huni</span>
+                                <div class="mt-1">
+                                    <button onclick="openCheckInModal('${item.id}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
+                                        <i class="fa-solid fa-user-plus"></i> Isi Penyewa
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="font-bold text-slate-800">${item.customer}</div>
+                                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                                    <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                                    <span>${item.phone || '-'}</span>
+                                </div>
+                            `}
                         </td>
                         <td class="px-5 py-3.5">
                             <div class="font-semibold text-slate-700">${item.service}</div>
@@ -1027,16 +1577,29 @@
                             </span>
                         </td>
                         <td class="px-5 py-3.5">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700">
                                 ${item.date || item.work_status}
                             </span>
                         </td>
                         <td class="px-5 py-3.5 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-1.5">
-                                <button onclick="openReceiptForItem('${item.id}')" title="Cetak Kuitansi" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 transition-colors">
-                                    <i class="fa-solid fa-receipt"></i>
+                                ${!isAvailable ? `
+                                    <button onclick="sendBillingReminderWA('${item.id}')" title="Kirim Pengingat Tagihan via WhatsApp" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </button>
+                                    <button onclick="openReceiptForItem('${item.id}')" title="Cetak Kuitansi" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 transition-colors">
+                                        <i class="fa-solid fa-receipt"></i>
+                                    </button>
+                                    ${item.pay_status !== 'Lunas' ? `
+                                        <button onclick="markAsPaidQuick('${item.id}')" title="Tandai Sudah Lunas" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    ` : ''}
+                                ` : ''}
+                                <button onclick="openEditModal('${item.id}')" title="Edit Data Kamar" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="deleteItem('${item.id}')" title="Hapus Data" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
+                                <button onclick="deleteItem('${item.id}')" title="Hapus Kamar" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -1048,10 +1611,14 @@
             // 2. Mobile Responsive Card View (< 768px)
             if (mobileContainer) {
                 mobileContainer.innerHTML = filtered.map(item => {
+                    const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                    
                     let payBadge = 'bg-slate-100 text-slate-600';
                     if (item.pay_status === 'Lunas') payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    else if (item.pay_status === 'Belum Lunas' || item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                    else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                    else if (item.pay_status === 'Belum Lunas') payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                    else if (item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
+                    else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
+                    else if (isAvailable) payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
 
                     return `
                         <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2.5">
@@ -1065,12 +1632,22 @@
                             </div>
 
                             <div class="pt-1">
-                                <h4 class="text-sm font-extrabold text-slate-900">${item.customer}</h4>
-                                <p class="text-xs text-slate-500 mt-0.5">${item.service}</p>
-                                <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
-                                    <span>${item.rack || 'Lantai 1'}</span>
-                                    <span class="font-semibold text-emerald-700">${item.date || item.work_status}</span>
-                                </div>
+                                ${isAvailable ? `
+                                    <h4 class="text-sm font-extrabold text-blue-700">Kamar Kosong / Siap Huni</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">${item.service}</p>
+                                    <div class="mt-2">
+                                        <button onclick="openCheckInModal('${item.id}')" class="px-3 py-1 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-500 transition-colors">
+                                            <i class="fa-solid fa-user-plus"></i> Check-In Penghuni Baru
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <h4 class="text-sm font-extrabold text-slate-900">${item.customer}</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">${item.service}</p>
+                                    <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
+                                        <span>${item.rack || 'Lantai 1'}</span>
+                                        <span class="font-semibold text-emerald-700">${item.date || item.work_status}</span>
+                                    </div>
+                                `}
                             </div>
 
                             <div class="flex items-center justify-between pt-2.5 border-t border-slate-100">
@@ -1079,10 +1656,18 @@
                                     <span class="text-sm font-extrabold text-slate-900">Rp ${Number(item.amount).toLocaleString('id-ID')}</span>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    <button onclick="openReceiptForItem('${item.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-xs hover:bg-emerald-100 transition-colors flex items-center gap-1">
-                                        <i class="fa-solid fa-receipt"></i> Kuitansi
+                                    ${!isAvailable ? `
+                                        <button onclick="sendBillingReminderWA('${item.id}')" class="p-2 rounded-xl bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition-colors" title="Kirim Tagihan WA">
+                                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                                        </button>
+                                        <button onclick="openReceiptForItem('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-colors flex items-center gap-1">
+                                            <i class="fa-solid fa-receipt"></i> Nota
+                                        </button>
+                                    ` : ''}
+                                    <button onclick="openEditModal('${item.id}')" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 transition-colors">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </button>
-                                    <button onclick="deleteItem('${item.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 transition-colors">
+                                    <button onclick="deleteItem('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 transition-colors">
                                         <i class="fa-solid fa-trash-can text-xs"></i>
                                     </button>
                                 </div>
@@ -1092,13 +1677,468 @@
                 }).join('');
             }
 
-            document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} kamar aktif`;
+            document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} dari ${appData.length} kamar`;
+        }
+
+        // Render Denah Visual Kamar (Grouped per Floor)
+        function renderDenah() {
+            const container = document.getElementById('denahFloorsContainer');
+            if (!container) return;
+
+            // Group rooms by rack/floor
+            const floors = {};
+            appData.forEach(room => {
+                const floorName = room.rack || 'Lantai 1';
+                if (!floors[floorName]) floors[floorName] = [];
+                floors[floorName].push(room);
+            });
+
+            if (Object.keys(floors).length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Belum ada denah kamar tercatat.</div>`;
+                return;
+            }
+
+            container.innerHTML = Object.keys(floors).sort().map(floorName => {
+                const roomsInFloor = floors[floorName];
+
+                return `
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">${floorName} (${roomsInFloor.length} Kamar)</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                            ${roomsInFloor.map(r => {
+                                const isAvailable = r.pay_status === 'Tersedia' || r.work_status === 'Tersedia' || r.customer.includes('Belum Berpenghuni');
+                                
+                                let cardBorder = 'border-slate-200 hover:border-slate-300';
+                                let cardBg = 'bg-white';
+                                let statusDot = 'bg-slate-400';
+                                let statusText = r.pay_status;
+
+                                if (r.pay_status === 'Lunas') {
+                                    cardBorder = 'border-emerald-200 hover:border-emerald-400';
+                                    cardBg = 'bg-emerald-50/30';
+                                    statusDot = 'bg-emerald-500';
+                                } else if (r.pay_status === 'Belum Lunas') {
+                                    cardBorder = 'border-amber-200 hover:border-amber-400';
+                                    cardBg = 'bg-amber-50/30';
+                                    statusDot = 'bg-amber-500';
+                                } else if (r.pay_status === 'Menunggak') {
+                                    cardBorder = 'border-rose-200 hover:border-rose-400';
+                                    cardBg = 'bg-rose-50/30';
+                                    statusDot = 'bg-rose-500';
+                                } else if (isAvailable) {
+                                    cardBorder = 'border-blue-200 hover:border-blue-400';
+                                    cardBg = 'bg-blue-50/30';
+                                    statusDot = 'bg-blue-500';
+                                    statusText = 'Siap Huni';
+                                }
+
+                                return `
+                                    <div class="p-3 rounded-2xl border ${cardBorder} ${cardBg} shadow-2xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer" onclick="openEditModal('${r.id}')">
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <span class="font-mono font-extrabold text-xs text-slate-900">${r.id}</span>
+                                                <span class="w-2 h-2 rounded-full ${statusDot}" title="${statusText}"></span>
+                                            </div>
+                                            <h5 class="font-bold text-slate-800 text-xs truncate">${isAvailable ? 'Siap Huni' : r.customer}</h5>
+                                            <p class="text-[10px] text-slate-400 truncate mt-0.5">${r.service}</p>
+                                        </div>
+
+                                        <div class="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                                            <span class="font-bold text-slate-900">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
+                                            <span class="font-semibold text-slate-500">${statusText}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Expenses (Buku Kas Operasional)
+        function renderExpenses() {
+            const tbody = document.getElementById('expensesTableBody');
+            const mobileContainer = document.getElementById('mobileExpensesContainer');
+            const totalLabel = document.getElementById('expensesSummaryTotal');
+            const countLabel = document.getElementById('expensesSummaryLabel');
+
+            let totalExp = appExpenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
+
+            if (totalLabel) totalLabel.innerText = 'Rp ' + totalExp.toLocaleString('id-ID');
+            if (countLabel) countLabel.innerText = `Total ${appExpenses.length} pos pengeluaran tercatat`;
+
+            if (!tbody) return;
+
+            if (appExpenses.length === 0) {
+                const emptyExp = `
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-receipt text-2xl mb-1 text-slate-300"></i>
+                        <p>Belum ada catatan pengeluaran operasional.</p>
+                    </div>
+                `;
+                tbody.innerHTML = `<tr><td colspan="6">${emptyExp}</td></tr>`;
+                if (mobileContainer) mobileContainer.innerHTML = emptyExp;
+                return;
+            }
+
+            // Desktop Rows
+            tbody.innerHTML = appExpenses.map((exp, idx) => `
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="px-5 py-3.5 font-semibold text-slate-700">${exp.expense_date}</td>
+                    <td class="px-5 py-3.5">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                            ${exp.category}
+                        </span>
+                    </td>
+                    <td class="px-5 py-3.5 font-bold text-slate-900">${exp.title}</td>
+                    <td class="px-5 py-3.5 text-slate-400">${exp.notes || '-'}</td>
+                    <td class="px-5 py-3.5 text-right font-mono font-bold text-rose-600">
+                        Rp ${Number(exp.amount).toLocaleString('id-ID')}
+                    </td>
+                    <td class="px-5 py-3.5 text-center">
+                        <button onclick="deleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Mobile Cards
+            if (mobileContainer) {
+                mobileContainer.innerHTML = appExpenses.map(exp => `
+                    <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-slate-500">${exp.expense_date}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                ${exp.category}
+                            </span>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-slate-900">${exp.title}</h4>
+                        <p class="text-xs text-slate-400">${exp.notes || '-'}</p>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                            <span class="font-mono font-bold text-rose-600 text-sm">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
+                            <button onclick="deleteExpense('${exp.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-rose-600">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // WhatsApp Billing Reminder Generator
+        function sendBillingReminderWA(id) {
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            const phone = (room.phone || '').replace(/[^0-9]/g, '');
+            const storeName = appSettings.storeName || DEFAULT_SETTINGS.storeName;
+            const bankName = appSettings.bankName || DEFAULT_SETTINGS.bankName;
+            const bankNum = appSettings.bankNumber || DEFAULT_SETTINGS.bankNumber;
+            const bankHolder = appSettings.bankHolder || DEFAULT_SETTINGS.bankHolder;
+
+            let targetPhone = phone;
+            if (targetPhone.startsWith('0')) targetPhone = '62' + targetPhone.slice(1);
+
+            let msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
+                      `Mengingatkan untuk pembayaran sewa kamar bulanan:%0A` +
+                      `• No. Kamar: *${room.id}*%0A` +
+                      `• Tipe Kamar: ${room.service}%0A` +
+                      `• Status: *${room.date || room.pay_status}*%0A` +
+                      `• Nominal Tagihan: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
+                      `Pembayaran dapat ditransfer melalui:%0A` +
+                      `*Bank ${bankName}: ${bankNum}*%0A` +
+                      `*A.N. ${bankHolder}*%0A%0A` +
+                      `Jika sudah melakukan pembayaran, mohon konfirmasi kembali dengan mengirimkan bukti transfer ya. Terima kasih banyak 🙏`;
+
+            let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
+            if (targetPhone) {
+                waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
+            }
+            window.open(waUrl, '_blank');
+        }
+
+        // Quick Mark as Paid
+        async function markAsPaidQuick(id) {
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            if (confirm(`Tandai sewa kamar ${room.id} (${room.customer}) sudah LUNAS?`)) {
+                room.pay_status = 'Lunas';
+                room.date = 'Lunas: ' + new Date().toLocaleDateString('id-ID');
+                
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
+                            pay_status: 'Lunas',
+                            date: room.date
+                        }).eq('id', id);
+                    } catch (err) {
+                        console.warn('Gagal update cloud, disimpan lokal');
+                    }
+                }
+
+                saveRoomsLocal();
+                renderAllViews();
+                
+                if (confirm('Status berhasil diubah menjadi Lunas. Ingin langsung membuat kuitansi pembayaran?')) {
+                    openReceiptForItem(id);
+                }
+            }
+        }
+
+        // Expense Modal Controls & Submit
+        function openExpenseModal() {
+            document.getElementById('expenseTitle').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseNotes').value = '';
+            document.getElementById('expenseModal').classList.remove('hidden');
+        }
+
+        function closeExpenseModal() {
+            document.getElementById('expenseModal').classList.add('hidden');
+        }
+
+        async function handleExpenseSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('expenseSubmitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
+            const newExp = {
+                id: 'EXP-' + Date.now().toString().slice(-8),
+                title: document.getElementById('expenseTitle').value.trim(),
+                category: document.getElementById('expenseCategory').value,
+                amount: Number(document.getElementById('expenseAmount').value),
+                expense_date: document.getElementById('expenseDate').value,
+                notes: document.getElementById('expenseNotes').value.trim()
+            };
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_EXPENSES).insert([newExp]);
+                } catch (err) {
+                    console.warn('Gagal simpan pengeluaran cloud, disimpan lokal');
+                }
+            }
+
+            appExpenses.unshift(newExp);
+            saveExpensesLocal();
+            closeExpenseModal();
+            renderAllViews();
+            btn.disabled = false;
+            btn.innerText = 'Simpan Pengeluaran';
+            alert('Pengeluaran berhasil dicatat ke dalam Buku Kas!');
+        }
+
+        async function deleteExpense(id) {
+            if (confirm('Hapus pos pengeluaran ini dari Buku Kas?')) {
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_EXPENSES).delete().eq('id', id);
+                    } catch (err) {
+                        console.warn('Gagal hapus cloud:', err);
+                    }
+                }
+                appExpenses = appExpenses.filter(x => x.id !== id);
+                saveExpensesLocal();
+                renderAllViews();
+            }
+        }
+
+        // Edit Room Modal Controls & Submit
+        function openEditModal(id) {
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            document.getElementById('editRoomOriginalId').value = room.id;
+            document.getElementById('editRoomId').value = room.id;
+            document.getElementById('editRack').value = room.rack || 'Lantai 1';
+            document.getElementById('editService').value = room.service;
+            document.getElementById('editCustomer').value = room.customer;
+            document.getElementById('editPhone').value = room.phone || '';
+            document.getElementById('editAmount').value = room.amount;
+            document.getElementById('editPayStatus').value = room.pay_status;
+            document.getElementById('editDueDate').value = room.date || '';
+            document.getElementById('editDetail').value = room.detail || '';
+
+            document.getElementById('editRoomModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editRoomModal').classList.add('hidden');
+        }
+
+        async function handleEditSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('editRoomOriginalId').value;
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            const btn = document.getElementById('editSubmitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
+            const updatedData = {
+                rack: document.getElementById('editRack').value,
+                service: document.getElementById('editService').value.trim(),
+                customer: document.getElementById('editCustomer').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                amount: Number(document.getElementById('editAmount').value),
+                pay_status: document.getElementById('editPayStatus').value,
+                date: document.getElementById('editDueDate').value.trim(),
+                detail: document.getElementById('editDetail').value.trim(),
+                work_status: document.getElementById('editPayStatus').value === 'Tersedia' ? 'Tersedia' : 'Terisi'
+            };
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatedData).eq('id', id);
+                } catch (err) {
+                    console.warn('Gagal update cloud, simpan lokal');
+                }
+            }
+
+            Object.assign(room, updatedData);
+            saveRoomsLocal();
+            closeEditModal();
+            renderAllViews();
+            btn.disabled = false;
+            btn.innerText = 'Simpan Perubahan';
+        }
+
+        // Check-Out / Kosongkan Kamar
+        async function checkoutCurrentRoom() {
+            const id = document.getElementById('editRoomOriginalId').value;
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            if (confirm(`Kosongkan kamar ${room.id}? Data penyewa ${room.customer} akan diselesaikan dan status kamar menjadi "Tersedia".`)) {
+                const updated = {
+                    customer: 'Belum Berpenghuni',
+                    phone: '',
+                    pay_status: 'Tersedia',
+                    work_status: 'Tersedia',
+                    date: 'Siap Huni'
+                };
+
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updated).eq('id', id);
+                    } catch (err) {
+                        console.warn('Gagal update cloud:', err);
+                    }
+                }
+
+                Object.assign(room, updated);
+                saveRoomsLocal();
+                closeEditModal();
+                renderAllViews();
+                alert(`Kamar ${room.id} sekarang kosong dan siap disewakan kembali.`);
+            }
+        }
+
+        // Check-In / Sewakan Kamar Kosong
+        function openCheckInModal(id) {
+            openEditModal(id);
+            document.getElementById('editCustomer').value = '';
+            document.getElementById('editCustomer').focus();
+            document.getElementById('editPayStatus').value = 'Belum Lunas';
+            document.getElementById('editDueDate').value = 'Jatuh Tempo: ' + new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('id-ID');
+        }
+
+        // Add Data Modal Logic
+        function showNewModal() {
+            document.getElementById('newRoomId').value = '';
+            document.getElementById('newCustomer').value = '';
+            document.getElementById('newPhone').value = '';
+            document.getElementById('newService').value = '';
+            document.getElementById('newAmount').value = '';
+            document.getElementById('newDetail').value = '';
+            document.getElementById('newModal').classList.remove('hidden');
+        }
+
+        function closeNewModal() {
+            document.getElementById('newModal').classList.add('hidden');
+        }
+
+        function toggleNewTenantFields(isOccupied) {
+            const section = document.getElementById('newTenantFieldsSection');
+            if (section) {
+                section.style.display = isOccupied ? 'block' : 'none';
+            }
+        }
+
+        async function handleNewSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
+            const condition = document.querySelector('input[name="newRoomCondition"]:checked').value;
+            const isOccupied = condition === 'terisi';
+
+            const newItem = {
+                id: document.getElementById('newRoomId').value.trim().toUpperCase() || ('KMR-' + Math.floor(100 + Math.random() * 900)),
+                customer: isOccupied ? (document.getElementById('newCustomer').value.trim() || 'Penyewa Baru') : 'Belum Berpenghuni',
+                phone: isOccupied ? document.getElementById('newPhone').value.trim() : '',
+                service: document.getElementById('newService').value.trim(),
+                detail: document.getElementById('newDetail').value.trim() || 'Kamar Bersih',
+                rack: document.getElementById('newRack').value,
+                amount: Number(document.getElementById('newAmount').value),
+                pay_status: isOccupied ? document.getElementById('newPayStatus').value : 'Tersedia',
+                work_status: isOccupied ? 'Terisi' : 'Tersedia',
+                date: isOccupied ? (document.getElementById('newDueDate').value.trim() || ('Jatuh Tempo: ' + new Date().toLocaleDateString('id-ID'))) : 'Siap Huni'
+            };
+
+            // Cloud Sync
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).insert([newItem]);
+                } catch (err) {
+                    console.warn('Penyimpanan cloud dialihkan ke cache');
+                }
+            }
+
+            appData.unshift(newItem);
+            saveRoomsLocal();
+            closeNewModal();
+            renderAllViews();
+            btn.disabled = false;
+            btn.innerText = 'Simpan Data Kamar';
+            
+            if (isOccupied) {
+                openReceiptForItem(newItem.id);
+            } else {
+                alert(`Kamar ${newItem.id} berhasil ditambahkan dan berstatus Siap Huni!`);
+            }
+        }
+
+        async function deleteItem(id) {
+            if (confirm(`Hapus kamar ${id} secara permanen dari sistem?`)) {
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).delete().eq('id', id);
+                    } catch (err) {
+                        console.warn('Penghapusan cloud error:', err);
+                    }
+                }
+                appData = appData.filter(x => x.id !== id);
+                saveRoomsLocal();
+                renderAllViews();
+            }
         }
 
         // Receipt Modal Logic
         function openQuickReceiptModal() {
             if (appData.length > 0) {
-                openReceiptForItem(appData[0].id);
+                const firstPaid = appData.find(x => x.pay_status === 'Lunas') || appData[0];
+                openReceiptForItem(firstPaid.id);
             } else {
                 openReceiptForItem(null);
             }
@@ -1138,7 +2178,7 @@
         }
 
         function addReceiptRow() {
-            receiptRows.push({ desc: 'Biaya Tambahan / Token Listrik', qty: 1, price: 50000 });
+            receiptRows.push({ desc: 'Biaya Listrik Token / Tambahan', qty: 1, price: 50000 });
             renderReceiptEditorRows();
             recalculateReceipt();
         }
@@ -1156,7 +2196,7 @@
 
             container.innerHTML = receiptRows.map((row, idx) => `
                 <div class="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-white">
-                    <input type="text" value="${row.desc}" oninput="updateRowDesc(${idx}, this.value)" placeholder="Nama item / tagihan" class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 outline-none">
+                    <input type="text" value="${row.desc}" oninput="updateRowDesc(${idx}, this.value)" placeholder="Nama tagihan" class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 outline-none">
                     <input type="number" value="${row.qty}" min="1" oninput="updateRowQty(${idx}, this.value)" class="w-12 text-xs border border-slate-200 rounded-lg px-1 py-1 text-center outline-none">
                     <input type="number" value="${row.price}" min="0" oninput="updateRowPrice(${idx}, this.value)" class="w-24 text-xs border border-slate-200 rounded-lg px-2 py-1 text-right font-mono outline-none">
                     <button onclick="removeReceiptRow(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Hapus baris">
@@ -1166,18 +2206,9 @@
             `).join('');
         }
 
-        function updateRowDesc(idx, val) {
-            receiptRows[idx].desc = val;
-            renderReceiptPaperRows();
-        }
-        function updateRowQty(idx, val) {
-            receiptRows[idx].qty = Number(val) || 1;
-            recalculateReceipt();
-        }
-        function updateRowPrice(idx, val) {
-            receiptRows[idx].price = Number(val) || 0;
-            recalculateReceipt();
-        }
+        function updateRowDesc(idx, val) { receiptRows[idx].desc = val; renderReceiptPaperRows(); }
+        function updateRowQty(idx, val) { receiptRows[idx].qty = Number(val) || 1; recalculateReceipt(); }
+        function updateRowPrice(idx, val) { receiptRows[idx].price = Number(val) || 0; recalculateReceipt(); }
 
         function renderReceiptPaperRows() {
             const container = document.getElementById('receiptItemsContainer');
@@ -1202,7 +2233,7 @@
             let subtotal = receiptRows.reduce((acc, row) => acc + (row.qty * row.price), 0);
             let discount = Number(document.getElementById('editDiscountInput').value) || 0;
             let isTax = document.getElementById('editTaxCheckbox').checked;
-            let tax = isTax ? 25000 : 0; // Biaya layanan / kebersihan tetap
+            let tax = isTax ? 25000 : 0;
             let grandTotal = Math.max(0, subtotal - discount + tax);
 
             let cashGiven = Number(document.getElementById('editCashInput').value) || grandTotal;
@@ -1232,12 +2263,8 @@
             document.getElementById('editChangeDisplay').innerText = 'Rp ' + change.toLocaleString('id-ID');
         }
 
-        function updateReceiptCustomer(val) {
-            document.getElementById('receiptCustomerText').innerText = val || 'Penyewa';
-        }
-        function updateReceiptId(val) {
-            document.getElementById('receiptIdText').innerText = '#' + (val || 'KMR');
-        }
+        function updateReceiptCustomer(val) { document.getElementById('receiptCustomerText').innerText = val || 'Penyewa'; }
+        function updateReceiptId(val) { document.getElementById('receiptIdText').innerText = '#' + (val || 'KMR'); }
 
         function setReceiptFormat(fmt) {
             const paper = document.getElementById('printableReceiptArea');
@@ -1261,15 +2288,13 @@
             }
         }
 
-        function printReceiptNow() {
-            window.print();
-        }
+        function printReceiptNow() { window.print(); }
 
         function sendReceiptViaWA() {
             const cust = document.getElementById('receiptCustomerText').innerText;
             const nota = document.getElementById('receiptIdText').innerText;
             const total = document.getElementById('receiptGrandTotalText').innerText;
-            const store = appSettings.storeName;
+            const store = appSettings.storeName || DEFAULT_SETTINGS.storeName;
             const phone = (currentReceiptItem && currentReceiptItem.phone) ? currentReceiptItem.phone.replace(/[^0-9]/g, '') : '';
 
             let itemsTxt = receiptRows.map(r => `- ${r.desc} (${r.qty}x): Rp ${Number(r.qty * r.price).toLocaleString('id-ID')}`).join('%0A');
@@ -1277,7 +2302,7 @@
                       `No. Kamar / Nota: ${nota}%0A` +
                       `Nama Penyewa: ${cust}%0A` +
                       `Tanggal: ${new Date().toLocaleDateString('id-ID')}%0A%0A` +
-                      `*Rincian Tagihan:*%0A${itemsTxt}%0A%0A` +
+                      `*Rincian Pembayaran:*%0A${itemsTxt}%0A%0A` +
                       `*TOTAL DIBAYAR: ${total}*%0A%0A` +
                       `Terima kasih atas pembayarannya. Kuitansi ini adalah bukti pembayaran yang sah.`;
 
@@ -1289,102 +2314,54 @@
             window.open(waUrl, '_blank');
         }
 
-        // Add Data Modal Logic
-        function showNewModal() {
-            document.getElementById('newModal').classList.remove('hidden');
-        }
-        function closeNewModal() {
-            document.getElementById('newModal').classList.add('hidden');
-        }
-
-        async function handleNewSubmit(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = 'Menyimpan...';
-
-            const newItem = {
-                id: document.getElementById('newRoomId').value.trim() || ('KMR-' + Math.floor(100 + Math.random() * 900)),
-                customer: document.getElementById('newCustomer').value.trim(),
-                phone: document.getElementById('newPhone').value.trim(),
-                service: document.getElementById('newService').value.trim(),
-                detail: 'Kamar Aktif',
-                rack: document.getElementById('newRack').value.trim() || 'Lantai 1',
-                amount: Number(document.getElementById('newAmount').value),
-                pay_status: document.getElementById('newPayStatus').value,
-                work_status: document.getElementById('newPayStatus').value,
-                date: document.getElementById('newDueDate').value.trim() || ('Jatuh Tempo: ' + new Date().toLocaleDateString('id-ID'))
-            };
-
-            // Cloud Sync
-            if (supabaseClient) {
-                try {
-                    await supabaseClient.from(SUPABASE_TABLE).insert([{
-                        id: newItem.id,
-                        customer: newItem.customer,
-                        phone: newItem.phone,
-                        service: newItem.service,
-                        detail: newItem.detail,
-                        rack: newItem.rack,
-                        amount: newItem.amount,
-                        pay_status: newItem.pay_status,
-                        work_status: newItem.work_status,
-                        date: newItem.date
-                    }]);
-                } catch (err) {
-                    console.warn('Penyimpanan cloud dialihkan ke cache');
-                }
-            }
-
-            appData.unshift(newItem);
-            saveData();
-            renderTable();
-            updateKPIs();
-            closeNewModal();
-            btn.disabled = false;
-            btn.innerText = 'Simpan Data Sewa';
-            openReceiptForItem(newItem.id);
-        }
-
-        async function deleteItem(id) {
-            if (confirm(`Yakin ingin menghapus data sewa kamar ${id}?`)) {
-                if (supabaseClient) {
-                    try {
-                        await supabaseClient.from(SUPABASE_TABLE).delete().eq('id', id);
-                    } catch (err) {
-                        console.warn('Penghapusan cloud error:', err);
-                    }
-                }
-                appData = appData.filter(x => x.id !== id);
-                saveData();
-                renderTable();
-                updateKPIs();
-            }
-        }
-
         // Settings Modal
         function openSettingsModal() {
-            document.getElementById('settingStoreName').value = appSettings.storeName;
-            document.getElementById('settingStoreAddress').value = appSettings.address;
-            document.getElementById('settingStorePhone').value = appSettings.phone;
+            document.getElementById('settingStoreName').value = appSettings.storeName || DEFAULT_SETTINGS.storeName;
+            document.getElementById('settingStoreAddress').value = appSettings.address || DEFAULT_SETTINGS.address;
+            document.getElementById('settingStorePhone').value = appSettings.phone || DEFAULT_SETTINGS.phone;
+            document.getElementById('settingBankName').value = appSettings.bankName || DEFAULT_SETTINGS.bankName;
+            document.getElementById('settingBankNumber').value = appSettings.bankNumber || DEFAULT_SETTINGS.bankNumber;
+            document.getElementById('settingBankHolder').value = appSettings.bankHolder || DEFAULT_SETTINGS.bankHolder;
             document.getElementById('settingDefaultPaper').value = appSettings.defaultPaper || '58mm';
             document.getElementById('settingsModal').classList.remove('hidden');
         }
+
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
         }
 
         function handleSettingsSave(e) {
             e.preventDefault();
-            appSettings.storeName = document.getElementById('settingStoreName').value;
-            appSettings.address = document.getElementById('settingStoreAddress').value;
-            appSettings.phone = document.getElementById('settingStorePhone').value;
+            appSettings.storeName = document.getElementById('settingStoreName').value.trim();
+            appSettings.address = document.getElementById('settingStoreAddress').value.trim();
+            appSettings.phone = document.getElementById('settingStorePhone').value.trim();
+            appSettings.bankName = document.getElementById('settingBankName').value.trim();
+            appSettings.bankNumber = document.getElementById('settingBankNumber').value.trim();
+            appSettings.bankHolder = document.getElementById('settingBankHolder').value.trim();
             appSettings.defaultPaper = document.getElementById('settingDefaultPaper').value;
+            
             localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
             updateStoreLabels();
             setReceiptFormat(appSettings.defaultPaper);
             closeSettingsModal();
-            alert('Pengaturan usaha kost dan logo berhasil diperbarui!');
+            alert('Pengaturan usaha kost dan rekening bank berhasil disimpan!');
+        }
+
+        // Backup Data (JSON Export)
+        function exportBackupJSON() {
+            const backupPayload = {
+                exported_at: new Date().toISOString(),
+                settings: appSettings,
+                rooms: appData,
+                expenses: appExpenses
+            };
+            const jsonStr = JSON.stringify(backupPayload, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_simkost_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
         }
 
         // Drawer Sidebar Toggle
@@ -1400,27 +2377,17 @@
             }
         }
 
-        function switchNavSection(sec) {
-            toggleSidebar();
-            if (sec === 'dashboard') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (sec === 'kamar') {
-                const el = document.getElementById('filterTabGroup');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
         // Export to CSV
         function exportToCSV() {
-            let csv = "No,ID_Kamar,Nama_Penyewa,WhatsApp,Tipe_Kamar,Biaya_Sewa,Status_Bayar,Jatuh_Tempo\n";
+            let csv = "No,ID_Kamar,Nama_Penyewa,WhatsApp,Tipe_Kamar,Lokasi_Lantai,Biaya_Sewa,Status_Bayar,Jatuh_Tempo\n";
             appData.forEach((row, i) => {
-                csv += `${i+1},"${row.id}","${row.customer}","${row.phone}","${row.service}",${row.amount},"${row.pay_status}","${row.date || row.work_status}"\n`;
+                csv += `${i+1},"${row.id}","${row.customer}","${row.phone}","${row.service}","${row.rack || 'Lantai 1'}",${row.amount},"${row.pay_status}","${row.date || row.work_status}"\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `laporan_kost_${new Date().toISOString().slice(0,10)}.csv`;
+            a.download = `laporan_kamar_kost_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
         }
     </script>
