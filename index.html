@@ -139,56 +139,93 @@
     <!-- Mobile Drawer Overlay -->
     <div id="drawerBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
 
-    <!-- Mobile Bottom Action Sheet Drawer -->
-    <div id="actionSheetBackdrop" onclick="closeRoomActionSheet()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
-    <div id="roomActionSheet" class="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl p-5 transform translate-y-full transition-transform duration-300 ease-out max-w-lg mx-auto hidden pb-safe">
-        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4"></div>
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div>
-                <span id="sheetRoomId" class="px-2.5 py-0.5 rounded-lg bg-slate-900 text-white font-mono font-bold text-xs">KMR-101</span>
-                <h4 id="sheetCustomerName" class="text-sm font-extrabold text-slate-900 mt-1">Nama Penyewa</h4>
-            </div>
-            <span id="sheetPayStatus" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">Lunas</span>
-        </div>
+    <!-- ================================================================== -->
+    <!-- SMART CONTEXTUAL ROOM MODAL / DRAWER (STATE-DRIVEN WORKFLOW)       -->
+    <!-- ================================================================== -->
+    <div id="smartRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity overflow-y-auto">
+        <!-- Click backdrop to close -->
+        <div id="actionSheetBackdrop" class="fixed inset-0" onclick="closeSmartRoomModal()"></div>
         
-        <div class="py-3 space-y-1.5 text-xs font-bold text-slate-700">
-            <button onclick="actionSheetWhatsApp()" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
-                <i class="fa-brands fa-whatsapp text-lg text-emerald-600 w-6 text-center"></i>
-                <div class="flex-1">
-                    <div>Kirim Tagihan via WhatsApp</div>
-                    <span class="text-[10px] text-emerald-600 font-normal">Template pesan otomatis &amp; no. rekening transfer</span>
+        <div id="smartRoomContainer" class="relative z-10 bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 max-h-[92vh] flex flex-col pb-safe">
+            
+            <!-- Mobile Drawer Grabber Pill -->
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto my-2.5 sm:hidden shrink-0"></div>
+
+            <!-- Modal Header: Room Number, Location, Status Badge, Close Button -->
+            <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+                <div class="flex items-center gap-2">
+                    <span id="ctxRoomId" class="px-2.5 py-1 rounded-xl bg-slate-900 text-white font-mono font-extrabold text-xs">KMR-101</span>
+                    <span id="ctxRoomRack" class="text-xs font-semibold text-slate-500">Lantai 1</span>
+                    <!-- Hidden elements for backward-compat IDs if any script inspects them -->
+                    <span id="sheetRoomId" class="hidden"></span>
+                    <span id="sheetCustomerName" class="hidden"></span>
+                    <span id="sheetPayStatus" class="hidden"></span>
+                    <button id="sheetMarkPaidBtn" class="hidden"></button>
+                    <div id="roomActionSheet" class="hidden"></div>
                 </div>
-            </button>
-            <button onclick="actionSheetReceipt()" class="w-full p-3 rounded-2xl bg-slate-50 text-slate-800 hover:bg-slate-100 flex items-center gap-3 transition-colors text-left">
-                <i class="fa-solid fa-receipt text-base text-slate-500 w-6 text-center"></i>
-                <div class="flex-1">
-                    <div>Buat Nota / Kuitansi Pembayaran</div>
-                    <span class="text-[10px] text-slate-400 font-normal">Cetak nota thermal atau bagikan struk digital</span>
+                <div class="flex items-center gap-2">
+                    <span id="ctxStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span id="ctxStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span id="ctxStatusText">Lunas</span>
+                    </span>
+                    <button onclick="closeSmartRoomModal()" aria-label="Tutup" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
                 </div>
-            </button>
-            <button id="sheetMarkPaidBtn" onclick="actionSheetMarkPaid()" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
-                <i class="fa-solid fa-circle-check text-base text-amber-600 w-6 text-center"></i>
-                <div class="flex-1">
-                    <div>Perpanjang Sewa &amp; Tandai Lunas</div>
-                    <span class="text-[10px] text-amber-600 font-normal">Otomatis memajukan jatuh tempo ke bulan depan</span>
+            </div>
+
+            <!-- Modal Scrollable Body -->
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
+                
+                <!-- Hero Ribbon: Condition Title, Icon & Helper Guidance -->
+                <div id="ctxHeroRibbon" class="p-4 rounded-2xl border flex items-start gap-3.5 bg-blue-50/70 border-blue-200">
+                    <div id="ctxHeroIconBox" class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0 shadow-2xs">
+                        <i id="ctxHeroIcon" class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 id="ctxHeroTitle" class="text-sm font-extrabold text-slate-900">Kamar Siap Huni</h4>
+                        <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
+                    </div>
                 </div>
-            </button>
-            <button onclick="actionSheetEdit()" class="w-full p-3 rounded-2xl hover:bg-slate-100 flex items-center gap-3 transition-colors text-left text-slate-700">
-                <i class="fa-solid fa-pen-to-square text-base text-slate-500 w-6 text-center"></i>
-                <span>Edit Data Kamar &amp; Penghuni</span>
-            </button>
-            <button onclick="actionSheetCheckout()" class="w-full p-3 rounded-2xl hover:bg-rose-50 text-rose-600 flex items-center gap-3 transition-colors text-left">
-                <i class="fa-solid fa-arrow-right-from-bracket text-base w-6 text-center"></i>
-                <span>Kosongkan Kamar (Check-Out)</span>
-            </button>
-            <button onclick="actionSheetDelete()" class="w-full p-3 rounded-2xl hover:bg-rose-50 text-rose-600 flex items-center gap-3 transition-colors text-left">
-                <i class="fa-solid fa-trash-can text-base w-6 text-center"></i>
-                <span>Hapus Kamar Permanen</span>
-            </button>
+
+                <!-- Room & Tenant Overview Card -->
+                <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-2 text-xs">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Tipe &amp; Fasilitas</span>
+                        <span id="ctxRoomService" class="font-bold text-slate-900 text-right truncate max-w-[240px]">Kamar Deluxe AC + KM Dalam</span>
+                    </div>
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Tarif Sewa Bulanan</span>
+                        <span id="ctxRoomAmount" class="font-extrabold text-slate-900 font-mono text-sm tabular-nums">Rp 1.500.000</span>
+                    </div>
+                    <div id="ctxTenantRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                        <span class="text-slate-500 font-medium">Penghuni / Penyewa</span>
+                        <div class="text-right">
+                            <span id="ctxTenantName" class="font-extrabold text-slate-900 block truncate max-w-[200px]">Agus Setiawan</span>
+                            <span id="ctxTenantPhone" class="text-[11px] text-slate-500 font-mono">081299881122</span>
+                        </div>
+                    </div>
+                    <div id="ctxDueDateRow" class="flex items-center justify-between">
+                        <span class="text-slate-500 font-medium">Periode / Jatuh Tempo</span>
+                        <span id="ctxDueDate" class="font-bold text-slate-800">Jatuh Tempo: 01 Nov 2026</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Condition-Specific Actions Container -->
+                <div id="ctxDynamicActions" class="space-y-3">
+                    <!-- Injected dynamically based on condition A vs B vs C vs D vs E vs F -->
+                </div>
+
+            </div>
+
+            <!-- Footer Close Button -->
+            <div class="p-3 border-t border-slate-100 bg-slate-50/60 shrink-0">
+                <button onclick="closeSmartRoomModal()" class="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 transition-colors">
+                    Tutup
+                </button>
+            </div>
+
         </div>
-        <button onclick="closeRoomActionSheet()" class="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 mt-1">
-            Tutup
-        </button>
     </div>
 
     <div class="flex h-screen overflow-hidden">
@@ -522,6 +559,9 @@
                         </button>
                         <button onclick="setFilter('Booking', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Booking (<span id="countFilterBooking">0</span>)
+                        </button>
+                        <button onclick="setFilter('Perbaikan', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Perbaikan (<span id="countFilterRepair">0</span>)
                         </button>
                     </div>
 
@@ -1446,6 +1486,7 @@
         let currentReceiptItem = null;
         let receiptRows = [];
         let activeActionSheetRoomId = null;
+        let activeContextRoomId = null;
         let toastTimeout = null;
         let confirmResolver = null;
 
@@ -1831,6 +1872,294 @@
             updateKPIs();
         }
 
+        // ── 6-STATE CONTEXTUAL ROOM CONDITION ENGINE ──────────────────────────
+        // Kondisi A: 'kosong'      -> Siap Huni (Belum Berpenghuni)
+        // Kondisi B: 'lunas'       -> Terisi & Lunas (Masa Sewa Aman)
+        // Kondisi C: 'jatuh_tempo' -> Jatuh Tempo (H-7 s/d Hari H / Belum Lunas)
+        // Kondisi D: 'menunggak'   -> Telat Bayar / Overdue
+        // Kondisi E: 'booking'     -> Reservasi / DP Masuk
+        // Kondisi F: 'perbaikan'   -> Dalam Pemeliharaan / Servis Fasilitas
+        function getRoomCondition(room) {
+            if (!room) return 'kosong';
+            const payStatus = (room.pay_status || '').trim();
+            const workStatus = (room.work_status || '').trim();
+            const customer = (room.customer || '').trim();
+            const dateStr = (room.date || '').trim();
+            const custLower = customer.toLowerCase();
+
+            // 1. Perbaikan / Maintenance
+            if (payStatus === 'Perbaikan' || workStatus === 'Perbaikan' || custLower.includes('perbaikan') || custLower.includes('renovasi') || custLower.includes('servis')) {
+                return 'perbaikan';
+            }
+
+            // 2. Kosong / Siap Huni
+            if (payStatus === 'Tersedia' || workStatus === 'Tersedia' || custLower.includes('belum berpenghuni') || custLower === '-' || !customer) {
+                return 'kosong';
+            }
+
+            // 3. Booking / DP Reservasi
+            if (payStatus.toLowerCase().includes('dp') || payStatus.toLowerCase().includes('booking') || workStatus.toLowerCase().includes('booking') || custLower.includes('calon penyewa') || custLower.includes('booking')) {
+                return 'booking';
+            }
+
+            // 4. Overdue vs Due Soon based on parsed due date
+            const d = parseCustomDate(dateStr);
+            let diffDays = null;
+            if (d) {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                d.setHours(0,0,0,0);
+                diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+            }
+
+            // 5. Menunggak (Overdue)
+            if (payStatus === 'Menunggak' || (diffDays !== null && diffDays < 0 && payStatus !== 'Lunas')) {
+                return 'menunggak';
+            }
+
+            // 6. Jatuh Tempo (H-7 s/d Hari H, atau status Belum Lunas)
+            if (payStatus === 'Belum Lunas' || (diffDays !== null && diffDays >= 0 && diffDays <= 7 && payStatus !== 'Lunas')) {
+                return 'jatuh_tempo';
+            }
+
+            // 7. Lunas (Paid)
+            if (payStatus === 'Lunas') {
+                return 'lunas';
+            }
+
+            return 'lunas';
+        }
+
+        // Contextual Metadata Provider for Badges, Ribbons, and Action Pills
+        function getConditionMeta(cond, room = {}) {
+            const d = parseCustomDate(room.date);
+            let diffDays = 0;
+            if (d) {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                d.setHours(0,0,0,0);
+                diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+            }
+
+            switch(cond) {
+                case 'kosong':
+                    return {
+                        id: 'kosong',
+                        label: 'Siap Huni',
+                        badgeClass: 'bg-blue-50 text-blue-700 border border-blue-200/80',
+                        dotClass: 'bg-blue-500',
+                        borderAccent: 'border-l-4 border-l-blue-500',
+                        icon: 'fa-solid fa-door-open',
+                        heroBg: 'bg-gradient-to-r from-blue-50 to-sky-50 border-blue-200',
+                        heroIconBg: 'bg-blue-600 text-white',
+                        heroTitle: 'Kamar Siap Huni',
+                        heroSubtitle: 'Kamar dalam kondisi bersih dan siap menerima penghuni baru.',
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'checkin')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-500 transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'checkin')" title="Check-In Penghuni" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
+                            </button>
+                            <button onclick="event.stopPropagation(); setRoomToMaintenance('${room.id}')" title="Set Perbaikan" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 transition-colors">
+                                <i class="fa-solid fa-wrench"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); deleteItem('${room.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `
+                    };
+                case 'lunas':
+                    return {
+                        id: 'lunas',
+                        label: 'Lunas',
+                        badgeClass: 'bg-emerald-50 text-emerald-700 border border-emerald-200/80',
+                        dotClass: 'bg-emerald-500',
+                        borderAccent: 'border-l-4 border-l-emerald-500',
+                        icon: 'fa-solid fa-circle-check',
+                        heroBg: 'bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200',
+                        heroIconBg: 'bg-emerald-600 text-white',
+                        heroTitle: 'Sewa Aktif & Lunas',
+                        heroSubtitle: `Pembayaran sewa periode ini telah lunas.${room.date ? ' (' + room.date + ')' : ''}`,
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" class="px-2 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-receipt text-[10px]"></i> Nota
+                            </button>
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" class="p-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors" title="Chat WhatsApp">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Kuitansi Resmi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-800 hover:text-white text-slate-700 transition-colors">
+                                <i class="fa-solid fa-receipt"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" title="WhatsApp Penghuni" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); deleteItem('${room.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `
+                    };
+                case 'jatuh_tempo':
+                    const dueLabel = diffDays === 0 ? 'Jatuh Tempo Hari Ini!' : `Jatuh Tempo ${diffDays} Hari Lagi`;
+                    return {
+                        id: 'jatuh_tempo',
+                        label: diffDays === 0 ? 'Hari Ini' : `${diffDays} hari lagi`,
+                        badgeClass: 'bg-amber-50 text-amber-700 border border-amber-200/80 font-bold',
+                        dotClass: 'bg-amber-500 animate-pulse',
+                        borderAccent: 'border-l-4 border-l-amber-500',
+                        icon: 'fa-solid fa-bell',
+                        heroBg: 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200',
+                        heroIconBg: 'bg-amber-500 text-white',
+                        heroTitle: dueLabel,
+                        heroSubtitle: `Masa sewa periode ini akan habis pada ${room.date || 'bulan ini'}. Segera kirimkan pengingat ramah.`,
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white text-[11px] font-bold transition-colors flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp text-xs"></i> Ingatkan
+                            </button>
+                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" class="px-2 py-1 rounded-xl bg-amber-500 text-white hover:bg-amber-400 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-2xs" title="Terima Pembayaran">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i> Bayar
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" title="Ingatkan WA (Sopan)" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors flex items-center gap-1 text-[11px]">
+                                <i class="fa-brands fa-whatsapp text-xs"></i> Ingatkan
+                            </button>
+                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" title="Terima Bayar & Perpanjang (+1 Bulan)" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 font-bold transition-colors">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Kuitansi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-receipt"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        `
+                    };
+                case 'menunggak':
+                    const lateDays = Math.abs(diffDays) || 1;
+                    return {
+                        id: 'menunggak',
+                        label: `Telat ${lateDays} hari`,
+                        badgeClass: 'bg-rose-50 text-rose-700 border border-rose-200/80 font-bold',
+                        dotClass: 'bg-rose-500 animate-pulse',
+                        borderAccent: 'border-l-4 border-l-rose-500',
+                        icon: 'fa-solid fa-triangle-exclamation',
+                        heroBg: 'bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200',
+                        heroIconBg: 'bg-rose-600 text-white',
+                        heroTitle: `Menunggak (Telat ${lateDays} Hari)`,
+                        heroSubtitle: `Jatuh tempo terlewat sejak ${room.date || 'beberapa hari lalu'}. Segera tagih dan minta kepastian pelunasan.`,
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'firm')" class="px-2.5 py-1 rounded-xl bg-rose-600 text-white hover:bg-rose-500 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Tagih WA
+                            </button>
+                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" class="p-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors" title="Terima Pelunasan">
+                                <i class="fa-solid fa-circle-check text-sm"></i>
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'firm')" title="Tagih WA (Tegas)" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-700 font-bold transition-colors flex items-center gap-1 text-[11px]">
+                                <i class="fa-solid fa-triangle-exclamation text-xs"></i> Tagih WA
+                            </button>
+                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" title="Terima Pelunasan & Perpanjang (+1 Bulan)" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        `
+                    };
+                case 'booking':
+                    return {
+                        id: 'booking',
+                        label: 'Booking / DP',
+                        badgeClass: 'bg-purple-50 text-purple-700 border border-purple-200/80 font-bold',
+                        dotClass: 'bg-purple-500',
+                        borderAccent: 'border-l-4 border-l-purple-500',
+                        icon: 'fa-solid fa-bookmark',
+                        heroBg: 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200',
+                        heroIconBg: 'bg-purple-600 text-white',
+                        heroTitle: 'Reservasi / Booking (DP Masuk)',
+                        heroSubtitle: 'Kamar telah dipesan oleh calon penghuni. Siap diaktifkan & dilunasi saat serah terima kunci.',
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'activate')" class="px-2.5 py-1 rounded-xl bg-purple-600 text-white hover:bg-purple-500 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-key text-[10px]"></i> Aktivasi
+                            </button>
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" class="p-1.5 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors" title="Bukti DP">
+                                <i class="fa-solid fa-receipt text-sm"></i>
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'activate')" title="Aktivasi & Lunasi" class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-600 hover:text-white text-purple-700 font-bold transition-colors flex items-center gap-1 text-[11px]">
+                                <i class="fa-solid fa-key text-xs"></i> Aktivasi
+                            </button>
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Bukti DP" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-purple-600 hover:text-white text-slate-700 transition-colors">
+                                <i class="fa-solid fa-receipt"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        `
+                    };
+                case 'perbaikan':
+                    return {
+                        id: 'perbaikan',
+                        label: 'Perbaikan',
+                        badgeClass: 'bg-amber-50 text-amber-800 border border-amber-300 font-bold',
+                        dotClass: 'bg-amber-600',
+                        borderAccent: 'border-l-4 border-l-amber-500',
+                        icon: 'fa-solid fa-wrench',
+                        heroBg: 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300',
+                        heroIconBg: 'bg-amber-600 text-white',
+                        heroTitle: 'Dalam Pemeliharaan / Servis',
+                        heroSubtitle: 'Kamar sedang diperbaiki fasilitasnya dan tidak dapat disewakan hingga servis selesai.',
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); finishMaintenanceQuick('${room.id}')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i> Selesai
+                            </button>
+                            <button onclick="event.stopPropagation(); openExpenseForRoom('${room.id}')" class="p-1.5 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors" title="Catat Biaya Servis">
+                                <i class="fa-solid fa-wrench text-sm"></i>
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); finishMaintenanceQuick('${room.id}')" title="Selesai Perbaikan" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors flex items-center gap-1 text-[11px]">
+                                <i class="fa-solid fa-circle-check text-xs"></i> Selesai
+                            </button>
+                            <button onclick="event.stopPropagation(); openExpenseForRoom('${room.id}')" title="Catat Biaya Servis" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 font-bold transition-colors">
+                                <i class="fa-solid fa-wrench"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        `
+                    };
+                default:
+                    return {
+                        id: 'kosong',
+                        label: 'Siap Huni',
+                        badgeClass: 'bg-slate-100 text-slate-700 border border-slate-200',
+                        dotClass: 'bg-slate-400',
+                        borderAccent: 'border-l-4 border-l-slate-300',
+                        icon: 'fa-solid fa-door-open',
+                        heroBg: 'bg-slate-50 border-slate-200',
+                        heroIconBg: 'bg-slate-600 text-white',
+                        heroTitle: 'Kamar Siap Huni',
+                        heroSubtitle: 'Kamar dalam kondisi kosong.',
+                        cardActionPill: '',
+                        tableActionButtons: ''
+                    };
+            }
+        }
+
         // Dynamic KPI Recalculation & Urgent Ribbon
         function updateKPIs() {
             let totalRevenue = 0;
@@ -1839,23 +2168,27 @@
             let dueRooms = 0;
             let lateRooms = 0;
             let bookingRooms = 0;
+            let repairRooms = 0;
 
             appData.forEach(item => {
-                const isPaid = item.pay_status === 'Lunas';
-                const isEmpty = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni') || item.customer === '-';
-                const isBooking = item.pay_status.includes('DP') || item.work_status.includes('Booking');
-                const isLate = item.pay_status === 'Menunggak';
-                const isDue = item.pay_status === 'Belum Lunas' || item.date.toLowerCase().includes('jatuh tempo');
-
-                if (isPaid) totalRevenue += Number(item.amount) || 0;
-                else if (isBooking) totalRevenue += 300000;
-
-                if (isEmpty) emptyRooms++;
-                else occupiedRooms++;
-
-                if (isLate) lateRooms++;
-                if (isDue && !isPaid) dueRooms++;
-                if (isBooking) bookingRooms++;
+                const cond = getRoomCondition(item);
+                if (cond === 'lunas') {
+                    totalRevenue += Number(item.amount) || 0;
+                    occupiedRooms++;
+                } else if (cond === 'jatuh_tempo') {
+                    dueRooms++;
+                    occupiedRooms++;
+                } else if (cond === 'menunggak') {
+                    lateRooms++;
+                    occupiedRooms++;
+                } else if (cond === 'booking') {
+                    bookingRooms++;
+                    totalRevenue += 300000; // DP estimasi
+                } else if (cond === 'perbaikan') {
+                    repairRooms++;
+                } else {
+                    emptyRooms++;
+                }
             });
 
             let totalExpenses = appExpenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
@@ -1926,6 +2259,7 @@
             const countDue = document.getElementById('countFilterDue');
             const countLate = document.getElementById('countFilterLate');
             const countBooking = document.getElementById('countFilterBooking');
+            const countRepair = document.getElementById('countFilterRepair');
 
             if (countSemua) countSemua.innerText = appData.length;
             if (countTerisi) countTerisi.innerText = occupiedRooms;
@@ -1933,6 +2267,7 @@
             if (countDue) countDue.innerText = dueRooms;
             if (countLate) countLate.innerText = lateRooms;
             if (countBooking) countBooking.innerText = bookingRooms;
+            if (countRepair) countRepair.innerText = repairRooms;
         }
 
         // Table & Mobile Cards Filtering & Rendering
@@ -1966,18 +2301,20 @@
             if (!tbody) return;
 
             let filtered = appData.filter(item => {
-                const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                const cond = getRoomCondition(item);
                 
                 if (currentFilter === 'Terisi') {
-                    if (isAvailable) return false;
+                    if (cond === 'kosong' || cond === 'perbaikan') return false;
                 } else if (currentFilter === 'Tersedia') {
-                    if (!isAvailable) return false;
+                    if (cond !== 'kosong') return false;
                 } else if (currentFilter === 'Jatuh Tempo') {
-                    if (item.pay_status !== 'Belum Lunas' && !item.date.toLowerCase().includes('jatuh tempo')) return false;
+                    if (cond !== 'jatuh_tempo') return false;
                 } else if (currentFilter === 'Menunggak') {
-                    if (item.pay_status !== 'Menunggak') return false;
+                    if (cond !== 'menunggak') return false;
                 } else if (currentFilter === 'Booking') {
-                    if (!item.pay_status.includes('DP') && !item.work_status.includes('Booking')) return false;
+                    if (cond !== 'booking') return false;
+                } else if (currentFilter === 'Perbaikan') {
+                    if (cond !== 'perbaikan') return false;
                 }
 
                 if (searchQuery) {
@@ -2005,41 +2342,28 @@
 
             // 1. Desktop Only: Full Data Table (>= 1024px)
             tbody.innerHTML = filtered.map(item => {
-                const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                const cond = getRoomCondition(item);
+                const meta = getConditionMeta(cond, item);
                 const relBadge = getRelativeDateBadge(item.date, item.pay_status);
 
-                let payBadge = 'bg-slate-100 text-slate-600';
-                let borderAccent = 'border-l-4 border-l-slate-300';
-                if (item.pay_status === 'Lunas') {
-                    payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    borderAccent = 'border-l-4 border-l-emerald-500';
-                } else if (item.pay_status === 'Belum Lunas') {
-                    payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
-                    borderAccent = 'border-l-4 border-l-amber-500';
-                } else if (item.pay_status === 'Menunggak') {
-                    payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                    borderAccent = 'border-l-4 border-l-rose-500';
-                } else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) {
-                    payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
-                    borderAccent = 'border-l-4 border-l-purple-500';
-                } else if (isAvailable) {
-                    payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
-                    borderAccent = 'border-l-4 border-l-blue-500';
-                }
-
                 return `
-                    <tr class="hover:bg-slate-50/80 transition-colors ${borderAccent}">
+                    <tr class="hover:bg-slate-50/80 transition-colors ${meta.borderAccent} cursor-pointer" onclick="openRoomContextModal('${item.id}')">
                         <td class="px-5 py-3 font-extrabold text-slate-900 font-mono">
-                            <span class="hover:underline cursor-pointer" onclick="openEditModal('${item.id}')">${item.id}</span>
+                            <span class="hover:underline">${item.id}</span>
                         </td>
                         <td class="px-5 py-3">
-                            ${isAvailable ? `
-                                <span class="font-semibold text-slate-400 italic">Kamar Kosong / Siap Huni</span>
+                            ${cond === 'kosong' ? `
+                                <span class="font-semibold text-slate-400 italic">Kamar Siap Huni</span>
                                 <div class="mt-0.5">
-                                    <button onclick="openCheckInModal('${item.id}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
-                                        <i class="fa-solid fa-user-plus"></i> Isi Penyewa
+                                    <button onclick="event.stopPropagation(); openRoomContextModal('${item.id}', 'checkin')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
+                                        <i class="fa-solid fa-user-plus"></i> Isi Penghuni
                                     </button>
                                 </div>
+                            ` : cond === 'perbaikan' ? `
+                                <div class="font-bold text-amber-700 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wrench text-xs"></i> Dalam Perbaikan / Servis
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">${item.detail || 'Fasilitas dalam pemeliharaan'}</div>
                             ` : `
                                 <div class="font-bold text-slate-800">${item.customer}</div>
                                 <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
@@ -2061,8 +2385,9 @@
                             Rp ${Number(item.amount).toLocaleString('id-ID')}
                         </td>
                         <td class="px-5 py-3">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${payBadge}">
-                                ${item.pay_status}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${meta.badgeClass}">
+                                <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}"></span>
+                                <span>${meta.label}</span>
                             </span>
                         </td>
                         <td class="px-5 py-3">
@@ -2072,65 +2397,22 @@
                         </td>
                         <td class="px-5 py-3 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-1.5">
-                                ${!isAvailable ? `
-                                    <button onclick="sendBillingReminderWA('${item.id}')" title="Kirim Tagihan WA" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
-                                        <i class="fa-brands fa-whatsapp"></i>
-                                    </button>
-                                    <button onclick="openReceiptForItem('${item.id}')" title="Kuitansi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 transition-colors">
-                                        <i class="fa-solid fa-receipt"></i>
-                                    </button>
-                                    ${item.pay_status !== 'Lunas' ? `
-                                        <button onclick="markAsPaidQuick('${item.id}')" title="Perpanjang Sewa & Tandai Lunas" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
-                                            <i class="fa-solid fa-circle-check"></i>
-                                        </button>
-                                    ` : ''}
-                                ` : ''}
-                                <button onclick="openEditModal('${item.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button onclick="deleteItem('${item.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
+                                ${meta.tableActionButtons}
                             </div>
                         </td>
                     </tr>
                 `;
             }).join('');
 
-            // 2. Mobile & Tablet (< 1024px): Sleek, Uncluttered Responsive Bento Cards with Left Color Accent
+            // 2. Mobile & Tablet (< 1024px): Sleek Responsive Bento Cards with Left Color Accent
             if (mobileContainer) {
                 mobileContainer.innerHTML = filtered.map(item => {
-                    const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
+                    const cond = getRoomCondition(item);
+                    const meta = getConditionMeta(cond, item);
                     const relBadge = getRelativeDateBadge(item.date, item.pay_status);
 
-                    let payBadge = 'bg-slate-100 text-slate-600';
-                    let dotColor = 'bg-slate-400';
-                    let borderAccent = 'border-l-4 border-l-slate-300';
-
-                    if (item.pay_status === 'Lunas') {
-                        payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200/80';
-                        dotColor = 'bg-emerald-500';
-                        borderAccent = 'border-l-4 border-l-emerald-500';
-                    } else if (item.pay_status === 'Belum Lunas') {
-                        payBadge = 'bg-amber-50 text-amber-700 border border-amber-200/80';
-                        dotColor = 'bg-amber-500';
-                        borderAccent = 'border-l-4 border-l-amber-500';
-                    } else if (item.pay_status === 'Menunggak') {
-                        payBadge = 'bg-rose-50 text-rose-700 border border-rose-200/80';
-                        dotColor = 'bg-rose-500';
-                        borderAccent = 'border-l-4 border-l-rose-500';
-                    } else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) {
-                        payBadge = 'bg-purple-50 text-purple-700 border border-purple-200/80';
-                        dotColor = 'bg-purple-500';
-                        borderAccent = 'border-l-4 border-l-purple-500';
-                    } else if (isAvailable) {
-                        payBadge = 'bg-blue-50 text-blue-700 border border-blue-200/80';
-                        dotColor = 'bg-blue-500';
-                        borderAccent = 'border-l-4 border-l-blue-500';
-                    }
-
                     return `
-                        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between ${borderAccent}">
+                        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between ${meta.borderAccent} cursor-pointer" onclick="openRoomContextModal('${item.id}')">
                             
                             <!-- Card Header: Room ID, Floor, Status Badge -->
                             <div>
@@ -2143,17 +2425,22 @@
                                             ${item.rack || 'Lantai 1'}
                                         </span>
                                     </div>
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${payBadge} shrink-0">
-                                        <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
-                                        <span>${item.pay_status}</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${meta.badgeClass} shrink-0">
+                                        <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}"></span>
+                                        <span>${meta.label}</span>
                                     </span>
                                 </div>
 
                                 <!-- Tenant Info / Availability -->
                                 <div class="mt-2">
-                                    ${isAvailable ? `
-                                        <h4 class="text-xs sm:text-sm font-extrabold text-blue-700">Kamar Kosong / Siap Huni</h4>
+                                    ${cond === 'kosong' ? `
+                                        <h4 class="text-xs sm:text-sm font-extrabold text-blue-700">Kamar Siap Huni</h4>
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
+                                    ` : cond === 'perbaikan' ? `
+                                        <h4 class="text-xs sm:text-sm font-extrabold text-amber-700 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-wrench text-xs"></i> Dalam Perbaikan / Servis
+                                        </h4>
+                                        <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.detail || 'Fasilitas dalam pemeliharaan'}</p>
                                     ` : `
                                         <div class="flex items-center justify-between gap-2">
                                             <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
@@ -2164,7 +2451,7 @@
                                 </div>
                             </div>
 
-                            <!-- Card Bottom: Rent Price + Compact Action Pills -->
+                            <!-- Card Bottom: Rent Price + Context-Specific Action Pills -->
                             <div class="flex items-center justify-between pt-2.5 mt-2.5 border-t border-slate-100">
                                 <div>
                                     <span class="text-xs font-extrabold text-slate-900 block font-mono tabular-nums">
@@ -2174,19 +2461,8 @@
                                 </div>
 
                                 <div class="flex items-center gap-1">
-                                    ${isAvailable ? `
-                                        <button onclick="openCheckInModal('${item.id}')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-500 transition-colors flex items-center gap-1 shadow-2xs">
-                                            <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
-                                        </button>
-                                    ` : `
-                                        <button onclick="sendBillingReminderWA('${item.id}')" class="p-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors" title="Kirim Tagihan WhatsApp">
-                                            <i class="fa-brands fa-whatsapp text-sm"></i>
-                                        </button>
-                                        <button onclick="openReceiptForItem('${item.id}')" class="px-2 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition-colors flex items-center gap-1">
-                                            <i class="fa-solid fa-receipt text-[10px]"></i> Nota
-                                        </button>
-                                    `}
-                                    <button onclick="openRoomActionSheet('${item.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Menu Opsi">
+                                    ${meta.cardActionPill}
+                                    <button onclick="event.stopPropagation(); openRoomContextModal('${item.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Menu Opsi Kamar">
                                         <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                                     </button>
                                 </div>
@@ -2202,82 +2478,701 @@
             if (mCounter) mCounter.innerText = `Menampilkan ${filtered.length} dari ${appData.length} kamar`;
         }
 
-        // Mobile Action Sheet Controls
-        function openRoomActionSheet(id) {
+        // ── SMART CONTEXTUAL ROOM MODAL CONTROLLERS (STATE-DRIVEN WORKFLOW) ───
+        function openRoomContextModal(id, initialAction = null) {
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
-            activeActionSheetRoomId = id;
-            const isAvailable = room.pay_status === 'Tersedia' || room.work_status === 'Tersedia' || room.customer.includes('Belum Berpenghuni');
+            activeContextRoomId = id;
+            activeActionSheetRoomId = id; // backward compat
+            const cond = getRoomCondition(room);
+            const meta = getConditionMeta(cond, room);
 
-            document.getElementById('sheetRoomId').innerText = room.id;
-            document.getElementById('sheetCustomerName').innerText = isAvailable ? 'Kamar Siap Huni' : room.customer;
-            document.getElementById('sheetPayStatus').innerText = room.pay_status;
+            // Populate Room Header
+            const elId = document.getElementById('ctxRoomId');
+            const elRack = document.getElementById('ctxRoomRack');
+            const elBadge = document.getElementById('ctxStatusBadge');
+            const elDot = document.getElementById('ctxStatusDot');
+            const elText = document.getElementById('ctxStatusText');
 
-            const markPaidBtn = document.getElementById('sheetMarkPaidBtn');
-            if (markPaidBtn) {
-                markPaidBtn.style.display = (!isAvailable && room.pay_status !== 'Lunas') ? 'flex' : 'none';
+            if (elId) elId.innerText = room.id;
+            if (elRack) elRack.innerText = room.rack || 'Lantai 1';
+            if (elBadge) elBadge.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${meta.badgeClass}`;
+            if (elDot) elDot.className = `w-1.5 h-1.5 rounded-full ${meta.dotClass}`;
+            if (elText) elText.innerText = meta.label;
+
+            // Populate Hero Ribbon
+            const ribbon = document.getElementById('ctxHeroRibbon');
+            const iconBox = document.getElementById('ctxHeroIconBox');
+            const icon = document.getElementById('ctxHeroIcon');
+            const heroTitle = document.getElementById('ctxHeroTitle');
+            const heroSub = document.getElementById('ctxHeroSubtitle');
+
+            if (ribbon) ribbon.className = `p-4 rounded-2xl border flex items-start gap-3.5 ${meta.heroBg}`;
+            if (iconBox) iconBox.className = `w-10 h-10 rounded-2xl flex items-center justify-center text-base shrink-0 shadow-2xs ${meta.heroIconBg}`;
+            if (icon) icon.className = meta.icon;
+            if (heroTitle) heroTitle.innerText = meta.heroTitle;
+            if (heroSub) heroSub.innerText = meta.heroSubtitle;
+
+            // Populate Overview Card
+            const elService = document.getElementById('ctxRoomService');
+            const elAmount = document.getElementById('ctxRoomAmount');
+            const tenantRow = document.getElementById('ctxTenantRow');
+            const tenantName = document.getElementById('ctxTenantName');
+            const tenantPhone = document.getElementById('ctxTenantPhone');
+            const dueDateRow = document.getElementById('ctxDueDateRow');
+            const dueDate = document.getElementById('ctxDueDate');
+
+            if (elService) elService.innerText = room.service + (room.detail ? ` (${room.detail})` : '');
+            if (elAmount) elAmount.innerText = 'Rp ' + Number(room.amount).toLocaleString('id-ID');
+
+            if (cond === 'kosong') {
+                if (tenantRow) tenantRow.classList.add('hidden');
+                if (dueDateRow) dueDateRow.classList.add('hidden');
+            } else if (cond === 'perbaikan') {
+                if (tenantRow) tenantRow.classList.add('hidden');
+                if (dueDateRow) {
+                    dueDateRow.classList.remove('hidden');
+                    if (dueDate) dueDate.innerText = 'Status Servis / Pemeliharaan Aktif';
+                }
+            } else {
+                if (tenantRow) {
+                    tenantRow.classList.remove('hidden');
+                    if (tenantName) tenantName.innerText = room.customer || '-';
+                    if (tenantPhone) tenantPhone.innerText = room.phone || 'Tanpa no. WhatsApp';
+                }
+                if (dueDateRow) {
+                    dueDateRow.classList.remove('hidden');
+                    if (dueDate) dueDate.innerText = room.date || '-';
+                }
             }
 
-            const sheet = document.getElementById('roomActionSheet');
-            const backdrop = document.getElementById('actionSheetBackdrop');
-            if (sheet && backdrop) {
-                backdrop.classList.remove('hidden');
-                sheet.classList.remove('hidden');
-                setTimeout(() => sheet.classList.remove('translate-y-full'), 10);
+            // Populate Dynamic Contextual Actions
+            const actionsContainer = document.getElementById('ctxDynamicActions');
+            if (actionsContainer) {
+                actionsContainer.innerHTML = buildContextActionsHtml(cond, room);
+            }
+
+            // Show Modal
+            const modal = document.getElementById('smartRoomModal');
+            const card = document.getElementById('smartRoomContainer');
+            if (modal && card) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    card.classList.remove('translate-y-full');
+                }, 10);
+            }
+
+            // Initial Action Autofocus
+            if (initialAction === 'checkin') {
+                setTimeout(() => {
+                    const nameInput = document.getElementById('ctxQuickName');
+                    if (nameInput) nameInput.focus();
+                }, 150);
             }
         }
 
-        function closeRoomActionSheet() {
-            const sheet = document.getElementById('roomActionSheet');
-            const backdrop = document.getElementById('actionSheetBackdrop');
-            if (sheet && backdrop) {
-                sheet.classList.add('translate-y-full');
+        function closeSmartRoomModal() {
+            const modal = document.getElementById('smartRoomModal');
+            const card = document.getElementById('smartRoomContainer');
+            if (modal && card) {
+                card.classList.add('translate-y-full');
                 setTimeout(() => {
-                    sheet.classList.add('hidden');
-                    backdrop.classList.add('hidden');
+                    modal.classList.add('hidden');
+                    activeContextRoomId = null;
                     activeActionSheetRoomId = null;
                 }, 250);
             }
         }
 
-        function actionSheetWhatsApp() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
-            if (id) sendBillingReminderWA(id);
+        // Build HTML for condition-tailored actions
+        function buildContextActionsHtml(cond, room) {
+            const todayIso = new Date().toISOString().split('T')[0];
+
+            if (cond === 'kosong') {
+                return `
+                    <div class="p-4 rounded-2xl bg-white border border-emerald-200 shadow-2xs space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h5 class="font-extrabold text-slate-900 text-xs flex items-center gap-1.5 text-emerald-700">
+                                <i class="fa-solid fa-user-plus"></i> Check-In Penghuni Baru
+                            </h5>
+                            <span class="text-[10px] text-slate-400 font-medium">Form Cepat 1-Klik</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Penghuni Baru *</label>
+                            <input type="text" id="ctxQuickName" placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">No. WhatsApp</label>
+                                <input type="text" id="ctxQuickPhone" placeholder="08xxxxxxxxxx" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tgl Mulai Masuk</label>
+                                <input type="date" id="ctxQuickDate" value="${todayIso}" class="w-full border border-slate-200 rounded-xl px-2 py-2 text-xs outline-none focus:border-emerald-500 bg-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1.5">Pilihan Pembayaran Awal</label>
+                            <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-emerald-500 bg-emerald-50/40 text-emerald-800 font-bold">
+                                    <input type="radio" name="ctxPayChoice" value="lunas" checked onchange="toggleQuickDpInput()" class="sr-only">
+                                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                    <span>Lunas 1 Bln</span>
+                                </label>
+                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-slate-200 text-slate-700 font-semibold">
+                                    <input type="radio" name="ctxPayChoice" value="tempo" onchange="toggleQuickDpInput()" class="sr-only">
+                                    <i class="fa-solid fa-clock text-amber-500"></i>
+                                    <span>Bayar Nanti</span>
+                                </label>
+                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-slate-200 text-slate-700 font-semibold">
+                                    <input type="radio" name="ctxPayChoice" value="dp" onchange="toggleQuickDpInput()" class="sr-only">
+                                    <i class="fa-solid fa-bookmark text-purple-500"></i>
+                                    <span>Booking / DP</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="ctxQuickDpContainer" class="hidden">
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nominal DP Masuk (Rp)</label>
+                            <input type="number" id="ctxQuickDpAmount" value="300000" min="50000" class="w-full border border-purple-200 rounded-xl px-3 py-2 text-xs font-mono font-bold outline-none focus:border-purple-500 bg-purple-50/30">
+                        </div>
+
+                        <button onclick="submitQuickCheckIn()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 transition-all">
+                            <i class="fa-solid fa-user-plus"></i> Konfirmasi Check-In Sekarang
+                        </button>
+                    </div>
+
+                    <div class="pt-1 space-y-1.5 text-xs font-bold text-slate-700">
+                        <button onclick="setRoomToMaintenance('${room.id}')" class="w-full p-2.5 rounded-xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-wrench text-amber-600 w-5 text-center"></i>
+                            <div class="flex-1">
+                                <div>Set Kamar Dalam Perbaikan / Servis</div>
+                                <span class="text-[10px] text-amber-600 font-normal">Kunci kamar saat cat ulang, servis AC, atau renovasi</span>
+                            </div>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Fasilitas, Lantai &amp; Tarif Sewa</span>
+                        </button>
+                        <button onclick="deleteFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-trash-can w-5 text-center"></i>
+                            <span>Hapus Kamar Permanen</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'lunas') {
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 flex items-center gap-3 transition-colors text-left shadow-sm">
+                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-receipt text-emerald-400"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Buka Kuitansi Resmi &amp; Nota Digital</div>
+                                <span class="text-[11px] text-slate-300 font-normal">Cetak nota thermal 58/80mm atau bagikan struk via WhatsApp</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                        </button>
+
+                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-900 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Chat WhatsApp Penghuni</div>
+                                <span class="text-[10px] text-emerald-700 font-normal">Kirim pesan sapaan, info fasilitas, atau konfirmasi sewa</span>
+                            </div>
+                        </button>
+
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-blue-50 text-blue-900 hover:bg-blue-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Perpanjang Sewa 1 Bulan Lebih Awal</div>
+                                <span class="text-[10px] text-blue-700 font-normal">Gunakan jika penghuni telah membayar sewa bulan depan di muka</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="checkoutFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-base w-5 text-center"></i>
+                            <span>Kosongkan Kamar (Check-Out Penghuni)</span>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Data Kamar &amp; Kontak Penghuni</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'jatuh_tempo') {
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Kirim Pengingat Tagihan via WhatsApp (Sopan)</div>
+                                <span class="text-[11px] text-emerald-100 font-normal">Template sopan otomatis memuat nomor rekening transfer &amp; tanggal jatuh tempo</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200"></i>
+                        </button>
+
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Terima Pembayaran &amp; Perpanjang (+1 Bulan)</div>
+                                <span class="text-[10px] text-amber-700 font-normal">Otomatis set status Lunas, majukan tanggal tempo, &amp; terbitkan kuitansi</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 rounded-xl bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-receipt text-slate-500 w-5 text-center"></i>
+                            <span>Buat Invoice / Kuitansi Tagihan</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="checkoutFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center"></i>
+                            <span>Check-Out (Penghuni Tidak Perpanjang)</span>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Tanggal Tempo / Data Kamar</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'menunggak') {
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="sendBillingReminderWA('${room.id}', 'firm')" class="w-full p-3 rounded-2xl bg-rose-600 text-white hover:bg-rose-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-rose-600/20">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Kirim Tagihan Tegas via WhatsApp</div>
+                                <span class="text-[11px] text-rose-100 font-normal">Format pesan resmi menyoroti jumlah hari telat &amp; rekening pemilik kost</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-rose-200"></i>
+                        </button>
+
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Terima Pelunasan Tunggakan &amp; Perpanjang</div>
+                                <span class="text-[10px] text-emerald-700 font-normal">Reset status menunggak ke Lunas, perpanjang sewa, &amp; buat kuitansi</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="checkoutFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-base w-5 text-center"></i>
+                            <span>Kosongkan Kamar / Check-Out Paksa</span>
+                        </button>
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-receipt text-slate-500 w-5 text-center"></i>
+                            <span>Cetak Tagihan Tunggakan / Surat Peringatan</span>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Data Kamar</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'booking') {
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="activateBookingFromContext('${room.id}')" class="w-full p-3 rounded-2xl bg-purple-600 text-white hover:bg-purple-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-purple-600/20">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Check-In Resmi &amp; Lunasi Sisa Tagihan</div>
+                                <span class="text-[11px] text-purple-100 font-normal">Aktifkan status sewa menjadi Lunas, mulai masa huni 1 bulan &amp; serahkan kunci</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-purple-200"></i>
+                        </button>
+
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-3 rounded-2xl bg-purple-50 text-purple-900 border border-purple-200 hover:bg-purple-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-purple-200 text-purple-800 flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Cetak Bukti Penerimaan DP / Booking</div>
+                                <span class="text-[10px] text-purple-700 font-normal">Kuitansi tanda jadi resmi untuk calon penghuni</span>
+                            </div>
+                        </button>
+
+                        <button onclick="sendBillingReminderWA('${room.id}', 'booking')" class="w-full p-2.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-brands fa-whatsapp text-emerald-600 w-5 text-center text-base"></i>
+                            <span>Konfirmasi Jadwal Kedatangan via WhatsApp</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="cancelBookingFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-ban w-5 text-center"></i>
+                            <span>Batalkan Booking (Kembalikan ke Siap Huni)</span>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Detail Calon Penyewa / Tanggal Masuk</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'perbaikan') {
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="finishMaintenanceQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm">Perbaikan Selesai (Ubah ke Siap Huni)</div>
+                                <span class="text-[11px] text-emerald-100 font-normal">Kamar siap dipasarkan dan disewakan kepada penyewa baru</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200"></i>
+                        </button>
+
+                        <button onclick="openExpenseForRoom('${room.id}')" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shrink-0">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div>Catat Biaya Servis / Tukang ke Pengeluaran Kas</div>
+                                <span class="text-[10px] text-amber-700 font-normal">Otomatis catat nota material atau ongkos tukang ke buku kas</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Catatan Kerusakan &amp; Lokasi</span>
+                        </button>
+                        <button onclick="deleteFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-trash-can w-5 text-center"></i>
+                            <span>Hapus Kamar</span>
+                        </button>
+                    </div>
+                `;
+            }
+            return '';
         }
 
-        function actionSheetReceipt() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
+        function toggleQuickDpInput() {
+            const choice = document.querySelector('input[name="ctxPayChoice"]:checked')?.value;
+            const dpContainer = document.getElementById('ctxQuickDpContainer');
+            if (dpContainer) {
+                if (choice === 'dp') dpContainer.classList.remove('hidden');
+                else dpContainer.classList.add('hidden');
+            }
+        }
+
+        async function submitQuickCheckIn() {
+            const id = activeContextRoomId;
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            const nameInput = document.getElementById('ctxQuickName');
+            const phoneInput = document.getElementById('ctxQuickPhone');
+            const payChoice = document.querySelector('input[name="ctxPayChoice"]:checked')?.value || 'lunas';
+            const moveInDateInput = document.getElementById('ctxQuickDate')?.value;
+
+            const customerName = nameInput ? nameInput.value.trim() : '';
+            if (!customerName) {
+                showToast('Mohon masukkan nama penghuni baru', 'error');
+                if (nameInput) nameInput.focus();
+                return;
+            }
+
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+
+            // Calculate due date (+1 month)
+            const baseDate = moveInDateInput ? new Date(moveInDateInput) : new Date();
+            baseDate.setMonth(baseDate.getMonth() + 1);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const pad = n => String(n).padStart(2, '0');
+            const nextDueDate = `Jatuh Tempo: ${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+
+            let payStatus = 'Lunas';
+            let workStatus = 'Terisi';
+            let detailNote = room.detail || '';
+
+            if (payChoice === 'tempo') {
+                payStatus = 'Belum Lunas';
+                workStatus = 'Terisi';
+            } else if (payChoice === 'dp') {
+                const dpAmount = document.getElementById('ctxQuickDpAmount')?.value || '300000';
+                payStatus = 'DP Terbayar';
+                workStatus = 'Booking Baru';
+                detailNote = `DP Rp ${Number(dpAmount).toLocaleString('id-ID')} • Rencana Masuk ${moveInDateInput || '-'}`;
+            }
+
+            const updatePayload = {
+                customer: customerName,
+                phone: phone,
+                pay_status: payStatus,
+                work_status: workStatus,
+                date: nextDueDate,
+                detail: detailNote
+            };
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', id);
+                } catch(e) {
+                    console.warn('Gagal sinkronisasi cloud, disimpan secara lokal');
+                }
+            }
+
+            Object.assign(room, updatePayload);
+            saveRoomsLocal();
+            closeSmartRoomModal();
+            renderAllViews();
+            showToast(`Check-in Kamar ${room.id} berhasil! Penghuni: ${customerName}`, 'success');
+
+            if (payChoice === 'lunas' || payChoice === 'dp') {
+                openReceiptForItem(id);
+            }
+        }
+
+        async function activateBookingFromContext(id) {
+            const targetId = id || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Check-In & Lunasi Kamar ${room.id}?`,
+                desc: `Pelunasan sisa sewa untuk "${room.customer}". Status pembayaran akan diubah menjadi "Lunas" dan masa sewa dimulai 1 bulan penuh ke depan.`,
+                confirmText: 'Check-In & Lunasi'
+            });
+
+            if (confirmed) {
+                const nextMonth = new Date();
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                const pad = n => String(n).padStart(2, '0');
+                const nextDueDate = `Jatuh Tempo: ${pad(nextMonth.getDate())} ${months[nextMonth.getMonth()]} ${nextMonth.getFullYear()}`;
+
+                const updatePayload = {
+                    pay_status: 'Lunas',
+                    work_status: 'Terisi',
+                    date: nextDueDate,
+                    detail: 'Pelunasan booking selesai • Kamar aktif'
+                };
+
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', room.id);
+                    } catch(e) { console.warn('Cloud sync error'); }
+                }
+
+                Object.assign(room, updatePayload);
+                saveRoomsLocal();
+                closeSmartRoomModal();
+                renderAllViews();
+                showToast(`Kamar ${room.id} (${room.customer}) resmi check-in & Lunas!`, 'success');
+                openReceiptForItem(room.id);
+            }
+        }
+
+        async function cancelBookingFromContext(id) {
+            const targetId = id || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Batalkan Booking Kamar ${room.id}?`,
+                desc: `Booking untuk calon penyewa "${room.customer}" akan dibatalkan. Status kamar akan dikembalikan menjadi "Siap Huni".`,
+                confirmText: 'Batalkan Booking',
+                isDanger: true
+            });
+
+            if (confirmed) {
+                const updatePayload = {
+                    customer: 'Belum Berpenghuni',
+                    phone: '',
+                    pay_status: 'Tersedia',
+                    work_status: 'Tersedia',
+                    date: 'Siap Huni',
+                    detail: 'Kamar siap huni (Booking sebelumnya dibatalkan)'
+                };
+
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', room.id);
+                    } catch(e) { console.warn('Cloud sync error'); }
+                }
+
+                Object.assign(room, updatePayload);
+                saveRoomsLocal();
+                closeSmartRoomModal();
+                renderAllViews();
+                showToast(`Booking Kamar ${room.id} dibatalkan. Kamar kini Siap Huni!`, 'info');
+            }
+        }
+
+        async function setRoomToMaintenance(id) {
+            const targetId = id || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Set Kamar ${room.id} Dalam Perbaikan?`,
+                desc: `Kamar akan ditandai dalam servis/renovasi fasilitas dan dinonaktifkan dari daftar sewa hingga selesai.`,
+                confirmText: 'Set Perbaikan'
+            });
+
+            if (confirmed) {
+                const updatePayload = {
+                    customer: 'Perbaikan / Maintenance',
+                    phone: '',
+                    pay_status: 'Perbaikan',
+                    work_status: 'Perbaikan',
+                    date: 'Dalam Servis',
+                    detail: 'Pemeliharaan fasilitas kamar'
+                };
+
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', room.id);
+                    } catch(e) { console.warn('Cloud sync error'); }
+                }
+
+                Object.assign(room, updatePayload);
+                saveRoomsLocal();
+                closeSmartRoomModal();
+                renderAllViews();
+                showToast(`Kamar ${room.id} diubah ke status Perbaikan/Servis.`, 'info');
+            }
+        }
+
+        async function finishMaintenanceQuick(id) {
+            const targetId = id || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Selesaikan Servis Kamar ${room.id}?`,
+                desc: `Pemeliharaan selesai. Kamar akan diubah kembali menjadi "Siap Huni" dan siap disewakan kepada penghuni baru.`,
+                confirmText: 'Selesai & Siap Huni'
+            });
+
+            if (confirmed) {
+                const updatePayload = {
+                    customer: 'Belum Berpenghuni',
+                    phone: '',
+                    pay_status: 'Tersedia',
+                    work_status: 'Tersedia',
+                    date: 'Siap Huni',
+                    detail: 'Kamar bersih & siap huni pasca servis'
+                };
+
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', room.id);
+                    } catch(e) { console.warn('Cloud sync error'); }
+                }
+
+                Object.assign(room, updatePayload);
+                saveRoomsLocal();
+                closeSmartRoomModal();
+                renderAllViews();
+                showToast(`Kamar ${room.id} selesai diservis dan kembali Siap Huni!`, 'success');
+            }
+        }
+
+        function openExpenseForRoom(id) {
+            const targetId = id || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            closeSmartRoomModal();
+            openExpenseModal();
+            if (room) {
+                const titleEl = document.getElementById('expenseTitle');
+                const notesEl = document.getElementById('expenseNotes');
+                const amtEl = document.getElementById('expenseAmount');
+                if (titleEl) titleEl.value = `Biaya Servis Kamar ${room.id}`;
+                if (notesEl) notesEl.value = `Pemeliharaan fasilitas kamar ${room.id} (${room.service})`;
+                if (amtEl) amtEl.focus();
+            }
+        }
+
+        function openReceiptFromContext() {
+            const id = activeContextRoomId;
+            closeSmartRoomModal();
             if (id) openReceiptForItem(id);
         }
 
-        function actionSheetMarkPaid() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
+        function sendWAFromContext(tone = 'polite') {
+            const id = activeContextRoomId;
+            closeSmartRoomModal();
+            if (id) sendBillingReminderWA(id, tone);
+        }
+
+        function advanceOneMonthFromContext() {
+            const id = activeContextRoomId;
+            closeSmartRoomModal();
             if (id) markAsPaidQuick(id);
         }
 
-        function actionSheetEdit() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
-            if (id) openEditModal(id);
-        }
-
-        function actionSheetCheckout() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
-            if (id) {
-                document.getElementById('editRoomOriginalId').value = id;
+        function checkoutFromContext(id) {
+            const targetId = id || activeContextRoomId;
+            closeSmartRoomModal();
+            if (targetId) {
+                document.getElementById('editRoomOriginalId').value = targetId;
                 checkoutCurrentRoom();
             }
         }
 
+        function openEditFromContext(id) {
+            const targetId = id || activeContextRoomId;
+            closeSmartRoomModal();
+            if (targetId) openEditModal(targetId);
+        }
+
+        function deleteFromContext(id) {
+            const targetId = id || activeContextRoomId;
+            closeSmartRoomModal();
+            if (targetId) deleteItem(targetId);
+        }
+
+        // Backward compatibility wrappers for legacy handlers
+        function openRoomActionSheet(id) {
+            openRoomContextModal(id);
+        }
+        function closeRoomActionSheet() {
+            closeSmartRoomModal();
+        }
+        function actionSheetWhatsApp() {
+            sendWAFromContext('polite');
+        }
+        function actionSheetReceipt() {
+            openReceiptFromContext();
+        }
+        function actionSheetMarkPaid() {
+            advanceOneMonthFromContext();
+        }
+        function actionSheetEdit() {
+            openEditFromContext();
+        }
+        function actionSheetCheckout() {
+            checkoutFromContext();
+        }
         function actionSheetDelete() {
-            const id = activeActionSheetRoomId;
-            closeRoomActionSheet();
-            if (id) deleteItem(id);
+            deleteFromContext();
         }
 
         // Render Denah Visual Kamar
@@ -2309,46 +3204,45 @@
                         
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5">
                             ${roomsInFloor.map(r => {
-                                const isAvailable = r.pay_status === 'Tersedia' || r.work_status === 'Tersedia' || r.customer.includes('Belum Berpenghuni');
-                                
+                                const cond = getRoomCondition(r);
+                                const meta = getConditionMeta(cond, r);
+
                                 let cardBorder = 'border-slate-200 hover:border-slate-300';
                                 let cardBg = 'bg-white';
-                                let statusDot = 'bg-slate-400';
-                                let statusText = r.pay_status;
-
-                                if (r.pay_status === 'Lunas') {
+                                if (cond === 'lunas') {
                                     cardBorder = 'border-emerald-200 hover:border-emerald-400';
                                     cardBg = 'bg-emerald-50/30';
-                                    statusDot = 'bg-emerald-500';
-                                } else if (r.pay_status === 'Belum Lunas') {
+                                } else if (cond === 'jatuh_tempo') {
                                     cardBorder = 'border-amber-200 hover:border-amber-400';
                                     cardBg = 'bg-amber-50/30';
-                                    statusDot = 'bg-amber-500';
-                                } else if (r.pay_status === 'Menunggak') {
+                                } else if (cond === 'menunggak') {
                                     cardBorder = 'border-rose-200 hover:border-rose-400';
                                     cardBg = 'bg-rose-50/30';
-                                    statusDot = 'bg-rose-500';
-                                } else if (isAvailable) {
+                                } else if (cond === 'booking') {
+                                    cardBorder = 'border-purple-200 hover:border-purple-400';
+                                    cardBg = 'bg-purple-50/30';
+                                } else if (cond === 'perbaikan') {
+                                    cardBorder = 'border-amber-300 hover:border-amber-400';
+                                    cardBg = 'bg-amber-50/40';
+                                } else if (cond === 'kosong') {
                                     cardBorder = 'border-blue-200 hover:border-blue-400';
                                     cardBg = 'bg-blue-50/30';
-                                    statusDot = 'bg-blue-500';
-                                    statusText = 'Siap Huni';
                                 }
 
                                 return `
-                                    <div class="p-2.5 sm:p-3 rounded-2xl border ${cardBorder} ${cardBg} shadow-2xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer" onclick="openRoomActionSheet('${r.id}')">
+                                    <div class="p-2.5 sm:p-3 rounded-2xl border ${cardBorder} ${cardBg} shadow-2xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer" onclick="openRoomContextModal('${r.id}')">
                                         <div>
                                             <div class="flex items-center justify-between mb-1">
                                                 <span class="font-mono font-extrabold text-xs text-slate-900">${r.id}</span>
-                                                <span class="w-1.5 h-1.5 rounded-full ${statusDot}" title="${statusText}"></span>
+                                                <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}" title="${meta.label}"></span>
                                             </div>
-                                            <h5 class="font-bold text-slate-800 text-[11px] truncate">${isAvailable ? 'Siap Huni' : r.customer}</h5>
+                                            <h5 class="font-bold text-slate-800 text-[11px] truncate">${cond === 'kosong' ? 'Siap Huni' : cond === 'perbaikan' ? 'Perbaikan' : r.customer}</h5>
                                             <p class="text-[9px] text-slate-400 truncate">${r.service}</p>
                                         </div>
 
                                         <div class="pt-1.5 mt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
                                             <span class="font-bold text-slate-900 font-mono tabular-nums">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
-                                            <span class="font-semibold text-slate-500 text-[9px]">${statusText}</span>
+                                            <span class="font-semibold text-slate-500 text-[9px]">${meta.label}</span>
                                         </div>
                                     </div>
                                 `;
@@ -2427,11 +3321,12 @@
             }
         }
 
-        // WhatsApp Billing Reminder Generator
-        function sendBillingReminderWA(id) {
+        // WhatsApp Billing Reminder Generator with Contextual Tone (Polite, Firm, Booking, Receipt)
+        function sendBillingReminderWA(id, forcedTone = 'auto') {
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
+            const cond = getRoomCondition(room);
             const phone = (room.phone || '').replace(/[^0-9]/g, '');
             const storeName = appSettings.storeName || DEFAULT_SETTINGS.storeName;
             const bankName = appSettings.bankName || DEFAULT_SETTINGS.bankName;
@@ -2441,16 +3336,53 @@
             let targetPhone = phone;
             if (targetPhone.startsWith('0')) targetPhone = '62' + targetPhone.slice(1);
 
-            let msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
-                      `Mengingatkan untuk pembayaran sewa kamar bulanan:%0A` +
+            const d = parseCustomDate(room.date);
+            let diffDays = 0;
+            if (d) {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                d.setHours(0,0,0,0);
+                diffDays = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+            }
+
+            let msg = '';
+            const tone = forcedTone !== 'auto' ? forcedTone : (cond === 'menunggak' ? 'firm' : (cond === 'booking' ? 'booking' : (cond === 'lunas' ? 'receipt' : 'polite')));
+
+            if (tone === 'firm') {
+                const lateDays = Math.abs(diffDays) || 1;
+                msg = `Yth. Kak *${room.customer}*,%0A%0A` +
+                      `Mohon perhatian mengenai tagihan sewa kamar di *${storeName}*:%0A` +
+                      `• No. Kamar: *${room.id}*%0A` +
+                      `• Status: *TELAT ${lateDays} HARI* (Jatuh tempo: ${room.date || '-'})%0A` +
+                      `• Total Tagihan: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
+                      `Mohon agar pembayaran dapat diselesaikan hari ini via transfer:%0A` +
+                      `*Bank ${bankName}: ${bankNum}*%0A` +
+                      `*A.N. ${bankHolder}*%0A%0A` +
+                      `Jika ada kendala dalam pembayaran, mohon segera hubungi pengelola ya Kak. Terima kasih atas kerjasamanya 🙏`;
+            } else if (tone === 'booking') {
+                msg = `Halo Kak *${room.customer}*, salam dari *${storeName}* 😊%0A%0A` +
+                      `Konfirmasi kedatangan check-in untuk kamar *${room.id}* (${room.service}):%0A` +
+                      `• Jadwal Masuk: *${room.date || 'Sesuai Reservasi'}*%0A` +
+                      `• Total Tarif Sewa: *Rp ${Number(room.amount).toLocaleString('id-ID')}/bln*%0A` +
+                      `• Status: *Booking / DP Terdaftar*%0A%0A` +
+                      `Kamar telah kami siapkan bersih dan rapi. Ditunggu kedatangannya untuk serah terima kunci ya Kak. Terima kasih! 🔑`;
+            } else if (tone === 'receipt') {
+                msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
+                      `Pembayaran sewa kamar *${room.id}* saat ini berstatus *LUNAS* hingga *${room.date || '-'}*.%0A%0A` +
+                      `Terima kasih banyak telah menjadi penghuni kost kami. Jika memerlukan bantuan atau ada kendala fasilitas, silakan hubungi kami ya 🙏`;
+            } else {
+                // polite reminder for due soon / regular reminder
+                const dueText = diffDays === 0 ? 'hari ini' : (diffDays > 0 ? `dalam ${diffDays} hari lagi (${room.date})` : `${room.date}`);
+                msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
+                      `Mengingatkan untuk pembayaran sewa kamar bulanan yang akan jatuh tempo *${dueText}*:%0A` +
                       `• No. Kamar: *${room.id}*%0A` +
                       `• Tipe: ${room.service}%0A` +
-                      `• Status: *${room.date || room.pay_status}*%0A` +
                       `• Nominal Tagihan: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
                       `Pembayaran dapat ditransfer via:%0A` +
                       `*Bank ${bankName}: ${bankNum}*%0A` +
                       `*A.N. ${bankHolder}*%0A%0A` +
-                      `Mohon kirimkan bukti transfer jika sudah melakukan pembayaran ya. Terima kasih banyak 🙏`;
+                      `Mohon kirimkan bukti transfer jika sudah melakukan pembayaran ya Kak. Terima kasih banyak 🙏`;
+            }
 
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
             if (targetPhone) waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
