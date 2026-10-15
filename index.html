@@ -166,12 +166,6 @@
                 <div class="flex items-center gap-2">
                     <span id="ctxRoomId" class="px-2.5 py-1 rounded-xl bg-slate-900 text-white font-mono font-extrabold text-xs">KMR-101</span>
                     <span id="ctxRoomRack" class="text-xs font-semibold text-slate-500">Lantai 1</span>
-                    <!-- Hidden elements for backward-compat IDs if any script inspects them -->
-                    <span id="sheetRoomId" class="hidden"></span>
-                    <span id="sheetCustomerName" class="hidden"></span>
-                    <span id="sheetPayStatus" class="hidden"></span>
-                    <button id="sheetMarkPaidBtn" class="hidden"></button>
-                    <div id="roomActionSheet" class="hidden"></div>
                 </div>
                 <div class="flex items-center gap-2">
                     <span id="ctxStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -280,53 +274,33 @@
                         <span>Buku Kas &amp; Pengeluaran</span>
                     </button>
 
-                    <div class="pt-3 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi Operasional</div>
-
-                    <button onclick="openQuickReceiptModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
-                        <i class="fa-solid fa-receipt w-5 text-center text-slate-400"></i>
-                        <span>Buat Nota / Kuitansi</span>
-                    </button>
+                    <div class="pt-3 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Laporan &amp; Sistem</div>
 
                     <button onclick="openMonthlyReportModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-slate-400"></i>
                         <span>Laporan Rekap Bulanan</span>
                     </button>
 
-                    <button onclick="openExpenseModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
-                        <i class="fa-solid fa-receipt-text w-5 text-center text-slate-400"></i>
-                        <span>Catat Pengeluaran</span>
-                    </button>
-
                     <button onclick="openSettingsModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
                         <span>Pengaturan Usaha &amp; Logo</span>
-                    </button>
-
-                    <button onclick="openDemoInfoModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/60 hover:bg-amber-100/80 border border-amber-200/80 transition-colors text-left">
-                        <i class="fa-solid fa-flask w-5 text-center text-amber-600"></i>
-                        <span>Mode Akun Demo (Reset)</span>
                     </button>
                 </nav>
             </div>
 
             <!-- Sidebar Footer (Kost Profile Card) -->
             <div class="p-3.5 border-t border-slate-100">
-                <div class="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700 shrink-0 shadow-2xs">
-                            <i class="fa-solid fa-house-chimney-user"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p id="sidebarStoreName" class="text-xs font-bold text-slate-800 truncate">KOST MAGNOLIA RESIDENCE</p>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Akun Demo</span>
-                                <span class="text-[10px] text-slate-500 font-medium truncate">Simulasi Usaha</span>
-                            </div>
+                <div class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70">
+                    <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700 shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-house-chimney-user"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p id="sidebarStoreName" class="text-xs font-bold text-slate-800 truncate">KOST MAGNOLIA RESIDENCE</p>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Akun Demo</span>
+                            <span class="text-[10px] text-slate-500 font-medium truncate">Simulasi Aktif</span>
                         </div>
                     </div>
-                    <button onclick="openSettingsModal()" title="Pengaturan Usaha" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-white transition-colors">
-                        <i class="fa-solid fa-gear text-sm"></i>
-                    </button>
                 </div>
             </div>
         </aside>
@@ -347,9 +321,6 @@
                                 <i class="fa-solid fa-flask text-amber-600 text-[10px]"></i>
                                 <span>Akun Demo</span>
                             </button>
-                            <span class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
-                            </span>
                         </div>
                     </div>
                 </div>
@@ -528,8 +499,8 @@
                     </button>
                 </div>
 
-                <!-- ── 4. SEGMENTED VIEW CONTROL & UTILITY BAR ───────────────── -->
-                <div class="flex items-center justify-between gap-2">
+                <!-- ── 4. SEGMENTED VIEW CONTROL & UTILITY BAR (DESKTOP ONLY) ────────── -->
+                <div class="hidden md:flex items-center justify-between gap-2">
                     <div class="bg-slate-200/70 p-1 rounded-2xl flex items-center gap-1">
                         <button onclick="switchView('kamar')" id="tabBtn-kamar" class="view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all flex items-center gap-1.5">
                             <i class="fa-solid fa-bed text-emerald-600"></i>
@@ -548,9 +519,9 @@
                     <div class="flex items-center gap-2">
                         <button onclick="openMonthlyReportModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors" title="Cetak Rekap Laporan Bulanan (PDF/A4)">
                             <i class="fa-solid fa-file-invoice text-emerald-600"></i>
-                            <span class="hidden sm:inline">Laporan Bulanan</span>
+                            <span>Laporan Bulanan</span>
                         </button>
-                        <button onclick="exportToCSV()" class="hidden md:flex px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs items-center gap-1.5 transition-colors">
+                        <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-600"></i>
                             <span>CSV</span>
                         </button>
@@ -2275,12 +2246,6 @@
                             <button onclick="event.stopPropagation(); setRoomToMaintenance('${room.id}')" title="Set Perbaikan" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 transition-colors">
                                 <i class="fa-solid fa-wrench"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); deleteItem('${room.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
                         `
                     };
                 case 'lunas':
@@ -2304,17 +2269,11 @@
                             </button>
                         `,
                         tableActionButtons: `
-                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Kuitansi Resmi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-800 hover:text-white text-slate-700 transition-colors">
-                                <i class="fa-solid fa-receipt"></i>
+                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Kuitansi Resmi" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-800 hover:text-white text-slate-700 font-semibold text-[11px] transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-receipt text-xs"></i> Nota
                             </button>
                             <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" title="WhatsApp Penghuni" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
                                 <i class="fa-brands fa-whatsapp"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); deleteItem('${room.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
-                                <i class="fa-solid fa-trash-can"></i>
                             </button>
                         `
                     };
@@ -2346,14 +2305,8 @@
                             <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" title="Ingatkan WA (Sopan)" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors flex items-center gap-1 text-[11px]">
                                 <i class="fa-brands fa-whatsapp text-xs"></i> Ingatkan
                             </button>
-                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" title="Terima Bayar & Perpanjang (+1 Bulan)" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 font-bold transition-colors">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Kuitansi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-receipt"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                            <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" title="Terima Bayar & Perpanjang (+1 Bulan)" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-circle-check text-xs"></i> Bayar
                             </button>
                         `
                     };
@@ -2385,9 +2338,6 @@
                             <button onclick="event.stopPropagation(); markAsPaidQuick('${room.id}')" title="Terima Pelunasan & Perpanjang (+1 Bulan)" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
                                 <i class="fa-solid fa-circle-check"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
                         `
                     };
                 case 'booking':
@@ -2417,9 +2367,6 @@
                             <button onclick="event.stopPropagation(); openReceiptForItem('${room.id}')" title="Bukti DP" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-purple-600 hover:text-white text-slate-700 transition-colors">
                                 <i class="fa-solid fa-receipt"></i>
                             </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
                         `
                     };
                 case 'perbaikan':
@@ -2448,9 +2395,6 @@
                             </button>
                             <button onclick="event.stopPropagation(); openExpenseForRoom('${room.id}')" title="Catat Biaya Servis" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 font-bold transition-colors">
                                 <i class="fa-solid fa-wrench"></i>
-                            </button>
-                            <button onclick="event.stopPropagation(); openEditModal('${room.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
-                                <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         `
                     };
@@ -2774,7 +2718,6 @@
                 mobileContainer.innerHTML = filtered.map(item => {
                     const cond = getRoomCondition(item);
                     const meta = getConditionMeta(cond, item);
-                    const relBadge = getRelativeDateBadge(item.date, item.pay_status);
 
                     return `
                         <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between ${meta.borderAccent} cursor-pointer" onclick="openRoomContextModal('${item.id}')">
@@ -2827,9 +2770,6 @@
 
                                 <div class="flex items-center gap-1">
                                     ${meta.cardActionPill}
-                                    <button onclick="event.stopPropagation(); openRoomContextModal('${item.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Menu Opsi Kamar">
-                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
-                                    </button>
                                 </div>
                             </div>
 
