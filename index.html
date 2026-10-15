@@ -124,7 +124,7 @@
 <body class="font-sans antialiased text-slate-800 bg-slate-50/70 min-h-full flex flex-col selection:bg-emerald-500 selection:text-white pb-24 md:pb-0">
 
     <!-- ── IN-APP TOAST NOTIFICATION (MODERN FLOATING PILL) ─────────────── -->
-    <div id="toastNotification" class="fixed top-4 inset-x-0 mx-auto w-fit max-w-sm z-50 transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300 ease-out px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold bg-slate-900 text-white">
+    <div id="toastNotification" class="fixed top-4 inset-x-0 mx-auto w-fit max-w-sm z-[100] transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300 ease-out px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold bg-slate-900 text-white" style="z-index: 100;">
         <span id="toastIcon" class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
             <i class="fa-solid fa-check text-xs"></i>
         </span>
@@ -132,7 +132,7 @@
     </div>
 
     <!-- ── SOFT CONFIRMATION MODAL (REPLACES NATIVE BROWSER CONFIRM) ──────── -->
-    <div id="confirmModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div id="confirmModal" onclick="if(event.target === this) closeConfirmModal(false)" class="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden" style="z-index: 70;">
         <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-200 overflow-hidden p-5 space-y-4">
             <div class="flex items-center gap-3">
                 <div id="confirmIconBox" class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shrink-0">
@@ -1904,6 +1904,15 @@
                 confirmResolver = null;
             }
         }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const cm = document.getElementById('confirmModal');
+                if (cm && !cm.classList.contains('hidden')) {
+                    closeConfirmModal(false);
+                }
+            }
+        });
 
         // ── SMART DATE PARSER & RELATIVE BADGES ───────────────────────────────
         function parseCustomDate(str) {
@@ -3810,6 +3819,7 @@
                 }
 
                 saveRoomsLocal();
+                closeSmartRoomModal();
                 renderAllViews();
                 showToast(`Sewa ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
                 openReceiptForItem(id);
