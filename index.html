@@ -377,10 +377,10 @@
                         <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
                     </button>
 
-                    <!-- Add New Room Button -->
-                    <button onclick="showNewModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
+                    <!-- Add New / Transaction Button -->
+                    <button onclick="openQuickAddChoiceModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        <span class="hidden xs:inline sm:inline">+ Kamar</span>
+                        <span class="hidden xs:inline sm:inline">+ Tambah</span>
                     </button>
                 </div>
             </header>
@@ -730,7 +730,7 @@
             <i class="fa-solid fa-table-cells-large text-base"></i>
             <span>Denah</span>
         </button>
-        <button onclick="showNewModal()" class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center -mt-5 shadow-lg shadow-emerald-600/30">
+        <button onclick="openQuickAddChoiceModal()" aria-label="Tambah Transaksi atau Kamar" class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center -mt-5 shadow-lg shadow-emerald-600/30">
             <i class="fa-solid fa-plus text-base"></i>
         </button>
         <button onclick="switchView('expenses')" id="mobileNav-expenses" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
@@ -1097,28 +1097,267 @@
     </div>
 
     <!-- ================================================================== -->
-    <!-- MODAL 2: TAMBAH DATA SEWA KAMAR BARU                               -->
     <!-- ================================================================== -->
-    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Kamar &amp; Sewa
-                </h3>
-                <button onclick="closeNewModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
+    <!-- MODAL 2A: PILIHAN AKSI CEPAT (+ TAMBAH) (#quickAddChoiceModal)     -->
+    <!-- ================================================================== -->
+    <div id="quickAddChoiceModal" onclick="if(event.target === this) closeQuickAddChoiceModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-0 sm:my-4 transition-all">
+            <!-- Mobile pull handle -->
+            <div class="sm:hidden w-12 h-1 bg-slate-200 rounded-full mx-auto mt-3 mb-1"></div>
+
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-emerald-600"></i> Pilih Jenis Tindakan
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Pilih alur transaksi kost yang ingin Anda lakukan</p>
+                </div>
+                <button onclick="closeQuickAddChoiceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleNewSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
-                
+
+            <div class="p-4 sm:p-5 space-y-3">
+                <!-- Option 1: Check-In Penghuni Baru (Primary / Frequent) -->
+                <button type="button" onclick="closeQuickAddChoiceModal(); openCheckInModal();" class="w-full group p-4 rounded-2xl border-2 border-emerald-500/40 hover:border-emerald-600 bg-gradient-to-r from-emerald-50/60 via-teal-50/30 to-white hover:from-emerald-50 hover:to-teal-50/60 transition-all text-left flex items-center gap-3.5 shadow-2xs hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-md shadow-emerald-600/25 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">Check-In Penghuni Baru</span>
+                            <span class="text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">Rutin</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">Penyewa baru masuk ke kamar kosong yang tersedia, isi biodata &amp; cetak nota.</p>
+                        <div class="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-700">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-emerald-200 shadow-2xs">
+                                <i class="fa-solid fa-circle-check text-[9px] text-emerald-500"></i>
+                                <span id="quickChoiceEmptyBadge">0 Kamar Siap Huni</span>
+                            </span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all text-xs"></i>
+                </button>
+
+                <!-- Option 2: Tambah Unit Kamar Fisik (Secondary / Infrequent) -->
+                <button type="button" onclick="closeQuickAddChoiceModal(); openAddRoomModal();" class="w-full group p-4 rounded-2xl border border-slate-200 hover:border-blue-500 bg-white hover:bg-blue-50/40 transition-all text-left flex items-center gap-3.5 shadow-2xs hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl shrink-0 shadow-md shadow-blue-600/25 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors">Tambah Unit Kamar Baru</span>
+                            <span class="text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0">Aset Master</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">Daftarkan nomor/unit kamar fisik baru ke sistem (renovasi/bangun kamar baru).</p>
+                        <div class="mt-2 text-[10px] font-semibold text-slate-400">
+                            Status awal otomatis Siap Huni
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all text-xs"></i>
+                </button>
+            </div>
+
+            <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button type="button" onclick="closeQuickAddChoiceModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-200/60 font-bold text-xs transition-colors">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 2B: CHECK-IN PENGHUNI BARU (#checkInModal)                   -->
+    <!-- ================================================================== -->
+    <div id="checkInModal" onclick="if(event.target === this) closeCheckInModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <!-- Modal Header -->
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus text-emerald-600"></i> Check-In Penghuni Baru
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Pilih kamar kosong &amp; masukkan data penyewa baru</p>
+                </div>
+                <button onclick="closeCheckInModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form onsubmit="handleCheckInSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+                <!-- Alert if no empty rooms available -->
+                <div id="checkInNoRoomAlert" class="hidden p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base mt-0.5 shrink-0"></i>
+                        <div>
+                            <div class="font-bold text-xs">Semua Kamar Saat Ini Sedang Penuh!</div>
+                            <div class="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                                Tidak ada kamar dengan status <strong>Siap Huni</strong>. Anda dapat mengosongkan kamar yang sudah selesai sewa atau mendaftarkan unit kamar fisik baru.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-1 flex items-center gap-2 justify-end">
+                        <button type="button" onclick="closeCheckInModal(); openAddRoomModal();" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Tambah Unit Kamar Fisik
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Form Body -->
+                <div id="checkInFormFields" class="space-y-3.5">
+                    <!-- Room Selector -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block font-bold text-slate-700">Pilih Kamar Kosong (Siap Huni) *</label>
+                            <span id="checkInAvailableCount" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                0 Kamar Tersedia
+                            </span>
+                        </div>
+                        <select id="checkInRoomSelect" onchange="onCheckInRoomSelected(this.value)" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 bg-white font-bold text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-2xs">
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+
+                    <!-- Selected Room Info Snapshot -->
+                    <div id="checkInRoomPreview" class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs font-mono">
+                                <span id="checkInPreviewId">KMR</span>
+                            </div>
+                            <div>
+                                <div id="checkInPreviewService" class="font-bold text-slate-800 text-[11px]">Tipe Kamar</div>
+                                <div id="checkInPreviewRack" class="text-[10px] text-slate-500">Lantai 1</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[10px] text-slate-400 font-semibold">Tarif Standar</div>
+                            <div id="checkInPreviewAmount" class="font-extrabold text-slate-900 font-mono text-xs">Rp 0</div>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Details -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Penghuni *</label>
+                            <input type="text" id="checkInCustomer" required placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-semibold text-xs">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">No. WhatsApp / HP *</label>
+                            <input type="text" id="checkInPhone" required placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Rental Date & Rent Amount -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai Masuk *</label>
+                            <input type="date" id="checkInStartDate" onchange="updateCheckInDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-white font-medium text-xs">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Tarif Sewa Disepakati (Rp/Bln) *</label>
+                            <input type="number" id="checkInAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono font-bold text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Payment Plan Choices -->
+                    <div class="space-y-1.5">
+                        <label class="block font-bold text-slate-700">Status Pembayaran Pertama *</label>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-emerald-500 bg-emerald-50/60 text-emerald-800" id="checkInPlanLabelLunas">
+                                <input type="radio" name="checkInPayPlan" value="lunas" checked onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                                <span class="font-bold text-[11px]">Lunas 1 Bln</span>
+                                <span class="text-[9px] text-slate-500">Masa sewa aktif</span>
+                            </label>
+                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-slate-200 text-slate-700" id="checkInPlanLabelTempo">
+                                <input type="radio" name="checkInPayPlan" value="tempo" onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-clock text-amber-500 text-sm"></i>
+                                <span class="font-bold text-[11px]">Bayar Nanti</span>
+                                <span class="text-[9px] text-slate-500">Tempo / Pending</span>
+                            </label>
+                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-slate-200 text-slate-700" id="checkInPlanLabelDp">
+                                <input type="radio" name="checkInPayPlan" value="dp" onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-bookmark text-purple-500 text-sm"></i>
+                                <span class="font-bold text-[11px]">DP / Booking</span>
+                                <span class="text-[9px] text-slate-500">Uang Muka</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- DP Nominal Input (conditional) -->
+                    <div id="checkInDpSection" class="hidden p-3 rounded-2xl bg-purple-50/50 border border-purple-200/80 space-y-1.5">
+                        <label class="block font-bold text-purple-900 text-[11px]">Nominal DP Masuk (Rp) *</label>
+                        <input type="number" id="checkInDpAmount" min="50000" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-2 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
+                        <p class="text-[10px] text-purple-700">Kamar akan berstatus "Booking / DP Terbayar" hingga penghuni melunasi sisa sewa.</p>
+                    </div>
+
+                    <!-- Next Due Date Preview Badge -->
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between text-[11px]">
+                        <span class="text-slate-500 font-semibold flex items-center gap-1.5">
+                            <i class="fa-regular fa-calendar-check text-emerald-600"></i> Tanggal Jatuh Tempo Berikutnya:
+                        </span>
+                        <span id="checkInDueDateText" class="font-bold text-slate-800 font-mono">-</span>
+                    </div>
+
+                    <!-- Additional Details / Notes -->
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
+                        <input type="text" id="checkInDetail" placeholder="Contoh: Bawa motor Vario hitam / Deposit kunci Rp 50.000" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 text-xs">
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeCheckInModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="checkInSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Simpan Check-In</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 2C: TAMBAH UNIT KAMAR FISIK (#addRoomModal)                  -->
+    <!-- ================================================================== -->
+    <div id="addRoomModal" onclick="if(event.target === this) closeAddRoomModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <!-- Modal Header -->
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-door-open text-blue-600"></i> Tambah Unit Kamar Fisik
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Daftarkan nomor/aset kamar baru ke inventaris kost</p>
+                </div>
+                <button onclick="closeAddRoomModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Form -->
+            <form onsubmit="handleAddRoomSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+                <!-- Info notice -->
+                <div class="p-3 rounded-2xl bg-blue-50/70 border border-blue-200/70 text-blue-900 flex items-center gap-2.5">
+                    <i class="fa-solid fa-circle-info text-blue-600 text-sm shrink-0"></i>
+                    <p class="text-[11px] leading-relaxed">
+                        Form ini khusus untuk mendaftarkan <strong>aset fisik unit kamar baru</strong>. Unit baru akan otomatis berstatus <strong>Siap Huni</strong>.
+                    </p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Nomor Kamar *</label>
-                        <input type="text" id="newRoomId" required placeholder="Contoh: KMR-106" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 uppercase font-mono font-bold">
+                        <label class="block font-bold text-slate-700 mb-1">Nomor / Kode Kamar *</label>
+                        <input type="text" id="addRoomId" required oninput="validateNewRoomId(this.value)" placeholder="Contoh: KMR-106" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 uppercase font-mono font-bold text-xs">
+                        <div id="addRoomIdFeedback" class="text-[10px] mt-1 font-semibold hidden"></div>
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Lantai / Lokasi *</label>
-                        <select id="newRack" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
+                        <select id="addRoomRack" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none focus:border-blue-500 font-semibold text-xs">
                             <option value="Lantai 1">Lantai 1</option>
                             <option value="Lantai 2">Lantai 2</option>
                             <option value="Lantai 3">Lantai 3</option>
@@ -1128,72 +1367,36 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Tipe Kamar &amp; Fasilitas *</label>
-                    <input type="text" id="newService" required placeholder="Contoh: Kamar Deluxe AC + KM Dalam" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                </div>
-
-                <!-- Kondisi Kamar Saat Ini -->
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-slate-800 text-xs">Kondisi Kamar</span>
-                        <div class="flex items-center gap-3">
-                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                <input type="radio" name="newRoomCondition" value="terisi" checked onchange="toggleNewTenantFields(true)" class="text-emerald-600 focus:ring-emerald-500">
-                                <span class="font-bold text-emerald-700 text-xs">Terisi</span>
-                            </label>
-                            <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                                <input type="radio" name="newRoomCondition" value="kosong" onchange="toggleNewTenantFields(false)" class="text-blue-600 focus:ring-blue-500">
-                                <span class="font-bold text-blue-700 text-xs">Siap Huni</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Collapsible Tenant Details -->
-                    <div id="newTenantFieldsSection" class="space-y-2.5 pt-2 border-t border-slate-200/60">
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">Nama Penyewa</label>
-                                <input type="text" id="newCustomer" placeholder="Nama lengkap" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                            </div>
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">No. WhatsApp</label>
-                                <input type="text" id="newPhone" placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
-                                <select id="newPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
-                                    <option value="Lunas">Lunas</option>
-                                    <option value="Belum Lunas">Belum Lunas</option>
-                                    <option value="DP Terbayar">DP / Booking</option>
-                                    <option value="Menunggak">Menunggak</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">Tanggal Jatuh Tempo</label>
-                                <input type="text" id="newDueDate" placeholder="05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                            </div>
-                        </div>
-                    </div>
+                    <label class="block font-bold text-slate-700 mb-1">Tipe Kamar &amp; Fasilitas Utama *</label>
+                    <input type="text" id="addRoomService" required placeholder="Contoh: Kamar Deluxe AC + KM Dalam" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-xs">
                 </div>
 
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Harga Sewa / Bln (Rp) *</label>
-                        <input type="number" id="newAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none font-mono">
+                        <label class="block font-bold text-slate-700 mb-1">Tarif Pokok Sewa / Bln (Rp) *</label>
+                        <input type="number" id="addRoomAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none font-mono focus:border-blue-500 text-xs">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
-                        <input type="text" id="newDetail" placeholder="Listrik Mandiri / Deposit" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                        <label class="block font-bold text-slate-700 mb-1">Catatan / Spesifikasi</label>
+                        <input type="text" id="addRoomDetail" placeholder="Token Mandiri / Springbed Queen" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 text-xs">
                     </div>
                 </div>
 
-                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeNewModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" id="submitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
-                        <span>Simpan Data</span>
+                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between text-[11px]">
+                    <span class="text-slate-500 font-semibold">Status Awal Kamar:</span>
+                    <span class="font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-200">
+                        <i class="fa-solid fa-door-open text-[10px]"></i> Siap Huni (Kosong)
+                    </span>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeAddRoomModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="addRoomSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Daftarkan Kamar</span>
                     </button>
                 </div>
             </form>
@@ -2061,12 +2264,12 @@
                         heroTitle: 'Kamar Siap Huni',
                         heroSubtitle: 'Kamar dalam kondisi bersih dan siap menerima penghuni baru.',
                         cardActionPill: `
-                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'checkin')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-500 transition-colors flex items-center gap-1 shadow-2xs">
+                            <button onclick="event.stopPropagation(); openCheckInModal('${room.id}')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-500 transition-colors flex items-center gap-1 shadow-2xs">
                                 <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
                             </button>
                         `,
                         tableActionButtons: `
-                            <button onclick="event.stopPropagation(); openRoomContextModal('${room.id}', 'checkin')" title="Check-In Penghuni" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-2xs">
+                            <button onclick="event.stopPropagation(); openCheckInModal('${room.id}')" title="Check-In Penghuni" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-2xs">
                                 <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
                             </button>
                             <button onclick="event.stopPropagation(); setRoomToMaintenance('${room.id}')" title="Set Perbaikan" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 transition-colors">
@@ -2517,7 +2720,7 @@
                             ${cond === 'kosong' ? `
                                 <span class="font-semibold text-slate-400 italic">Kamar Siap Huni</span>
                                 <div class="mt-0.5">
-                                    <button onclick="event.stopPropagation(); openRoomContextModal('${item.id}', 'checkin')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
+                                    <button onclick="event.stopPropagation(); openCheckInModal('${item.id}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
                                         <i class="fa-solid fa-user-plus"></i> Isi Penghuni
                                     </button>
                                 </div>
@@ -3752,80 +3955,359 @@
             }
         }
 
-        // Check-In / Sewakan Kamar Kosong
-        function openCheckInModal(id) {
-            openEditModal(id);
-            document.getElementById('editCustomer').value = '';
-            document.getElementById('editCustomer').focus();
-            document.getElementById('editPayStatus').value = 'Belum Lunas';
-            
-            const nextMonth = new Date(Date.now() + 30*24*60*60*1000);
+        // ── WORKFLOW: PILIHAN AKSI CEPAT (+ TAMBAH) ───────────────────────────
+        function openQuickAddChoiceModal() {
+            const emptyCount = appData.filter(r => getRoomCondition(r) === 'kosong').length;
+            const badge = document.getElementById('quickChoiceEmptyBadge');
+            if (badge) {
+                badge.innerText = `${emptyCount} Kamar Siap Huni`;
+            }
+            const modal = document.getElementById('quickAddChoiceModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeQuickAddChoiceModal() {
+            const modal = document.getElementById('quickAddChoiceModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Backward compatibility
+        function showNewModal() {
+            openQuickAddChoiceModal();
+        }
+        function closeNewModal() {
+            closeQuickAddChoiceModal();
+        }
+
+        // ── WORKFLOW 1: CHECK-IN PENGHUNI BARU (KAMAR KOSONG / SIAP HUNI) ──────
+        function openCheckInModal(preselectedId = null) {
+            const emptyRooms = appData.filter(r => getRoomCondition(r) === 'kosong');
+            const alertEl = document.getElementById('checkInNoRoomAlert');
+            const fieldsEl = document.getElementById('checkInFormFields');
+            const submitBtn = document.getElementById('checkInSubmitBtn');
+            const countBadge = document.getElementById('checkInAvailableCount');
+            const roomSelect = document.getElementById('checkInRoomSelect');
+
+            if (countBadge) countBadge.innerText = `${emptyRooms.length} Kamar Tersedia`;
+
+            if (emptyRooms.length === 0) {
+                if (alertEl) alertEl.classList.remove('hidden');
+                if (fieldsEl) fieldsEl.classList.add('hidden');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            } else {
+                if (alertEl) alertEl.classList.add('hidden');
+                if (fieldsEl) fieldsEl.classList.remove('hidden');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                // Populate empty rooms dropdown
+                if (roomSelect) {
+                    roomSelect.innerHTML = emptyRooms.map(r => `
+                        <option value="${r.id}">${r.id} - ${r.rack || 'Lantai 1'} • ${r.service} • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
+                    `).join('');
+
+                    // Pre-select if requested and valid
+                    if (preselectedId && emptyRooms.some(r => r.id === preselectedId)) {
+                        roomSelect.value = preselectedId;
+                    } else if (emptyRooms.length > 0) {
+                        roomSelect.value = emptyRooms[0].id;
+                    }
+
+                    onCheckInRoomSelected(roomSelect.value);
+                }
+
+                // Reset tenant inputs
+                const custInput = document.getElementById('checkInCustomer');
+                const phoneInput = document.getElementById('checkInPhone');
+                const startInput = document.getElementById('checkInStartDate');
+                const detailInput = document.getElementById('checkInDetail');
+                
+                if (custInput) custInput.value = '';
+                if (phoneInput) phoneInput.value = '';
+                if (detailInput) detailInput.value = '';
+                
+                // Default start date to today
+                if (startInput) {
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    startInput.value = todayStr;
+                }
+
+                // Reset plan radio to 'lunas'
+                const planRadios = document.querySelectorAll('input[name="checkInPayPlan"]');
+                planRadios.forEach(r => {
+                    r.checked = (r.value === 'lunas');
+                });
+                toggleCheckInDp('lunas');
+                updateCheckInDueDatePreview();
+
+                setTimeout(() => {
+                    if (custInput) custInput.focus();
+                }, 100);
+            }
+
+            const modal = document.getElementById('checkInModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeCheckInModal() {
+            const modal = document.getElementById('checkInModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function onCheckInRoomSelected(roomId) {
+            const room = appData.find(r => r.id === roomId);
+            if (!room) return;
+
+            const previewId = document.getElementById('checkInPreviewId');
+            const previewService = document.getElementById('checkInPreviewService');
+            const previewRack = document.getElementById('checkInPreviewRack');
+            const previewAmount = document.getElementById('checkInPreviewAmount');
+            const amountInput = document.getElementById('checkInAmount');
+
+            if (previewId) previewId.innerText = room.id;
+            if (previewService) previewService.innerText = room.service;
+            if (previewRack) previewRack.innerText = room.rack || 'Lantai 1';
+            if (previewAmount) previewAmount.innerText = 'Rp ' + Number(room.amount).toLocaleString('id-ID');
+            if (amountInput) amountInput.value = room.amount;
+
+            updateCheckInDueDatePreview();
+        }
+
+        function toggleCheckInDp(plan) {
+            const dpSection = document.getElementById('checkInDpSection');
+            if (dpSection) {
+                if (plan === 'dp') dpSection.classList.remove('hidden');
+                else dpSection.classList.add('hidden');
+            }
+
+            // Update active styling on radio labels
+            const lunasLabel = document.getElementById('checkInPlanLabelLunas');
+            const tempoLabel = document.getElementById('checkInPlanLabelTempo');
+            const dpLabel = document.getElementById('checkInPlanLabelDp');
+
+            const resetClass = 'border-slate-200 text-slate-700 bg-white';
+            if (lunasLabel) lunasLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'lunas' ? 'border-emerald-500 bg-emerald-50/60 text-emerald-800' : resetClass}`;
+            if (tempoLabel) tempoLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'tempo' ? 'border-amber-500 bg-amber-50/60 text-amber-800' : resetClass}`;
+            if (dpLabel) dpLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'dp' ? 'border-purple-500 bg-purple-50/60 text-purple-800' : resetClass}`;
+        }
+
+        function updateCheckInDueDatePreview() {
+            const startVal = document.getElementById('checkInStartDate')?.value;
+            const dueText = document.getElementById('checkInDueDateText');
+            if (!dueText) return;
+
+            const baseDate = startVal ? new Date(startVal) : new Date();
+            baseDate.setMonth(baseDate.getMonth() + 1);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
             const pad = n => String(n).padStart(2, '0');
-            document.getElementById('editDueDate').value = `Jatuh Tempo: ${pad(nextMonth.getDate())} ${months[nextMonth.getMonth()]} ${nextMonth.getFullYear()}`;
+            dueText.innerText = `${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
         }
 
-        // Add Data Modal Logic
-        function showNewModal() {
-            document.getElementById('newRoomId').value = '';
-            document.getElementById('newCustomer').value = '';
-            document.getElementById('newPhone').value = '';
-            document.getElementById('newService').value = '';
-            document.getElementById('newAmount').value = '';
-            document.getElementById('newDetail').value = '';
-            document.getElementById('newModal').classList.remove('hidden');
-        }
-
-        function closeNewModal() {
-            document.getElementById('newModal').classList.add('hidden');
-        }
-
-        function toggleNewTenantFields(isOccupied) {
-            const section = document.getElementById('newTenantFieldsSection');
-            if (section) section.style.display = isOccupied ? 'block' : 'none';
-        }
-
-        async function handleNewSubmit(e) {
+        async function handleCheckInSubmit(e) {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = 'Menyimpan...';
+            const roomId = document.getElementById('checkInRoomSelect')?.value;
+            const room = appData.find(r => r.id === roomId);
+            if (!room) {
+                showToast('Pilih kamar kosong terlebih dahulu', 'error');
+                return;
+            }
 
-            const condition = document.querySelector('input[name="newRoomCondition"]:checked').value;
-            const isOccupied = condition === 'terisi';
+            const customerName = document.getElementById('checkInCustomer')?.value.trim();
+            const customerPhone = document.getElementById('checkInPhone')?.value.trim();
+            const startVal = document.getElementById('checkInStartDate')?.value;
+            const rentAmount = Number(document.getElementById('checkInAmount')?.value) || room.amount;
+            const payPlan = document.querySelector('input[name="checkInPayPlan"]:checked')?.value || 'lunas';
+            const detailInput = document.getElementById('checkInDetail')?.value.trim();
 
-            const newItem = {
-                id: document.getElementById('newRoomId').value.trim().toUpperCase() || ('KMR-' + Math.floor(100 + Math.random() * 900)),
-                customer: isOccupied ? (document.getElementById('newCustomer').value.trim() || 'Penyewa Baru') : 'Belum Berpenghuni',
-                phone: isOccupied ? document.getElementById('newPhone').value.trim() : '',
-                service: document.getElementById('newService').value.trim(),
-                detail: document.getElementById('newDetail').value.trim() || 'Kamar Bersih',
-                rack: document.getElementById('newRack').value,
-                amount: Number(document.getElementById('newAmount').value),
-                pay_status: isOccupied ? document.getElementById('newPayStatus').value : 'Tersedia',
-                work_status: isOccupied ? 'Terisi' : 'Tersedia',
-                date: isOccupied ? (document.getElementById('newDueDate').value.trim() || ('Jatuh Tempo: ' + new Date().toLocaleDateString('id-ID'))) : 'Siap Huni'
+            if (!customerName) {
+                showToast('Nama lengkap penghuni wajib diisi', 'error');
+                document.getElementById('checkInCustomer')?.focus();
+                return;
+            }
+
+            const submitBtn = document.getElementById('checkInSubmitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            }
+
+            // Calculate due date (+1 month from start date)
+            const baseDate = startVal ? new Date(startVal) : new Date();
+            baseDate.setMonth(baseDate.getMonth() + 1);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const pad = n => String(n).padStart(2, '0');
+            const calculatedDue = `Jatuh Tempo: ${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+
+            let payStatus = 'Lunas';
+            let workStatus = 'Terisi';
+            let detailNote = detailInput || room.detail || 'Siap Huni';
+
+            if (payPlan === 'tempo') {
+                payStatus = 'Belum Lunas';
+                workStatus = 'Terisi';
+            } else if (payPlan === 'dp') {
+                const dpVal = document.getElementById('checkInDpAmount')?.value || '300000';
+                payStatus = 'DP Terbayar';
+                workStatus = 'Booking Baru';
+                detailNote = `DP Rp ${Number(dpVal).toLocaleString('id-ID')} • Rencana Masuk: ${startVal || '-'}` + (detailInput ? ` • ${detailInput}` : '');
+            }
+
+            const updatePayload = {
+                customer: customerName,
+                phone: customerPhone,
+                amount: rentAmount,
+                pay_status: payStatus,
+                work_status: workStatus,
+                date: calculatedDue,
+                detail: detailNote
             };
 
             if (supabaseClient) {
                 try {
-                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).insert([newItem]);
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updatePayload).eq('id', room.id);
                 } catch (err) {
-                    console.warn('Penyimpanan cloud dialihkan ke cache');
+                    console.warn('Penyimpanan cloud gagal, dialihkan ke cache lokal', err);
                 }
             }
 
-            appData.unshift(newItem);
+            // Update existing room object in memory (NO DUPLICATION!)
+            Object.assign(room, updatePayload);
             saveRoomsLocal();
-            closeNewModal();
+            closeCheckInModal();
             renderAllViews();
-            btn.disabled = false;
-            btn.innerText = 'Simpan Data';
-            showToast(`Kamar ${newItem.id} berhasil ditambahkan!`, 'success');
 
-            if (isOccupied) {
-                openReceiptForItem(newItem.id);
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Simpan Check-In</span>';
             }
+
+            showToast(`Check-in Kamar ${room.id} (${customerName}) berhasil!`, 'success');
+
+            // Open digital receipt if payment was received
+            if (payPlan === 'lunas' || payPlan === 'dp') {
+                setTimeout(() => {
+                    openReceiptForItem(room.id);
+                }, 300);
+            }
+        }
+
+        // ── WORKFLOW 2: TAMBAH UNIT KAMAR FISIK (MASTER DATA ASET) ────────────
+        function openAddRoomModal() {
+            const idInput = document.getElementById('addRoomId');
+            const serviceInput = document.getElementById('addRoomService');
+            const amountInput = document.getElementById('addRoomAmount');
+            const detailInput = document.getElementById('addRoomDetail');
+            const feedback = document.getElementById('addRoomIdFeedback');
+
+            if (idInput) idInput.value = '';
+            if (serviceInput) serviceInput.value = '';
+            if (amountInput) amountInput.value = '';
+            if (detailInput) detailInput.value = '';
+            if (feedback) {
+                feedback.className = 'text-[10px] mt-1 font-semibold hidden';
+                feedback.innerText = '';
+            }
+
+            const modal = document.getElementById('addRoomModal');
+            if (modal) modal.classList.remove('hidden');
+
+            setTimeout(() => {
+                if (idInput) idInput.focus();
+            }, 100);
+        }
+
+        function closeAddRoomModal() {
+            const modal = document.getElementById('addRoomModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function validateNewRoomId(val) {
+            const cleanId = val.trim().toUpperCase();
+            const feedback = document.getElementById('addRoomIdFeedback');
+            const input = document.getElementById('addRoomId');
+            if (!feedback || !input) return;
+
+            if (!cleanId) {
+                feedback.className = 'text-[10px] mt-1 font-semibold hidden';
+                input.classList.remove('border-rose-500', 'border-emerald-500');
+                return;
+            }
+
+            const exists = appData.some(r => r.id.toUpperCase() === cleanId);
+            if (exists) {
+                feedback.className = 'text-[10px] mt-1 font-bold text-rose-600 block';
+                feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Nomor kamar sudah terdaftar! Gunakan nomor lain.';
+                input.classList.add('border-rose-500');
+                input.classList.remove('border-emerald-500');
+            } else {
+                feedback.className = 'text-[10px] mt-1 font-bold text-emerald-600 block';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> Nomor kamar tersedia.';
+                input.classList.add('border-emerald-500');
+                input.classList.remove('border-rose-500');
+            }
+        }
+
+        async function handleAddRoomSubmit(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('addRoomId');
+            const cleanId = idInput?.value.trim().toUpperCase();
+
+            if (!cleanId) {
+                showToast('Nomor kamar wajib diisi', 'error');
+                if (idInput) idInput.focus();
+                return;
+            }
+
+            // Prevent duplicate room IDs
+            if (appData.some(r => r.id.toUpperCase() === cleanId)) {
+                showToast(`Nomor Kamar ${cleanId} sudah ada di sistem!`, 'error');
+                if (idInput) idInput.focus();
+                return;
+            }
+
+            const submitBtn = document.getElementById('addRoomSubmitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            }
+
+            const newUnit = {
+                id: cleanId,
+                customer: 'Belum Berpenghuni',
+                phone: '',
+                service: document.getElementById('addRoomService')?.value.trim() || 'Kamar Standar',
+                detail: document.getElementById('addRoomDetail')?.value.trim() || 'Siap Huni',
+                rack: document.getElementById('addRoomRack')?.value || 'Lantai 1',
+                amount: Number(document.getElementById('addRoomAmount')?.value) || 1000000,
+                pay_status: 'Tersedia',
+                work_status: 'Tersedia',
+                date: 'Siap Huni'
+            };
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).insert([newUnit]);
+                } catch (err) {
+                    console.warn('Penyimpanan cloud gagal, disimpan ke cache lokal', err);
+                }
+            }
+
+            appData.unshift(newUnit);
+            saveRoomsLocal();
+            closeAddRoomModal();
+            renderAllViews();
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> <span>Daftarkan Kamar</span>';
+            }
+
+            showToast(`Unit Kamar ${newUnit.id} berhasil ditambahkan (Siap Huni)!`, 'success');
         }
 
         async function deleteItem(id) {
