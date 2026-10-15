@@ -1531,139 +1531,186 @@
     </div>
 
     <!-- ================================================================== -->
-    <!-- MODAL 5: PENGATURAN TOKO & LOGO (HANYA DI MENU INI)               -->
+    <!-- MODAL 5: PENGATURAN USAHA & SISTEM (TABBED & RAPI)                 -->
     <!-- ================================================================== -->
-    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-emerald-600"></i> Pengaturan Usaha &amp; Logo
-                </h3>
-                <button onclick="closeSettingsModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
+    <div id="settingsModal" onclick="if(event.target === this) closeSettingsModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 hidden overflow-y-auto">
+        <div class="bg-white w-[94%] sm:w-full max-w-lg md:max-w-xl max-h-[88vh] sm:max-h-[82vh] rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto transition-all">
+            
+            <!-- Modal Header (Fixed) -->
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs shadow-2xs">
+                        <i class="fa-solid fa-sliders"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Pengaturan Usaha &amp; Sistem</h3>
+                    </div>
+                </div>
+                <button onclick="closeSettingsModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleSettingsSave(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+
+            <!-- Segmented Sub-Tabs Bar (Fixed) -->
+            <div class="px-3 sm:px-5 pt-2.5 pb-0 border-b border-slate-100 bg-slate-50/50 flex items-center gap-1 shrink-0 overflow-x-auto no-scrollbar">
+                <button type="button" onclick="switchSettingsTab('profile')" id="settingsTabBtn-profile" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-bold transition-all border-b-2 border-emerald-600 text-emerald-800 bg-white shadow-2xs flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-house-chimney text-emerald-600"></i>
+                    <span>Identitas &amp; Logo</span>
+                </button>
+                <button type="button" onclick="switchSettingsTab('bank')" id="settingsTabBtn-bank" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-building-columns text-slate-400"></i>
+                    <span>Rekening Pembayaran</span>
+                </button>
+                <button type="button" onclick="switchSettingsTab('system')" id="settingsTabBtn-system" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-gear text-slate-400"></i>
+                    <span>Format &amp; Cadangan</span>
+                </button>
+            </div>
+
+            <!-- Form Wrapper with Scrollable Content Body -->
+            <form onsubmit="handleSettingsSave(event)" class="flex flex-col flex-1 overflow-hidden">
                 
-                <!-- 1. PENGATURAN LOGO RESMI (TERPUSAT DI SINI) -->
-                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-                    <div class="flex items-center justify-between">
+                <div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-3.5 text-xs">
+                    
+                    <!-- ── TAB 1: IDENTITAS & LOGO KOST ─────────────────────── -->
+                    <div id="settingsTab-profile" class="space-y-3.5">
+                        <!-- Logo Upload Box -->
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                                <img id="settingsLogoPreview" src="" alt="Logo" class="max-h-12 max-w-[50px] object-contain hidden">
+                                <i id="settingsLogoPlaceholder" class="fa-solid fa-building-user text-xl text-slate-300"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-extrabold text-slate-800 text-xs">Logo Rumah Kost</span>
+                                    <span class="text-[10px] text-slate-400 font-normal truncate">Dicetak pada nota kuitansi</span>
+                                </div>
+                                <div class="flex items-center gap-2 mt-1.5">
+                                    <label for="logoFileInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-100 shadow-2xs transition-colors">
+                                        <i class="fa-solid fa-upload text-emerald-600"></i>
+                                        <span>Ganti Logo</span>
+                                    </label>
+                                    <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                                    <button type="button" onclick="resetLogoToDefault()" class="text-[11px] font-semibold text-rose-600 hover:underline">
+                                        Ikon Default
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nama Kost (Prominent) -->
                         <div>
-                            <span class="font-extrabold text-slate-800 text-xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-image text-emerald-600"></i> Logo Usaha Kost
-                            </span>
-                            <p class="text-[10px] text-slate-400 mt-0.5">Otomatis dicetak pada setiap nota kuitansi.</p>
+                            <label class="block font-bold text-slate-700 mb-1">Nama Rumah Kost *</label>
+                            <input type="text" id="settingStoreName" required placeholder="Contoh: KOST MAGNOLIA RESIDENCE" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                        </div>
+
+                        <!-- 2-Column Grid: Telepon & Alamat -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">No. Kontak Pengelola / WA</label>
+                                <input type="text" id="settingStorePhone" placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:bg-white focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Alamat Ringkas / Kota</label>
+                                <input type="text" id="settingStoreAddress" placeholder="Jl. Melati No. 12B, Syamsudin Noor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:bg-white focus:border-emerald-500">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3 pt-1">
-                        <div class="w-14 h-14 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
-                            <img id="settingsLogoPreview" src="" alt="Logo" class="max-h-12 max-w-[50px] object-contain hidden">
-                            <i id="settingsLogoPlaceholder" class="fa-solid fa-building-user text-xl text-slate-300"></i>
+                    <!-- ── TAB 2: REKENING PEMBAYARAN ───────────────────────── -->
+                    <div id="settingsTab-bank" class="space-y-3.5 hidden">
+                        <div class="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-info text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+                            <p class="text-[11px] text-emerald-900 leading-snug">
+                                Nomor rekening ini akan otomatis disematkan pada pesan tagihan WhatsApp dan bukti kuitansi pembayaran resmi penghuni kost.
+                            </p>
                         </div>
-                        <div class="space-y-1.5 flex-1">
-                            <label for="logoFileInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 shadow-2xs transition-colors">
-                                <i class="fa-solid fa-upload text-emerald-600"></i>
-                                <span>Pilih Logo (PNG/JPG)</span>
-                            </label>
-                            <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+
+                        <!-- Grid 2 Kolom: Bank & No. Rekening -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <button type="button" onclick="resetLogoToDefault()" class="text-[10px] font-semibold text-rose-600 hover:underline">
-                                    Hapus &amp; Gunakan Ikon Default
+                                <label class="block font-bold text-slate-700 mb-1">Nama Bank / E-Wallet *</label>
+                                <input type="text" id="settingBankName" placeholder="Contoh: BCA / BRI / Mandiri / Jago" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Nomor Rekening *</label>
+                                <input type="text" id="settingBankNumber" placeholder="Contoh: 822-0918-223" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Atas Nama Pemilik Rekening *</label>
+                            <input type="text" id="settingBankHolder" placeholder="Contoh: Bpk. Hendra (Pengelola Kost)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <!-- ── TAB 3: FORMAT & CADANGAN DATA ─────────────────────── -->
+                    <div id="settingsTab-system" class="space-y-3.5 hidden">
+                        <!-- Format Kertas Struk -->
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-receipt text-slate-500"></i> Format Kertas Struk Default
+                                </label>
+                                <span class="text-[10px] text-slate-400">Pengaturan cetak printer</span>
+                            </div>
+                            <select id="settingDefaultPaper" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-emerald-500">
+                                <option value="58mm">Printer Kasir Mini 58mm (Thermal)</option>
+                                <option value="80mm">Printer Kasir Standar 80mm (Thermal)</option>
+                                <option value="a4">Dokumen Formal Kertas A4 (PDF / Printer Biasa)</option>
+                            </select>
+                        </div>
+
+                        <!-- Cadangan & Pemulihan JSON -->
+                        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-database text-slate-500"></i> Cadangan &amp; Pemulihan Data
+                                </span>
+                                <span class="text-[10px] text-slate-400">Berkas JSON mandiri</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500">Simpan berkas cadangan offline atau pulihkan data kost saat berganti perangkat.</p>
+                            <div class="flex items-center gap-2 pt-1">
+                                <button type="button" onclick="exportBackupJSON()" class="flex-1 px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 shadow-2xs flex items-center justify-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-download text-emerald-600"></i>
+                                    <span>Unduh JSON</span>
                                 </button>
+                                <label for="importBackupInput" class="flex-1 cursor-pointer px-3 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 shadow-2xs flex items-center justify-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-upload text-blue-600"></i>
+                                    <span>Pulihkan JSON</span>
+                                </label>
+                                <input type="file" id="importBackupInput" accept=".json,application/json" class="hidden" onchange="importBackupJSON(event)">
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- 2. INFORMASI KOST -->
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nama Rumah Kost *</label>
-                    <input type="text" id="settingStoreName" required class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap</label>
-                    <input type="text" id="settingStoreAddress" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                </div>
-                
-                <!-- 3. REKENING BANK UNTUK TAGIHAN WA -->
-                <div class="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2">
-                    <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
-                        <i class="fa-solid fa-building-columns text-emerald-600"></i> Rekening Bank untuk Tagihan WhatsApp
-                    </span>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Bank</label>
-                            <input type="text" id="settingBankName" placeholder="BCA" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">No. Rekening</label>
-                            <input type="text" id="settingBankNumber" placeholder="8220918223" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Atas Nama</label>
-                            <input type="text" id="settingBankHolder" placeholder="Budi Santoso" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">No. Kontak Pengelola / WA</label>
-                        <input type="text" id="settingStorePhone" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">Format Cetak Struk</label>
-                        <select id="settingDefaultPaper" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
-                            <option value="58mm">Thermal 58mm (Kecil)</option>
-                            <option value="80mm">Thermal 80mm (Standar)</option>
-                            <option value="a4">Kertas A4</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 4. CADANGAN & PEMULIHAN DATA -->
-                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span class="text-slate-500 font-semibold">Cadangan Data:</span>
-                    <div class="flex items-center gap-1.5">
-                        <label for="importBackupInput" class="cursor-pointer px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700 flex items-center gap-1 transition-colors text-[11px]">
-                            <i class="fa-solid fa-upload text-blue-600"></i> Pulihkan
-                        </label>
-                        <input type="file" id="importBackupInput" accept=".json,application/json" class="hidden" onchange="importBackupJSON(event)">
-                        <button type="button" onclick="exportBackupJSON()" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700 flex items-center gap-1 transition-colors text-[11px]">
-                            <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 5. MODE AKUN DEMO / RESET SIMULASI -->
-                <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2.5">
-                    <div class="flex items-start justify-between gap-2">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs">
-                                <i class="fa-solid fa-flask"></i>
-                            </div>
+                        <!-- Reset Simulasi Demo -->
+                        <div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-center justify-between gap-3">
                             <div>
-                                <h4 class="text-xs font-bold text-amber-950">Mode Akun Demo (Simulasi Aktif)</h4>
-                                <p class="text-[10px] text-amber-800 leading-tight">Gunakan untuk mencoba alur check-in, pelunasan sewa, &amp; buku kas secara bebas.</p>
+                                <span class="font-bold text-amber-950 text-xs block">Reset Data Demo Simulasi</span>
+                                <span class="text-[10px] text-amber-700 block mt-0.5">Kembalikan kamar dan kas ke data bawaan</span>
                             </div>
+                            <button type="button" onclick="resetDemoData()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shadow-2xs shrink-0 transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-rotate-left text-xs"></i>
+                                <span>Reset Demo</span>
+                            </button>
                         </div>
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900 border border-amber-300 shrink-0">Demo Aktif</span>
                     </div>
-                    <div class="pt-2 border-t border-amber-200/60 flex items-center justify-between gap-2">
-                        <span class="text-[11px] text-amber-900/90 font-medium">Kembalikan semua data ke kondisi awal?</span>
-                        <button type="button" onclick="resetDemoData()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs">
-                            <i class="fa-solid fa-rotate-left text-xs"></i>
-                            <span>Reset Data Demo</span>
+
+                </div>
+
+                <!-- Modal Footer (Fixed) -->
+                <div class="px-4 sm:px-5 py-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
+                    <span class="text-[11px] text-slate-400 hidden sm:inline">Pengaturan disimpan secara lokal &amp; cloud</span>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-200/60 font-bold text-xs transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition-all">
+                            Simpan Pengaturan
                         </button>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Tutup</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">Simpan</button>
-                </div>
             </form>
         </div>
     </div>
@@ -4637,6 +4684,25 @@
             document.getElementById('monthlyReportModal').classList.add('hidden');
         }
 
+        // Sub-Tab Switcher for Settings Modal (Tidy & Segmented)
+        function switchSettingsTab(tabName) {
+            ['profile', 'bank', 'system'].forEach(t => {
+                const tabEl = document.getElementById(`settingsTab-${t}`);
+                const btnEl = document.getElementById(`settingsTabBtn-${t}`);
+                if (tabEl) {
+                    if (t === tabName) tabEl.classList.remove('hidden');
+                    else tabEl.classList.add('hidden');
+                }
+                if (btnEl) {
+                    if (t === tabName) {
+                        btnEl.className = "settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-bold transition-all border-b-2 border-emerald-600 text-emerald-800 bg-white shadow-2xs flex items-center gap-1.5 shrink-0";
+                    } else {
+                        btnEl.className = "settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0";
+                    }
+                }
+            });
+        }
+
         // Settings Modal
         function openSettingsModal() {
             document.getElementById('settingStoreName').value = appSettings.storeName || DEFAULT_SETTINGS.storeName;
@@ -4646,6 +4712,7 @@
             document.getElementById('settingBankNumber').value = appSettings.bankNumber || DEFAULT_SETTINGS.bankNumber;
             document.getElementById('settingBankHolder').value = appSettings.bankHolder || DEFAULT_SETTINGS.bankHolder;
             document.getElementById('settingDefaultPaper').value = appSettings.defaultPaper || '58mm';
+            switchSettingsTab('profile');
             document.getElementById('settingsModal').classList.remove('hidden');
         }
 
