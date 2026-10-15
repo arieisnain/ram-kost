@@ -40,7 +40,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* Receipt Paper Styling */
+        /* Thermal Receipt Paper Styling */
         .receipt-paper {
             background: #ffffff;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
@@ -48,7 +48,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Thermal Printing Optimizations */
+        /* Printing Optimizations */
         @media print {
             body * {
                 visibility: hidden !important;
@@ -75,28 +75,94 @@
             }
         }
 
-        /* Custom Slim Scrollbars */
+        /* Hide Scrollbar while keeping functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Slim Webkit Scrollbars for desktop */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #f8fafc;
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 999px;
         }
+
+        /* Safe area for mobile iOS home indicators */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
     </style>
 </head>
-<body class="font-sans antialiased text-slate-800 bg-slate-50/60 min-h-full flex flex-col selection:bg-emerald-500 selection:text-white pb-20 md:pb-0">
+<body class="font-sans antialiased text-slate-800 bg-slate-50/70 min-h-full flex flex-col selection:bg-emerald-500 selection:text-white pb-24 md:pb-0">
 
     <!-- Mobile Drawer Overlay -->
     <div id="drawerBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
 
+    <!-- Mobile Bottom Action Sheet Drawer -->
+    <div id="actionSheetBackdrop" onclick="closeRoomActionSheet()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+    <div id="roomActionSheet" class="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl p-5 transform translate-y-full transition-transform duration-300 ease-out max-w-lg mx-auto hidden pb-safe">
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4"></div>
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+                <span id="sheetRoomId" class="px-2.5 py-0.5 rounded-lg bg-slate-900 text-white font-mono font-bold text-xs">KMR-101</span>
+                <h4 id="sheetCustomerName" class="text-sm font-extrabold text-slate-900 mt-1">Nama Penyewa</h4>
+            </div>
+            <span id="sheetPayStatus" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">Lunas</span>
+        </div>
+        
+        <div class="py-3 space-y-1.5 text-xs font-bold text-slate-700">
+            <button onclick="actionSheetWhatsApp()" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
+                <i class="fa-brands fa-whatsapp text-lg text-emerald-600 w-6 text-center"></i>
+                <div class="flex-1">
+                    <div>Kirim Pengingat Tagihan via WhatsApp</div>
+                    <span class="text-[10px] text-emerald-600 font-normal">Template pesan otomatis dengan rincian transfer</span>
+                </div>
+            </button>
+            <button onclick="actionSheetReceipt()" class="w-full p-3 rounded-2xl bg-slate-50 text-slate-800 hover:bg-slate-100 flex items-center gap-3 transition-colors text-left">
+                <i class="fa-solid fa-receipt text-base text-slate-500 w-6 text-center"></i>
+                <div class="flex-1">
+                    <div>Buat Nota / Kuitansi Pembayaran</div>
+                    <span class="text-[10px] text-slate-400 font-normal">Cetak nota thermal 58mm/80mm atau bagikan struk</span>
+                </div>
+            </button>
+            <button id="sheetMarkPaidBtn" onclick="actionSheetMarkPaid()" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
+                <i class="fa-solid fa-circle-check text-base text-amber-600 w-6 text-center"></i>
+                <div class="flex-1">
+                    <div>Tandai Sewa Sudah Lunas</div>
+                    <span class="text-[10px] text-amber-600 font-normal">Update status kamar seketika</span>
+                </div>
+            </button>
+            <button onclick="actionSheetEdit()" class="w-full p-3 rounded-2xl hover:bg-slate-100 flex items-center gap-3 transition-colors text-left text-slate-700">
+                <i class="fa-solid fa-pen-to-square text-base text-slate-500 w-6 text-center"></i>
+                <span>Edit Data Kamar &amp; Penghuni</span>
+            </button>
+            <button onclick="actionSheetCheckout()" class="w-full p-3 rounded-2xl hover:bg-rose-50 text-rose-600 flex items-center gap-3 transition-colors text-left">
+                <i class="fa-solid fa-arrow-right-from-bracket text-base w-6 text-center"></i>
+                <span>Kosongkan Kamar (Check-Out)</span>
+            </button>
+            <button onclick="actionSheetDelete()" class="w-full p-3 rounded-2xl hover:bg-rose-50 text-rose-600 flex items-center gap-3 transition-colors text-left">
+                <i class="fa-solid fa-trash-can text-base w-6 text-center"></i>
+                <span>Hapus Kamar Permanen</span>
+            </button>
+        </div>
+        <button onclick="closeRoomActionSheet()" class="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 mt-1">
+            Tutup
+        </button>
+    </div>
+
     <div class="flex h-screen overflow-hidden">
         
-        <!-- ── SIDEBAR (DESKTOP & SLIDE OVER DRAWER ON MOBILE) ──────────── -->
+        <!-- ── SIDEBAR (DESKTOP & MOBILE DRAWER) ────────────────────────── -->
         <aside id="mainSidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white border-r border-slate-200/90 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col justify-between shrink-0 shadow-sm lg:shadow-none">
             <div>
                 <!-- Brand Header -->
@@ -121,13 +187,8 @@
                 <nav class="px-3 py-4 space-y-1">
                     <div class="px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Menu Manajemen</div>
                     
-                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors text-left">
-                        <i class="fa-solid fa-chart-pie w-5 text-center text-emerald-600"></i>
-                        <span>Dashboard &amp; Okupansi</span>
-                    </button>
-                    
-                    <button onclick="switchView('kamar')" id="nav-kamar" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
-                        <i class="fa-solid fa-bed w-5 text-center text-slate-400"></i>
+                    <button onclick="switchView('kamar')" id="nav-kamar" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors text-left">
+                        <i class="fa-solid fa-bed w-5 text-center text-emerald-600"></i>
                         <span>Kamar &amp; Penghuni</span>
                     </button>
 
@@ -141,7 +202,7 @@
                         <span>Buku Kas &amp; Pengeluaran</span>
                     </button>
 
-                    <div class="pt-2 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi Cepat</div>
+                    <div class="pt-3 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi Operasional</div>
 
                     <button onclick="openQuickReceiptModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-receipt w-5 text-center text-slate-400"></i>
@@ -182,26 +243,30 @@
         <!-- ── MAIN CONTENT AREA ─────────────────────────────────────────── -->
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             
-            <!-- TOPBAR (DESKTOP & MOBILE) -->
-            <header class="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" aria-label="Buka Menu" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
-                        <i class="fa-solid fa-bars text-lg"></i>
+            <!-- TOPBAR (COMPACT ON MOBILE & TABLET) -->
+            <header class="h-14 md:h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-3.5 sm:px-6 flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <button onclick="toggleSidebar()" aria-label="Buka Menu" class="lg:hidden p-1.5 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors shrink-0">
+                        <i class="fa-solid fa-bars text-base"></i>
                     </button>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight" id="topbarStoreTitle">KOST MAGNOLIA RESIDENCE</h2>
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online Database
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <h2 class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 tracking-tight truncate" id="topbarStoreTitle">KOST MAGNOLIA RESIDENCE</h2>
+                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-500 hidden sm:block">Sistem Pembukuan &amp; Manajemen Kamar Kost Terpadu</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2 sm:gap-2.5">
-                    <!-- Global Search -->
-                    <div class="relative hidden sm:block w-44 md:w-56">
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <!-- Mobile Search Trigger Toggle -->
+                    <button onclick="toggleMobileSearch()" class="sm:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors" title="Cari kamar">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </button>
+
+                    <!-- Global Search (Desktop/Tablet) -->
+                    <div class="relative hidden sm:block w-36 md:w-56">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                         <input 
                             type="text" 
@@ -217,170 +282,203 @@
                         <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
                     </button>
 
-                    <!-- Add Expense Button -->
-                    <button onclick="openExpenseModal()" class="hidden md:flex px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold items-center gap-1.5 transition-all">
-                        <i class="fa-solid fa-minus text-xs"></i>
-                        <span>Pengeluaran</span>
-                    </button>
-
-                    <!-- Add New Room/Tenant Button -->
-                    <button onclick="showNewModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
+                    <!-- Add New Room Button -->
+                    <button onclick="showNewModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Tambah Kamar</span>
-                    </button>
-
-                    <!-- Settings Button (Icon) -->
-                    <button onclick="openSettingsModal()" title="Pengaturan Usaha & Logo" class="p-2 rounded-xl border border-slate-200/90 bg-white text-slate-600 hover:bg-slate-50 transition-colors">
-                        <i class="fa-solid fa-gear text-xs"></i>
+                        <span class="hidden xs:inline sm:inline">+ Kamar</span>
                     </button>
                 </div>
             </header>
 
-            <!-- MAIN WORKSPACE CONTAINER -->
-            <main class="p-4 sm:p-6 lg:p-8 space-y-6 flex-1 max-w-7xl w-full mx-auto">
+            <!-- Collapsible Mobile Search Input (Slides down when search icon clicked) -->
+            <div id="mobileSearchCollapse" class="hidden sm:hidden px-3.5 py-2.5 bg-white border-b border-slate-200">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input 
+                        type="text" 
+                        id="mobileSearchInput"
+                        oninput="handleSearch(this.value)" 
+                        placeholder="Cari nomor kamar, nama penghuni, atau lantai..." 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white"
+                    >
+                    <button onclick="toggleMobileSearch(false)" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
 
-                <!-- ── 4 KPI OVERVIEW CARDS (TABLET & DESKTOP BENTO) ────────── -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4.5">
+            <!-- MAIN WORKSPACE CONTAINER -->
+            <main class="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 flex-1 max-w-7xl w-full mx-auto">
+
+                <!-- ── 1. COMPACT FINANCIAL RIBBON (MOBILE ONLY: SAVES 300PX OF SPACE) ── -->
+                <div class="md:hidden bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                    <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi Laba Bersih</span>
+                            <div class="flex items-baseline gap-2 mt-0.5">
+                                <h3 id="mobileNetProfit" class="text-lg font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                                <span id="mobileProfitMargin" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md">+0% Profit</span>
+                            </div>
+                        </div>
+                        <button onclick="toggleMobileMetrics()" id="mobileMetricsToggleBtn" class="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-600 text-[11px] font-bold hover:bg-slate-200 transition-colors flex items-center gap-1">
+                            <span>Detail</span>
+                            <i id="mobileMetricsIcon" class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <!-- Mini Strip (Okupansi & Omset) -->
+                    <div class="grid grid-cols-3 gap-2 pt-2.5 text-center text-xs">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Okupansi</span>
+                            <span id="mobileOccupancy" class="font-bold text-slate-800 text-xs">0 / 0 (0%)</span>
+                        </div>
+                        <div class="border-x border-slate-100">
+                            <span class="text-[10px] text-slate-400 block">Pemasukan</span>
+                            <span id="mobileRevenue" class="font-bold text-emerald-600 text-xs">Rp 0</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Pengeluaran</span>
+                            <span id="mobileExpense" class="font-bold text-rose-600 text-xs">Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 2. FULL 4 KPI BENTO CARDS (DEFAULT VISIBLE ON DESKTOP/TABLET, COLLAPSIBLE ON MOBILE) ── -->
+                <div id="fullMetricsContainer" class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                     
                     <!-- Card 1: Pemasukan Sewa -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Sewa</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-2xs">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan Sewa</span>
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs sm:text-sm shadow-2xs">
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
                         </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiRevenue" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded-md">Total Diterima</span>
+                        <div class="mt-2">
+                            <h3 id="kpiRevenue" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
+                                <span class="font-bold text-emerald-700 bg-emerald-50 px-1 rounded">Terbayar</span>
                                 <span class="text-slate-400 truncate">sewa aktif</span>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Card 2: Pengeluaran Operasional -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pengeluaran Kost</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm shadow-2xs">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pengeluaran Kost</span>
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xs sm:text-sm shadow-2xs">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
                         </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiExpense" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded-md" id="kpiExpenseCount">0 Pos</span>
-                                <span class="text-slate-400 truncate">biaya operasional</span>
+                        <div class="mt-2">
+                            <h3 id="kpiExpense" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
+                                <span class="font-bold text-rose-700 bg-rose-50 px-1 rounded" id="kpiExpenseCount">0 Pos</span>
+                                <span class="text-slate-400 truncate">operasional</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 3: Laba Bersih -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Laba Bersih</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-2xs">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">Laba Bersih</span>
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs sm:text-sm shadow-2xs">
                                 <i class="fa-solid fa-chart-line"></i>
                             </div>
                         </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiNetProfit" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded-md" id="kpiProfitMargin">0% Margin</span>
+                        <div class="mt-2">
+                            <h3 id="kpiNetProfit" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
+                                <span class="font-bold text-indigo-700 bg-indigo-50 px-1 rounded" id="kpiProfitMargin">0% Margin</span>
                                 <span class="text-slate-400 truncate">profitabilitas</span>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Card 4: Okupansi & Kamar Siap -->
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-md transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Okupansi Kamar</span>
-                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm shadow-2xs">
+                            <span class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">Okupansi Kamar</span>
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs sm:text-sm shadow-2xs">
                                 <i class="fa-solid fa-bed"></i>
                             </div>
                         </div>
-                        <div class="mt-2.5">
-                            <h3 id="kpiOccupancy" class="text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight">0 / 0 Kamar</h3>
-                            <div class="flex items-center gap-1.5 mt-1 text-[11px]">
-                                <span class="font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded-md" id="kpiOccupancyPct">0%</span>
-                                <span class="text-slate-400 truncate" id="kpiEmptySubtitle">0 Kamar Tersedia</span>
+                        <div class="mt-2">
+                            <h3 id="kpiOccupancy" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">0 / 0 Kamar</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
+                                <span class="font-bold text-blue-700 bg-blue-50 px-1 rounded" id="kpiOccupancyPct">0%</span>
+                                <span class="text-slate-400 truncate" id="kpiEmptySubtitle">0 Siap Huni</span>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- ── VIEW SWITCHER TABS ───────────────────────────────────── -->
-                <div class="flex items-center justify-between border-b border-slate-200/80 pb-2 overflow-x-auto gap-2">
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="switchView('kamar')" id="tabBtn-kamar" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-bed"></i>
-                            <span>Daftar Kamar &amp; Penghuni</span>
+                <!-- ── 3. SLEEK SEGMENTED VIEW CONTROL (COMPACT & MODERN) ─────── -->
+                <div class="flex items-center justify-between gap-2">
+                    <div class="bg-slate-200/70 p-1 rounded-2xl flex items-center gap-1">
+                        <button onclick="switchView('kamar')" id="tabBtn-kamar" class="view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-bed text-emerald-600"></i>
+                            <span>Kamar</span>
                         </button>
-                        <button onclick="switchView('denah')" id="tabBtn-denah" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-table-cells-large text-emerald-600"></i>
-                            <span>Denah Visual Status</span>
+                        <button onclick="switchView('denah')" id="tabBtn-denah" class="view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-table-cells-large text-slate-400"></i>
+                            <span>Denah</span>
                         </button>
-                        <button onclick="switchView('expenses')" id="tabBtn-expenses" class="view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-money-bill-wave text-rose-600"></i>
-                            <span>Buku Kas Pengeluaran</span>
+                        <button onclick="switchView('expenses')" id="tabBtn-expenses" class="view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-money-bill-wave text-slate-400"></i>
+                            <span>Buku Kas</span>
                         </button>
                     </div>
 
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors">
+                    <div class="flex items-center gap-2">
+                        <button onclick="exportToCSV()" class="hidden sm:flex px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                            <span class="hidden sm:inline">Export Excel/CSV</span>
+                            <span class="hidden md:inline">Export Excel</span>
+                        </button>
+                        <button onclick="openSettingsModal()" class="hidden sm:flex p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs transition-colors" title="Pengaturan">
+                            <i class="fa-solid fa-gear"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- ========================================================== -->
-                <!-- VIEW 1: DATA MANAGEMENT SECTION (FILTER & TABLE/CARDS)     -->
+                <!-- VIEW 1: DATA KAMAR & PENGHUNI (COMPACT & UNCLUTTERED)      -->
                 <!-- ========================================================== -->
-                <div id="view-kamar-container" class="space-y-4">
-                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
-                        
-                        <!-- Toolbar Filter & Search -->
-                        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <!-- Filter Tabs -->
-                            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="filterTabGroup">
-                                <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
-                                    Semua (<span id="countFilterSemua">0</span>)
-                                </button>
-                                <button onclick="setFilter('Terisi', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                    Terisi (<span id="countFilterTerisi">0</span>)
-                                </button>
-                                <button onclick="setFilter('Tersedia', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                    Kosong / Tersedia (<span id="countFilterTersedia">0</span>)
-                                </button>
-                                <button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                    Jatuh Tempo (<span id="countFilterDue">0</span>)
-                                </button>
-                                <button onclick="setFilter('Menunggak', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                    Menunggak (<span id="countFilterLate">0</span>)
-                                </button>
-                                <button onclick="setFilter('Booking', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200/70 shrink-0">
-                                    Booking / DP (<span id="countFilterBooking">0</span>)
-                                </button>
-                            </div>
+                <div id="view-kamar-container" class="space-y-3">
+                    
+                    <!-- Horizontal Scrolling Filter Chips (Single Row, Smooth Swipe) -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="filterTabGroup">
+                        <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
+                            Semua (<span id="countFilterSemua">0</span>)
+                        </button>
+                        <button onclick="setFilter('Terisi', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Terisi (<span id="countFilterTerisi">0</span>)
+                        </button>
+                        <button onclick="setFilter('Tersedia', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Siap Huni (<span id="countFilterTersedia">0</span>)
+                        </button>
+                        <button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Jatuh Tempo (<span id="countFilterDue">0</span>)
+                        </button>
+                        <button onclick="setFilter('Menunggak', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Menunggak (<span id="countFilterLate">0</span>)
+                        </button>
+                        <button onclick="setFilter('Booking', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Booking (<span id="countFilterBooking">0</span>)
+                        </button>
+                    </div>
 
-                            <!-- Mobile Quick Search -->
-                            <div class="sm:hidden relative">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                <input 
-                                    type="text" 
-                                    oninput="handleSearch(this.value)" 
-                                    placeholder="Cari kamar / nama penyewa..." 
-                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-                                >
-                            </div>
-                        </div>
+                    <!-- ── MOBILE & TABLET RESPONSIVE CARDS CONTAINER (DEFAULT < 1024px) ── -->
+                    <div id="mobileCardsContainer" class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
+                        <!-- Populated dynamically by JS as sleek modern mobile cards -->
+                    </div>
 
-                        <!-- DESKTOP & TABLET VIEW: FULL DATA TABLE (HIDDEN ON MOBILE) -->
-                        <div class="hidden md:block overflow-x-auto">
+                    <!-- ── DESKTOP ONLY: FULL DATA TABLE (>= 1024px ONLY) ──────── -->
+                    <div class="hidden lg:block bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+                        <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-50/70 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -399,21 +497,17 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- MOBILE FRIENDLY VIEW: RESPONSIVE CARDS (BLOCK ON MOBILE) -->
-                        <div id="mobileCardsContainer" class="md:hidden divide-y divide-slate-100 p-3 space-y-3">
-                            <!-- Populated dynamically by JS -->
-                        </div>
-
-                        <!-- Table Footer / Summary -->
-                        <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                        <div class="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                             <div id="tableCounter">Memuat data penyewa...</div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
-                                    <i class="fa-solid fa-circle-check"></i> Database Terkoneksi Realtime
-                                </span>
-                            </div>
+                            <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> Database Terkoneksi
+                            </span>
                         </div>
+                    </div>
+
+                    <!-- Simple Mobile/Tablet Counter -->
+                    <div class="lg:hidden text-center py-2 text-xs text-slate-400" id="mobileTableCounter">
+                        Memuat data kamar...
                     </div>
                 </div>
 
@@ -421,37 +515,36 @@
                 <!-- VIEW 2: DENAH VISUAL STATUS KAMAR (ROOM GRID BENTO)        -->
                 <!-- ========================================================== -->
                 <div id="view-denah-container" class="space-y-4 hidden">
-                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs p-5 sm:p-6 space-y-6">
+                    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3.5 sm:p-5 space-y-4">
                         
-                        <!-- Denah Header & Legend -->
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                            <div>
-                                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                        <!-- Denah Legend -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
                                     <i class="fa-solid fa-table-cells-large text-emerald-600"></i>
-                                    Denah Visual Status Kamar
+                                    Denah Visual Kamar
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Pantau status seluruh kamar secara visual per lantai dalam sekali pandang.</p>
                             </div>
                             
-                            <!-- Status Badges Legend -->
-                            <div class="flex flex-wrap items-center gap-2 text-xs">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terisi (Lunas)
+                            <!-- Badges Legend -->
+                            <div class="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-xs">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Lunas
                                 </span>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
-                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Jatuh Tempo
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Tagihan
                                 </span>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-semibold">
-                                    <span class="w-2 h-2 rounded-full bg-rose-500"></span> Menunggak
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Nunggak
                                 </span>
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-semibold">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Siap Huni (Kosong)
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Kosong
                                 </span>
                             </div>
                         </div>
 
                         <!-- Dynamic Floors Grid Container -->
-                        <div id="denahFloorsContainer" class="space-y-6">
+                        <div id="denahFloorsContainer" class="space-y-4">
                             <!-- Populated dynamically by JS per Floor -->
                         </div>
 
@@ -461,33 +554,34 @@
                 <!-- ========================================================== -->
                 <!-- VIEW 3: BUKU KAS & PENGELUARAN OPERASIONAL KOST            -->
                 <!-- ========================================================== -->
-                <div id="view-expenses-container" class="space-y-4 hidden">
-                    <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+                <div id="view-expenses-container" class="space-y-3 hidden">
+                    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs overflow-hidden">
                         
-                        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                        <div class="p-3.5 sm:p-4 border-b border-slate-100 flex items-center justify-between gap-3 bg-slate-50/50">
                             <div>
-                                <h3 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
                                     <i class="fa-solid fa-money-bill-wave text-rose-600"></i>
-                                    Buku Kas Pengeluaran Operasional
+                                    Buku Kas Pengeluaran
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Catat seluruh biaya listrik PLN, air PDAM, internet Wi-Fi, kebersihan, dan servis fasilitas.</p>
+                                <p class="text-[11px] text-slate-400 hidden sm:block">Catatan operasional listrik, air, internet, sampah &amp; perawatan.</p>
                             </div>
-                            <button onclick="openExpenseModal()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center gap-2 self-start sm:self-auto transition-all">
-                                <i class="fa-solid fa-plus"></i> Catat Pengeluaran Baru
+                            <button onclick="openExpenseModal()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>+ Catat Biaya</span>
                             </button>
                         </div>
 
                         <!-- Expenses Table (Desktop & Tablet) -->
-                        <div class="hidden sm:block overflow-x-auto">
+                        <div class="hidden md:block overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-50/80 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                        <th class="px-5 py-3.5">Tanggal</th>
-                                        <th class="px-5 py-3.5">Kategori</th>
-                                        <th class="px-5 py-3.5">Deskripsi Pengeluaran</th>
-                                        <th class="px-5 py-3.5">Catatan</th>
-                                        <th class="px-5 py-3.5 text-right">Nominal (Rp)</th>
-                                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                                        <th class="px-4 py-3">Tanggal</th>
+                                        <th class="px-4 py-3">Kategori</th>
+                                        <th class="px-4 py-3">Deskripsi Pengeluaran</th>
+                                        <th class="px-4 py-3">Catatan</th>
+                                        <th class="px-4 py-3 text-right">Nominal (Rp)</th>
+                                        <th class="px-4 py-3 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="expensesTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
@@ -496,13 +590,13 @@
                             </table>
                         </div>
 
-                        <!-- Mobile Expenses Cards (< 640px) -->
-                        <div id="mobileExpensesContainer" class="sm:hidden divide-y divide-slate-100 p-3 space-y-3">
+                        <!-- Mobile Expenses Cards (< 768px) -->
+                        <div id="mobileExpensesContainer" class="md:hidden divide-y divide-slate-100 p-2.5 space-y-2">
                             <!-- Injected by JS -->
                         </div>
 
-                        <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <span id="expensesSummaryLabel">Total 0 pos pengeluaran</span>
+                        <div class="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                            <span id="expensesSummaryLabel">Total 0 pos</span>
                             <span id="expensesSummaryTotal" class="font-extrabold text-slate-900 text-sm">Rp 0</span>
                         </div>
 
@@ -513,15 +607,15 @@
         </div>
     </div>
 
-    <!-- ── MOBILE BOTTOM NAVIGATION BAR (< 768px) ───────────────────────── -->
-    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 z-40 px-3 py-2 flex items-center justify-around shadow-lg">
-        <button onclick="switchView('dashboard')" id="mobileNav-dashboard" class="flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]">
-            <i class="fa-solid fa-chart-pie text-base"></i>
-            <span>Dashboard</span>
-        </button>
-        <button onclick="switchView('kamar')" id="mobileNav-kamar" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
+    <!-- ── MOBILE BOTTOM NAVIGATION BAR (< 768px: DOCK STYLE) ───────────── -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 z-40 px-3 py-2 flex items-center justify-around shadow-lg pb-safe">
+        <button onclick="switchView('kamar')" id="mobileNav-kamar" class="flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]">
             <i class="fa-solid fa-bed text-base"></i>
             <span>Kamar</span>
+        </button>
+        <button onclick="switchView('denah')" id="mobileNav-denah" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]">
+            <i class="fa-solid fa-table-cells-large text-base"></i>
+            <span>Denah</span>
         </button>
         <button onclick="showNewModal()" class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center -mt-5 shadow-lg shadow-emerald-600/30">
             <i class="fa-solid fa-plus text-base"></i>
@@ -543,14 +637,13 @@
         <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
             
             <!-- Modal Header -->
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <div class="flex items-center gap-2.5">
-                    <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm bg-emerald-50 text-emerald-600 font-bold shadow-2xs">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs bg-emerald-50 text-emerald-600 font-bold shadow-2xs">
                         <i class="fa-solid fa-receipt"></i>
                     </span>
                     <div>
-                        <h3 class="text-sm font-extrabold text-slate-900">Kuitansi &amp; Nota Pembayaran Sewa</h3>
-                        <p class="text-[11px] text-slate-400">Pratinjau langsung nota pembayaran sewa &amp; kirim via WhatsApp</p>
+                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kuitansi Pembayaran Sewa</h3>
                     </div>
                 </div>
                 <button onclick="closeReceiptModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
@@ -559,12 +652,12 @@
             </div>
 
             <!-- Modal Body (Grid: Left Paper Preview, Right Editor) -->
-            <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 overflow-y-auto flex-1">
+            <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 overflow-y-auto flex-1">
                 
                 <!-- LEFT COLUMN: RECEIPT PAPER PREVIEW -->
                 <div class="md:col-span-6 flex flex-col items-center">
-                    <div class="w-full mb-3 flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                    <div class="w-full mb-2.5 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
                             <i class="fa-solid fa-eye text-slate-400"></i> Pratinjau Struk
                         </span>
                         <div class="flex items-center gap-1 text-[11px]">
@@ -592,7 +685,7 @@
                         </div>
 
                         <!-- Transaction Meta -->
-                        <div class="py-2.5 text-[10px] border-b border-dashed border-slate-300 space-y-1">
+                        <div class="py-2 text-[10px] border-b border-dashed border-slate-300 space-y-1">
                             <div class="flex justify-between">
                                 <span class="text-slate-500">No. Nota</span>
                                 <span id="receiptIdText" class="font-bold">#KMR-101</span>
@@ -606,14 +699,14 @@
                                 <span id="receiptCustomerText" class="font-bold">Agus Setiawan</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-500">Petugas / Owner</span>
-                                <span>Pengelola Kost</span>
+                                <span class="text-slate-500">Pengelola</span>
+                                <span>Petugas Kost</span>
                             </div>
                         </div>
 
                         <!-- Itemized Table -->
-                        <div class="py-3 border-b border-dashed border-slate-300">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+                        <div class="py-2.5 border-b border-dashed border-slate-300">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex justify-between">
                                 <span>Rincian Pembayaran</span>
                                 <span>Total</span>
                             </div>
@@ -623,7 +716,7 @@
                         </div>
 
                         <!-- Calculation Summary -->
-                        <div class="py-2.5 text-[11px] space-y-1 border-b border-dashed border-slate-300">
+                        <div class="py-2 text-[11px] space-y-1 border-b border-dashed border-slate-300">
                             <div class="flex justify-between text-slate-600">
                                 <span>Subtotal</span>
                                 <span id="receiptSubtotalText" class="font-semibold">Rp 0</span>
@@ -650,26 +743,25 @@
                             </div>
                         </div>
 
-                        <!-- Footer Thank You Note -->
-                        <div class="text-center pt-3 text-[10px] text-slate-400 space-y-0.5">
+                        <!-- Footer Note -->
+                        <div class="text-center pt-2.5 text-[10px] text-slate-400 space-y-0.5">
                             <p class="font-bold text-slate-700">*** BUKTI PEMBAYARAN SAH ***</p>
                             <p>Simpan kuitansi ini sebagai bukti sewa yang sah.</p>
-                            <p class="text-[9px] text-slate-400 mt-1">SIMKOST Pro · Manajemen Kost Terpadu</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- RIGHT COLUMN: INTERACTIVE CONTROLS -->
-                <div class="md:col-span-6 space-y-4">
+                <div class="md:col-span-6 space-y-3.5">
                     <!-- Meta Editors -->
-                    <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="grid grid-cols-2 gap-2.5 text-xs">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Nama Penyewa</label>
-                            <input type="text" id="editCustomerInput" oninput="updateReceiptCustomer(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none">
+                            <input type="text" id="editCustomerInput" oninput="updateReceiptCustomer(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:bg-white outline-none">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">No. Kuitansi / Kamar</label>
-                            <input type="text" id="editIdInput" oninput="updateReceiptId(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none">
+                            <label class="block font-bold text-slate-700 mb-1">No. Nota / Kamar</label>
+                            <input type="text" id="editIdInput" oninput="updateReceiptId(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:bg-white outline-none">
                         </div>
                     </div>
 
@@ -681,48 +773,48 @@
                                 <i class="fa-solid fa-plus-circle"></i> Tambah Baris
                             </button>
                         </div>
-                        <div id="editorItemsContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <div id="editorItemsContainer" class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
                             <!-- Injected by JS -->
                         </div>
                     </div>
 
                     <!-- Discount & Cash Controls -->
-                    <div class="p-4 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-3 text-xs">
-                        <div class="grid grid-cols-2 gap-3">
+                    <div class="p-3 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-2.5 text-xs">
+                        <div class="grid grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1">Potongan / Diskon (Rp)</label>
+                                <label class="block font-bold text-slate-700 mb-1">Diskon (Rp)</label>
                                 <input type="number" id="editDiscountInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 outline-none">
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1">Biaya Tambahan/Air</label>
-                                <div class="flex items-center gap-2 pt-1.5">
+                                <label class="block font-bold text-slate-700 mb-1">Biaya Tambahan</label>
+                                <div class="flex items-center gap-1.5 pt-1">
                                     <input type="checkbox" id="editTaxCheckbox" onchange="recalculateReceipt()" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 h-4 w-4">
-                                    <span class="text-slate-600 text-xs">+ Rp 25.000 Kebersihan</span>
+                                    <span class="text-slate-600 text-xs">+ Rp 25k Sampah</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+                        <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-200">
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Uang Diterima (Rp)</label>
                                 <input type="number" id="editCashInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none">
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1">Kembalian Otomatis</label>
-                                <div id="editChangeDisplay" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200 text-sm">
+                                <label class="block font-bold text-slate-700 mb-1">Kembalian</label>
+                                <div id="editChangeDisplay" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200 text-xs">
                                     Rp 0
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Print & WhatsApp Action Buttons -->
-                    <div class="pt-2 flex items-center gap-2.5">
-                        <button onclick="printReceiptNow()" class="flex-1 py-3 rounded-2xl text-white font-bold text-xs bg-slate-900 hover:bg-slate-800 shadow-md flex items-center justify-center gap-2 transition-all">
+                    <!-- Action Buttons -->
+                    <div class="pt-1 flex items-center gap-2">
+                        <button onclick="printReceiptNow()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs bg-slate-900 hover:bg-slate-800 shadow-sm flex items-center justify-center gap-1.5 transition-all">
                             <i class="fa-solid fa-print"></i>
-                            <span>Cetak Struk / Unduh PDF</span>
+                            <span>Cetak Struk</span>
                         </button>
-                        <button onclick="sendReceiptViaWA()" class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all" title="Kirim Nota via WhatsApp">
+                        <button onclick="sendReceiptViaWA()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all" title="Kirim Nota via WhatsApp">
                             <i class="fa-brands fa-whatsapp text-sm"></i>
                             <span>Kirim WA</span>
                         </button>
@@ -737,19 +829,19 @@
     <!-- ================================================================== -->
     <!-- MODAL 2: TAMBAH DATA SEWA KAMAR BARU                               -->
     <!-- ================================================================== -->
-    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Kamar &amp; Data Sewa
+    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-emerald-600"></i> Tambah Kamar &amp; Sewa
                 </h3>
                 <button onclick="closeNewModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleNewSubmit(event)" class="p-6 space-y-4 text-xs">
+            <form onsubmit="handleNewSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
                 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Nomor Kamar *</label>
                         <input type="text" id="newRoomId" required placeholder="Contoh: KMR-106" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 uppercase font-mono font-bold">
@@ -760,39 +852,38 @@
                             <option value="Lantai 1">Lantai 1</option>
                             <option value="Lantai 2">Lantai 2</option>
                             <option value="Lantai 3">Lantai 3</option>
-                            <option value="Paviliun / Blok Belakang">Paviliun / Blok Belakang</option>
+                            <option value="Paviliun">Paviliun</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Tipe Kamar & Fasilitas -->
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Tipe Kamar &amp; Fasilitas *</label>
-                    <input type="text" id="newService" required placeholder="Contoh: Kamar Deluxe AC + KM Dalam + WiFi" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    <input type="text" id="newService" required placeholder="Contoh: Kamar Deluxe AC + KM Dalam" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
 
-                <!-- Opsi Kamar Kosong atau Langsung Isi Penyewa -->
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <!-- Kondisi Kamar Saat Ini -->
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
                     <div class="flex items-center justify-between">
-                        <span class="font-bold text-slate-800 text-xs">Kondisi Kamar Saat Ini</span>
+                        <span class="font-bold text-slate-800 text-xs">Kondisi Kamar</span>
                         <div class="flex items-center gap-3">
                             <label class="inline-flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="newRoomCondition" value="terisi" checked onchange="toggleNewTenantFields(true)" class="text-emerald-600 focus:ring-emerald-500">
-                                <span class="font-bold text-emerald-700">Sudah Terisi</span>
+                                <span class="font-bold text-emerald-700 text-xs">Terisi</span>
                             </label>
                             <label class="inline-flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="newRoomCondition" value="kosong" onchange="toggleNewTenantFields(false)" class="text-blue-600 focus:ring-blue-500">
-                                <span class="font-bold text-blue-700">Kosong / Siap Huni</span>
+                                <span class="font-bold text-blue-700 text-xs">Siap Huni</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Tenant Details (Collapsible if Empty Room) -->
-                    <div id="newTenantFieldsSection" class="space-y-3 pt-1 border-t border-slate-200/60">
-                        <div class="grid grid-cols-2 gap-3">
+                    <!-- Collapsible Tenant Details -->
+                    <div id="newTenantFieldsSection" class="space-y-2.5 pt-2 border-t border-slate-200/60">
+                        <div class="grid grid-cols-2 gap-2.5">
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Nama Penyewa</label>
-                                <input type="text" id="newCustomer" placeholder="Nama lengkap penyewa" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                                <input type="text" id="newCustomer" placeholder="Nama lengkap" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">No. WhatsApp</label>
@@ -800,7 +891,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2.5">
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
                                 <select id="newPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
@@ -812,27 +903,27 @@
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Tanggal Jatuh Tempo</label>
-                                <input type="text" id="newDueDate" placeholder="Contoh: 05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                                <input type="text" id="newDueDate" placeholder="05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Biaya Sewa Bulanan (Rp) *</label>
+                        <label class="block font-bold text-slate-700 mb-1">Harga Sewa / Bln (Rp) *</label>
                         <input type="number" id="newAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan / Token Listrik</label>
-                        <input type="text" id="newDetail" placeholder="Deposit Rp 500rb / Token Mandiri" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
+                        <input type="text" id="newDetail" placeholder="Listrik Mandiri / Deposit" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                     </div>
                 </div>
 
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeNewModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" id="submitBtn" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
-                        <span>Simpan Data Kamar</span>
+                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeNewModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" id="submitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
+                        <span>Simpan Data</span>
                     </button>
                 </div>
             </form>
@@ -842,20 +933,20 @@
     <!-- ================================================================== -->
     <!-- MODAL 3: EDIT DATA KAMAR & PENGHUNI (UPDATE / RENEWAL)             -->
     <!-- ================================================================== -->
-    <div id="editRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+    <div id="editRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Edit Kamar &amp; Data Sewa
                 </h3>
                 <button onclick="closeEditModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleEditSubmit(event)" class="p-6 space-y-4 text-xs">
+            <form onsubmit="handleEditSubmit(event)" class="p-4 sm:p-5 space-y-3 text-xs">
                 <input type="hidden" id="editRoomOriginalId">
                 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Nomor Kamar</label>
                         <input type="text" id="editRoomId" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-slate-600 outline-none">
@@ -866,7 +957,7 @@
                             <option value="Lantai 1">Lantai 1</option>
                             <option value="Lantai 2">Lantai 2</option>
                             <option value="Lantai 3">Lantai 3</option>
-                            <option value="Paviliun / Blok Belakang">Paviliun / Blok Belakang</option>
+                            <option value="Paviliun">Paviliun</option>
                         </select>
                     </div>
                 </div>
@@ -876,7 +967,7 @@
                     <input type="text" id="editService" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Nama Penghuni</label>
                         <input type="text" id="editCustomer" required class="w-full border border-slate-200 rounded-xl px-3 py-2 font-semibold outline-none">
@@ -887,9 +978,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Harga Sewa Bulanan (Rp)</label>
+                        <label class="block font-bold text-slate-700 mb-1">Harga Sewa / Bln (Rp)</label>
                         <input type="number" id="editAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
                     </div>
                     <div>
@@ -904,10 +995,10 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Tanggal Jatuh Tempo</label>
-                        <input type="text" id="editDueDate" placeholder="Jatuh Tempo: 05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                        <input type="text" id="editDueDate" placeholder="05 Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
@@ -915,16 +1006,16 @@
                     </div>
                 </div>
 
-                <div class="pt-3 flex items-center justify-between border-t border-slate-100">
-                    <button type="button" onclick="checkoutCurrentRoom()" class="px-3 py-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 font-bold flex items-center gap-1.5 transition-colors" title="Kosongkan kamar ini">
+                <div class="pt-2.5 flex items-center justify-between border-t border-slate-100">
+                    <button type="button" onclick="checkoutCurrentRoom()" class="px-3 py-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 font-bold flex items-center gap-1.5 transition-colors text-xs" title="Kosongkan kamar ini">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>Kosongkan Kamar</span>
+                        <span>Kosongkan</span>
                     </button>
                     
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                        <button type="submit" id="editSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
-                            <span>Simpan Perubahan</span>
+                        <button type="button" onclick="closeEditModal()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
+                        <button type="submit" id="editSubmitBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
+                            <span>Simpan</span>
                         </button>
                     </div>
                 </div>
@@ -935,33 +1026,33 @@
     <!-- ================================================================== -->
     <!-- MODAL 4: CATAT PENGELUARAN OPERASIONAL KOST (BUKU KAS)             -->
     <!-- ================================================================== -->
-    <div id="expenseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran Operasional
+    <div id="expenseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran
                 </h3>
                 <button onclick="closeExpenseModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleExpenseSubmit(event)" class="p-6 space-y-4 text-xs">
+            <form onsubmit="handleExpenseSubmit(event)" class="p-4 sm:p-5 space-y-3 text-xs">
                 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Judul / Keperluan Pengeluaran *</label>
-                    <input type="text" id="expenseTitle" required placeholder="Contoh: Token Listrik Lorong & Pompa Air" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20">
+                    <label class="block font-bold text-slate-700 mb-1">Keperluan Pengeluaran *</label>
+                    <input type="text" id="expenseTitle" required placeholder="Contoh: Token Listrik Lorong & Pompa" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20">
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Kategori Biaya *</label>
+                        <label class="block font-bold text-slate-700 mb-1">Kategori *</label>
                         <select id="expenseCategory" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
                             <option value="Listrik">Listrik &amp; Token</option>
                             <option value="Air">Air &amp; PDAM</option>
-                            <option value="Internet">Internet &amp; Wi-Fi</option>
-                            <option value="Kebersihan">Kebersihan &amp; Sampah</option>
-                            <option value="Perbaikan">Servis &amp; Perbaikan</option>
-                            <option value="Gaji">Gaji Staff / Penjaga</option>
+                            <option value="Internet">Internet Wi-Fi</option>
+                            <option value="Kebersihan">Kebersihan/Sampah</option>
+                            <option value="Perbaikan">Servis / Perbaikan</option>
+                            <option value="Gaji">Gaji Staff</option>
                             <option value="Lainnya">Lain-lain</option>
                         </select>
                     </div>
@@ -977,14 +1068,14 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan / No. Bukti</label>
-                    <input type="text" id="expenseNotes" placeholder="No. Struk Toko / Pembayaran via transfer" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                    <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
+                    <input type="text" id="expenseNotes" placeholder="No. Struk Toko / Bukti transfer" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
 
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" id="expenseSubmitBtn" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-sm shadow-rose-600/20">
-                        <span>Simpan Pengeluaran</span>
+                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" id="expenseSubmitBtn" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-sm shadow-rose-600/20">
+                        <span>Simpan</span>
                     </button>
                 </div>
             </form>
@@ -994,42 +1085,42 @@
     <!-- ================================================================== -->
     <!-- MODAL 5: PENGATURAN TOKO & LOGO (HANYA DI MENU INI)               -->
     <!-- ================================================================== -->
-    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-6">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-emerald-600"></i> Pengaturan Usaha Kost &amp; Logo
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-emerald-600"></i> Pengaturan Usaha &amp; Logo
                 </h3>
                 <button onclick="closeSettingsModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleSettingsSave(event)" class="p-6 space-y-4 text-xs">
+            <form onsubmit="handleSettingsSave(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
                 
                 <!-- 1. PENGATURAN LOGO RESMI (TERPUSAT DI SINI) -->
-                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
                     <div class="flex items-center justify-between">
                         <div>
                             <span class="font-extrabold text-slate-800 text-xs flex items-center gap-1.5">
-                                <i class="fa-solid fa-image text-emerald-600"></i> Logo Usaha / Struk Kuitansi
+                                <i class="fa-solid fa-image text-emerald-600"></i> Logo Usaha Kost
                             </span>
-                            <p class="text-[11px] text-slate-400 mt-0.5">Otomatis dicetak pada setiap nota thermal dan kuitansi.</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Otomatis dicetak pada setiap nota kuitansi.</p>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-3 pt-1">
-                        <div class="w-16 h-16 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
-                            <img id="settingsLogoPreview" src="" alt="Logo" class="max-h-14 max-w-[56px] object-contain hidden">
-                            <i id="settingsLogoPlaceholder" class="fa-solid fa-building-user text-2xl text-slate-300"></i>
+                        <div class="w-14 h-14 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                            <img id="settingsLogoPreview" src="" alt="Logo" class="max-h-12 max-w-[50px] object-contain hidden">
+                            <i id="settingsLogoPlaceholder" class="fa-solid fa-building-user text-xl text-slate-300"></i>
                         </div>
                         <div class="space-y-1.5 flex-1">
                             <label for="logoFileInput" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 shadow-2xs transition-colors">
                                 <i class="fa-solid fa-upload text-emerald-600"></i>
-                                <span>Pilih Logo Baru (PNG/JPG)</span>
+                                <span>Pilih Logo (PNG/JPG)</span>
                             </label>
                             <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
                             <div>
-                                <button type="button" onclick="resetLogoToDefault()" class="text-[11px] font-semibold text-rose-600 hover:underline">
+                                <button type="button" onclick="resetLogoToDefault()" class="text-[10px] font-semibold text-rose-600 hover:underline">
                                     Hapus &amp; Gunakan Ikon Default
                                 </button>
                             </div>
@@ -1039,7 +1130,7 @@
 
                 <!-- 2. INFORMASI KOST -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nama Rumah Kost / Properti *</label>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Rumah Kost *</label>
                     <input type="text" id="settingStoreName" required class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
                 </div>
                 <div>
@@ -1047,57 +1138,54 @@
                     <input type="text" id="settingStoreAddress" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                 </div>
                 
-                <!-- 3. REKENING PEMBAYARAN UNTUK WHATSAPP -->
-                <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2.5">
+                <!-- 3. REKENING BANK UNTUK TAGIHAN WA -->
+                <div class="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-2">
                     <span class="font-bold text-emerald-900 text-xs flex items-center gap-1.5">
                         <i class="fa-solid fa-building-columns text-emerald-600"></i> Rekening Bank untuk Tagihan WhatsApp
                     </span>
-                    <p class="text-[11px] text-slate-500">Nomor rekening ini akan otomatis disisipkan saat mengirim pengingat sewa ke WhatsApp penyewa.</p>
                     <div class="grid grid-cols-3 gap-2">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Bank</label>
-                            <input type="text" id="settingBankName" placeholder="BCA / Mandiri" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Bank</label>
+                            <input type="text" id="settingBankName" placeholder="BCA" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-1">No. Rekening</label>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">No. Rekening</label>
                             <input type="text" id="settingBankNumber" placeholder="8220918223" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono outline-none">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-600 mb-1">Atas Nama</label>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Atas Nama</label>
                             <input type="text" id="settingBankHolder" placeholder="Budi Santoso" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none">
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">No. Kontak Pengelola / WA</label>
                         <input type="text" id="settingStorePhone" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Format Cetak Struk Default</label>
+                        <label class="block font-bold text-slate-700 mb-1">Format Cetak Struk</label>
                         <select id="settingDefaultPaper" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white outline-none">
                             <option value="58mm">Thermal 58mm (Kecil)</option>
                             <option value="80mm">Thermal 80mm (Standar)</option>
-                            <option value="a4">Kertas Standar A4</option>
+                            <option value="a4">Kertas A4</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- 4. BACKUP & RESTORE DATA -->
+                <!-- 4. BACKUP DATA -->
                 <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span class="text-slate-500 font-semibold">Cadangan Data Mandiri:</span>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="exportBackupJSON()" class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700">
-                            <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
-                        </button>
-                    </div>
+                    <span class="text-slate-500 font-semibold">Cadangan Data:</span>
+                    <button type="button" onclick="exportBackupJSON()" class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700">
+                        <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
+                    </button>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Tutup</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">Simpan Pengaturan</button>
+                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Tutup</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">Simpan</button>
                 </div>
             </form>
         </div>
@@ -1162,10 +1250,10 @@
         let currentActiveView = 'kamar'; // 'kamar' | 'denah' | 'expenses'
         let currentReceiptItem = null;
         let receiptRows = [];
+        let activeActionSheetRoomId = null;
 
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
-            // Set default date for expense form
             const todayStr = new Date().toISOString().slice(0, 10);
             const expDateInput = document.getElementById('expenseDate');
             if (expDateInput) expDateInput.value = todayStr;
@@ -1174,6 +1262,39 @@
             loadLogo();
             await syncAllData();
         });
+
+        // Mobile Search Input Toggle
+        function toggleMobileSearch(show) {
+            const box = document.getElementById('mobileSearchCollapse');
+            const input = document.getElementById('mobileSearchInput');
+            if (!box) return;
+            
+            if (show === undefined) {
+                box.classList.toggle('hidden');
+                if (!box.classList.contains('hidden') && input) input.focus();
+            } else if (show) {
+                box.classList.remove('hidden');
+                if (input) input.focus();
+            } else {
+                box.classList.add('hidden');
+                if (input) { input.value = ''; handleSearch(''); }
+            }
+        }
+
+        // Toggle Full Metrics on Mobile
+        function toggleMobileMetrics() {
+            const container = document.getElementById('fullMetricsContainer');
+            const icon = document.getElementById('mobileMetricsIcon');
+            if (!container) return;
+
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                if (icon) icon.className = 'fa-solid fa-chevron-up text-[10px]';
+            } else {
+                container.classList.add('hidden');
+                if (icon) icon.className = 'fa-solid fa-chevron-down text-[10px]';
+            }
+        }
 
         // Sync Both Rooms & Expenses
         async function syncAllData() {
@@ -1211,7 +1332,7 @@
                         return;
                     }
                 } catch (err) {
-                    console.warn('Sinkronisasi kamar cloud dialihkan ke cache lokal');
+                    console.warn('Sinkronisasi kamar dialihkan ke cache');
                 }
             }
             loadRoomsLocal();
@@ -1234,7 +1355,7 @@
                         return;
                     }
                 } catch (err) {
-                    console.warn('Sinkronisasi pengeluaran cloud dialihkan ke cache');
+                    console.warn('Sinkronisasi pengeluaran dialihkan ke cache');
                 }
             }
             loadExpensesLocal();
@@ -1260,13 +1381,8 @@
             }
         }
 
-        function saveRoomsLocal() {
-            localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData));
-        }
-
-        function saveExpensesLocal() {
-            localStorage.setItem(APP_EXPENSES_KEY, JSON.stringify(appExpenses));
-        }
+        function saveRoomsLocal() { localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData)); }
+        function saveExpensesLocal() { localStorage.setItem(APP_EXPENSES_KEY, JSON.stringify(appExpenses)); }
 
         function loadSettings() {
             const stored = localStorage.getItem(APP_SETTINGS_KEY);
@@ -1334,11 +1450,10 @@
             loadLogo();
         }
 
-        // View Switcher (Dashboard / Kamar / Denah / Expenses)
+        // View Switcher (Kamar / Denah / Expenses)
         function switchView(viewName) {
             currentActiveView = viewName;
             
-            // Toggle view containers
             const viewKamar = document.getElementById('view-kamar-container');
             const viewDenah = document.getElementById('view-denah-container');
             const viewExpenses = document.getElementById('view-expenses-container');
@@ -1347,13 +1462,13 @@
             if (viewDenah) viewDenah.classList.toggle('hidden', viewName !== 'denah');
             if (viewExpenses) viewExpenses.classList.toggle('hidden', viewName !== 'expenses');
 
-            // Update Tab Buttons (Desktop/Tablet)
+            // Update Segmented Tab Buttons
             document.querySelectorAll('.view-tab-btn').forEach(btn => {
-                btn.className = "view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center gap-2";
+                btn.className = "view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5";
             });
             const activeTabBtn = document.getElementById(`tabBtn-${viewName}`);
             if (activeTabBtn) {
-                activeTabBtn.className = "view-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white transition-all flex items-center gap-2";
+                activeTabBtn.className = "view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all flex items-center gap-1.5";
             }
 
             // Update Sidebar Buttons
@@ -1365,11 +1480,11 @@
                 activeNavBtn.className = "nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 transition-colors text-left";
             }
 
-            // Update Mobile Bottom Nav Active Color
-            ['dashboard', 'kamar', 'expenses'].forEach(v => {
+            // Update Mobile Bottom Nav
+            ['kamar', 'denah', 'expenses'].forEach(v => {
                 const el = document.getElementById(`mobileNav-${v}`);
                 if (el) {
-                    if (v === viewName || (viewName === 'denah' && v === 'kamar')) {
+                    if (v === viewName) {
                         el.className = "flex flex-col items-center gap-1 text-emerald-600 font-bold text-[10px]";
                     } else {
                         el.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-slate-700 font-medium text-[10px]";
@@ -1379,16 +1494,12 @@
 
             // Close mobile sidebar if open
             const sb = document.getElementById('mainSidebar');
-            if (sb && !sb.classList.contains('-translate-x-full')) {
-                toggleSidebar();
-            }
+            if (sb && !sb.classList.contains('-translate-x-full')) toggleSidebar();
 
-            // Smooth scroll to top of workspace
             window.scrollTo({ top: 0, behavior: 'smooth' });
             renderAllViews();
         }
 
-        // Render All Dynamic Views
         function renderAllViews() {
             renderTable();
             renderDenah();
@@ -1413,7 +1524,7 @@
                 const isDue = item.pay_status === 'Belum Lunas' || item.date.toLowerCase().includes('jatuh tempo');
 
                 if (isPaid) totalRevenue += Number(item.amount) || 0;
-                else if (isBooking) totalRevenue += 300000; // DP Terbayar rata-rata
+                else if (isBooking) totalRevenue += 300000;
 
                 if (isEmpty) emptyRooms++;
                 else occupiedRooms++;
@@ -1423,13 +1534,12 @@
                 if (isBooking) bookingRooms++;
             });
 
-            // Total Expenses
             let totalExpenses = appExpenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
             let netProfit = totalRevenue - totalExpenses;
             let profitMargin = totalRevenue > 0 ? Math.round((netProfit / totalRevenue) * 100) : 0;
             let occupancyPct = appData.length > 0 ? Math.round((occupiedRooms / appData.length) * 100) : 0;
 
-            // DOM Update
+            // DOM Update - Desktop/Tablet Bento
             const revEl = document.getElementById('kpiRevenue');
             const expEl = document.getElementById('kpiExpense');
             const expCountEl = document.getElementById('kpiExpenseCount');
@@ -1445,13 +1555,26 @@
             
             if (netProfitEl) {
                 netProfitEl.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
-                netProfitEl.className = netProfit >= 0 ? "text-base sm:text-2xl font-extrabold text-slate-900 tracking-tight" : "text-base sm:text-2xl font-extrabold text-rose-600 tracking-tight";
+                netProfitEl.className = netProfit >= 0 ? "text-base sm:text-xl font-extrabold text-slate-900 tracking-tight" : "text-base sm:text-xl font-extrabold text-rose-600 tracking-tight";
             }
             if (marginEl) marginEl.innerText = `${profitMargin}% Margin`;
 
             if (occEl) occEl.innerText = `${occupiedRooms} / ${appData.length} Kamar`;
             if (occPctEl) occPctEl.innerText = `${occupancyPct}%`;
-            if (emptySubEl) emptySubEl.innerText = `${emptyRooms} Kamar Siap Huni`;
+            if (emptySubEl) emptySubEl.innerText = `${emptyRooms} Siap Huni`;
+
+            // DOM Update - Mobile Compact Ribbon
+            const mNetProfit = document.getElementById('mobileNetProfit');
+            const mMargin = document.getElementById('mobileProfitMargin');
+            const mOcc = document.getElementById('mobileOccupancy');
+            const mRev = document.getElementById('mobileRevenue');
+            const mExp = document.getElementById('mobileExpense');
+
+            if (mNetProfit) mNetProfit.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
+            if (mMargin) mMargin.innerText = `${profitMargin}% Profit`;
+            if (mOcc) mOcc.innerText = `${occupiedRooms}/${appData.length} (${occupancyPct}%)`;
+            if (mRev) mRev.innerText = 'Rp ' + (totalRevenue >= 1000000 ? (totalRevenue/1000000).toFixed(1) + 'M' : totalRevenue.toLocaleString('id-ID'));
+            if (mExp) mExp.innerText = 'Rp ' + (totalExpenses >= 1000000 ? (totalExpenses/1000000).toFixed(1) + 'M' : totalExpenses.toLocaleString('id-ID'));
 
             // Filter Badges Count Update
             const countSemua = document.getElementById('countFilterSemua');
@@ -1474,15 +1597,21 @@
             currentFilter = tab;
             document.querySelectorAll('.filter-tab').forEach(b => {
                 b.classList.remove('active', 'bg-slate-900', 'text-white');
-                b.classList.add('bg-slate-100', 'text-slate-600');
+                b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
             });
             btn.classList.add('active', 'bg-slate-900', 'text-white');
-            btn.classList.remove('bg-slate-100', 'text-slate-600');
+            btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
             renderTable();
         }
 
         function handleSearch(query) {
             searchQuery = query.toLowerCase().trim();
+            // Sync desktop and mobile search inputs
+            const dInput = document.getElementById('searchInput');
+            const mInput = document.getElementById('mobileSearchInput');
+            if (dInput && dInput.value !== query) dInput.value = query;
+            if (mInput && mInput.value !== query) mInput.value = query;
+
             renderTable();
             renderDenah();
         }
@@ -1516,18 +1645,20 @@
 
             if (filtered.length === 0) {
                 const emptyHtml = `
-                    <div class="text-center py-10 text-slate-400">
-                        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
-                        <p class="font-medium text-xs">Tidak ada data kamar yang sesuai dengan filter.</p>
+                    <div class="col-span-full text-center py-8 text-slate-400 bg-white rounded-2xl border border-slate-200/80 p-5">
+                        <i class="fa-solid fa-inbox text-2xl mb-1 text-slate-300"></i>
+                        <p class="font-medium text-xs">Tidak ada data kamar yang sesuai.</p>
                     </div>
                 `;
                 tbody.innerHTML = `<tr><td colspan="8">${emptyHtml}</td></tr>`;
                 if (mobileContainer) mobileContainer.innerHTML = emptyHtml;
                 document.getElementById('tableCounter').innerText = 'Menampilkan 0 kamar';
+                const mCounter = document.getElementById('mobileTableCounter');
+                if (mCounter) mCounter.innerText = 'Menampilkan 0 kamar';
                 return;
             }
 
-            // 1. Desktop & Tablet Table Rows
+            // 1. Desktop Only: Full Data Table (>= 1024px)
             tbody.innerHTML = filtered.map(item => {
                 const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
                 
@@ -1540,13 +1671,13 @@
 
                 return `
                     <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="px-5 py-3.5 font-extrabold text-slate-900 font-mono">
+                        <td class="px-5 py-3 font-extrabold text-slate-900 font-mono">
                             <span class="hover:underline cursor-pointer" onclick="openEditModal('${item.id}')">${item.id}</span>
                         </td>
-                        <td class="px-5 py-3.5">
+                        <td class="px-5 py-3">
                             ${isAvailable ? `
                                 <span class="font-semibold text-slate-400 italic">Kamar Kosong / Siap Huni</span>
-                                <div class="mt-1">
+                                <div class="mt-0.5">
                                     <button onclick="openCheckInModal('${item.id}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] hover:bg-emerald-100 transition-colors">
                                         <i class="fa-solid fa-user-plus"></i> Isi Penyewa
                                     </button>
@@ -1559,47 +1690,47 @@
                                 </div>
                             `}
                         </td>
-                        <td class="px-5 py-3.5">
+                        <td class="px-5 py-3">
                             <div class="font-semibold text-slate-700">${item.service}</div>
                             <div class="text-[11px] text-slate-400">${item.detail || ''}</div>
                         </td>
-                        <td class="px-5 py-3.5">
+                        <td class="px-5 py-3">
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
                                 ${item.rack || 'Lantai 1'}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5 font-bold text-slate-900">
+                        <td class="px-5 py-3 font-bold text-slate-900">
                             Rp ${Number(item.amount).toLocaleString('id-ID')}
                         </td>
-                        <td class="px-5 py-3.5">
+                        <td class="px-5 py-3">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${payBadge}">
                                 ${item.pay_status}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5">
+                        <td class="px-5 py-3">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700">
                                 ${item.date || item.work_status}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5 whitespace-nowrap text-center">
+                        <td class="px-5 py-3 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-1.5">
                                 ${!isAvailable ? `
-                                    <button onclick="sendBillingReminderWA('${item.id}')" title="Kirim Pengingat Tagihan via WhatsApp" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
+                                    <button onclick="sendBillingReminderWA('${item.id}')" title="Kirim Tagihan WA" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
                                         <i class="fa-brands fa-whatsapp"></i>
                                     </button>
-                                    <button onclick="openReceiptForItem('${item.id}')" title="Cetak Kuitansi" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 transition-colors">
+                                    <button onclick="openReceiptForItem('${item.id}')" title="Kuitansi" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 transition-colors">
                                         <i class="fa-solid fa-receipt"></i>
                                     </button>
                                     ${item.pay_status !== 'Lunas' ? `
-                                        <button onclick="markAsPaidQuick('${item.id}')" title="Tandai Sudah Lunas" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
+                                        <button onclick="markAsPaidQuick('${item.id}')" title="Tandai Lunas" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
                                             <i class="fa-solid fa-check"></i>
                                         </button>
                                     ` : ''}
                                 ` : ''}
-                                <button onclick="openEditModal('${item.id}')" title="Edit Data Kamar" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
+                                <button onclick="openEditModal('${item.id}')" title="Edit Data" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-600 transition-colors">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="deleteItem('${item.id}')" title="Hapus Kamar" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
+                                <button onclick="deleteItem('${item.id}')" title="Hapus" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-400 transition-colors">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -1608,76 +1739,176 @@
                 `;
             }).join('');
 
-            // 2. Mobile Responsive Card View (< 768px)
+            // 2. Mobile & Tablet (< 1024px): Sleek, Uncluttered Responsive Bento Cards
             if (mobileContainer) {
                 mobileContainer.innerHTML = filtered.map(item => {
                     const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
                     
                     let payBadge = 'bg-slate-100 text-slate-600';
-                    if (item.pay_status === 'Lunas') payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    else if (item.pay_status === 'Belum Lunas') payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
-                    else if (item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                    else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
-                    else if (isAvailable) payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
+                    let dotColor = 'bg-slate-400';
+                    if (item.pay_status === 'Lunas') {
+                        payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200/80';
+                        dotColor = 'bg-emerald-500';
+                    } else if (item.pay_status === 'Belum Lunas') {
+                        payBadge = 'bg-amber-50 text-amber-700 border border-amber-200/80';
+                        dotColor = 'bg-amber-500';
+                    } else if (item.pay_status === 'Menunggak') {
+                        payBadge = 'bg-rose-50 text-rose-700 border border-rose-200/80';
+                        dotColor = 'bg-rose-500';
+                    } else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) {
+                        payBadge = 'bg-purple-50 text-purple-700 border border-purple-200/80';
+                        dotColor = 'bg-purple-500';
+                    } else if (isAvailable) {
+                        payBadge = 'bg-blue-50 text-blue-700 border border-blue-200/80';
+                        dotColor = 'bg-blue-500';
+                    }
 
                     return `
-                        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2.5">
-                            <div class="flex items-center justify-between">
-                                <span class="px-2.5 py-0.5 rounded-lg bg-slate-900 text-white font-mono font-bold text-xs">
-                                    ${item.id}
-                                </span>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${payBadge}">
-                                    ${item.pay_status}
-                                </span>
-                            </div>
-
-                            <div class="pt-1">
-                                ${isAvailable ? `
-                                    <h4 class="text-sm font-extrabold text-blue-700">Kamar Kosong / Siap Huni</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5">${item.service}</p>
-                                    <div class="mt-2">
-                                        <button onclick="openCheckInModal('${item.id}')" class="px-3 py-1 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-500 transition-colors">
-                                            <i class="fa-solid fa-user-plus"></i> Check-In Penghuni Baru
-                                        </button>
+                        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                            
+                            <!-- Card Header: Room ID, Floor, Status Badge -->
+                            <div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-1.5 min-w-0">
+                                        <span class="px-2 py-0.5 rounded-lg bg-slate-900 text-white font-mono font-bold text-xs shrink-0">
+                                            ${item.id}
+                                        </span>
+                                        <span class="text-[11px] text-slate-500 font-medium truncate">
+                                            ${item.rack || 'Lantai 1'}
+                                        </span>
                                     </div>
-                                ` : `
-                                    <h4 class="text-sm font-extrabold text-slate-900">${item.customer}</h4>
-                                    <p class="text-xs text-slate-500 mt-0.5">${item.service}</p>
-                                    <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-between">
-                                        <span>${item.rack || 'Lantai 1'}</span>
-                                        <span class="font-semibold text-emerald-700">${item.date || item.work_status}</span>
-                                    </div>
-                                `}
-                            </div>
-
-                            <div class="flex items-center justify-between pt-2.5 border-t border-slate-100">
-                                <div>
-                                    <span class="text-[10px] text-slate-400 block">Sewa Bulanan</span>
-                                    <span class="text-sm font-extrabold text-slate-900">Rp ${Number(item.amount).toLocaleString('id-ID')}</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${payBadge} shrink-0">
+                                        <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
+                                        <span>${item.pay_status}</span>
+                                    </span>
                                 </div>
-                                <div class="flex items-center gap-1.5">
-                                    ${!isAvailable ? `
-                                        <button onclick="sendBillingReminderWA('${item.id}')" class="p-2 rounded-xl bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition-colors" title="Kirim Tagihan WA">
+
+                                <!-- Tenant Info / Availability -->
+                                <div class="mt-2.5">
+                                    ${isAvailable ? `
+                                        <h4 class="text-xs sm:text-sm font-extrabold text-blue-700">Kamar Kosong / Siap Huni</h4>
+                                        <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
+                                    ` : `
+                                        <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                        <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
+                                    `}
+                                </div>
+                            </div>
+
+                            <!-- Card Bottom: Rent Price + Compact Action Pills -->
+                            <div class="flex items-center justify-between pt-2.5 mt-2.5 border-t border-slate-100">
+                                <div>
+                                    <span class="text-xs font-extrabold text-slate-900 block font-mono">
+                                        Rp ${Number(item.amount).toLocaleString('id-ID')}
+                                    </span>
+                                    <span class="text-[9px] text-slate-400 block">${item.date || 'Bulanan'}</span>
+                                </div>
+
+                                <div class="flex items-center gap-1">
+                                    ${isAvailable ? `
+                                        <button onclick="openCheckInModal('${item.id}')" class="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] hover:bg-emerald-500 transition-colors flex items-center gap-1 shadow-2xs">
+                                            <i class="fa-solid fa-user-plus text-[10px]"></i> Check-In
+                                        </button>
+                                    ` : `
+                                        <button onclick="sendBillingReminderWA('${item.id}')" class="p-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors" title="Kirim Tagihan WhatsApp">
                                             <i class="fa-brands fa-whatsapp text-sm"></i>
                                         </button>
-                                        <button onclick="openReceiptForItem('${item.id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition-colors flex items-center gap-1">
-                                            <i class="fa-solid fa-receipt"></i> Nota
+                                        <button onclick="openReceiptForItem('${item.id}')" class="px-2 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition-colors flex items-center gap-1">
+                                            <i class="fa-solid fa-receipt text-[10px]"></i> Nota
                                         </button>
-                                    ` : ''}
-                                    <button onclick="openEditModal('${item.id}')" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 transition-colors">
-                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                    </button>
-                                    <button onclick="deleteItem('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 transition-colors">
-                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    `}
+                                    <button onclick="openRoomActionSheet('${item.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" title="Menu Opsi">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                                     </button>
                                 </div>
                             </div>
+
                         </div>
                     `;
                 }).join('');
             }
 
             document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} dari ${appData.length} kamar`;
+            const mCounter = document.getElementById('mobileTableCounter');
+            if (mCounter) mCounter.innerText = `Menampilkan ${filtered.length} dari ${appData.length} kamar`;
+        }
+
+        // Mobile Action Sheet Controls
+        function openRoomActionSheet(id) {
+            const room = appData.find(x => x.id === id);
+            if (!room) return;
+
+            activeActionSheetRoomId = id;
+            const isAvailable = room.pay_status === 'Tersedia' || room.work_status === 'Tersedia' || room.customer.includes('Belum Berpenghuni');
+
+            document.getElementById('sheetRoomId').innerText = room.id;
+            document.getElementById('sheetCustomerName').innerText = isAvailable ? 'Kamar Siap Huni' : room.customer;
+            document.getElementById('sheetPayStatus').innerText = room.pay_status;
+
+            const markPaidBtn = document.getElementById('sheetMarkPaidBtn');
+            if (markPaidBtn) {
+                markPaidBtn.style.display = (!isAvailable && room.pay_status !== 'Lunas') ? 'flex' : 'none';
+            }
+
+            const sheet = document.getElementById('roomActionSheet');
+            const backdrop = document.getElementById('actionSheetBackdrop');
+            if (sheet && backdrop) {
+                backdrop.classList.remove('hidden');
+                sheet.classList.remove('hidden');
+                setTimeout(() => sheet.classList.remove('translate-y-full'), 10);
+            }
+        }
+
+        function closeRoomActionSheet() {
+            const sheet = document.getElementById('roomActionSheet');
+            const backdrop = document.getElementById('actionSheetBackdrop');
+            if (sheet && backdrop) {
+                sheet.classList.add('translate-y-full');
+                setTimeout(() => {
+                    sheet.classList.add('hidden');
+                    backdrop.classList.add('hidden');
+                    activeActionSheetRoomId = null;
+                }, 250);
+            }
+        }
+
+        function actionSheetWhatsApp() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) sendBillingReminderWA(id);
+        }
+
+        function actionSheetReceipt() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) openReceiptForItem(id);
+        }
+
+        function actionSheetMarkPaid() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) markAsPaidQuick(id);
+        }
+
+        function actionSheetEdit() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) openEditModal(id);
+        }
+
+        function actionSheetCheckout() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) {
+                document.getElementById('editRoomOriginalId').value = id;
+                checkoutCurrentRoom();
+            }
+        }
+
+        function actionSheetDelete() {
+            const id = activeActionSheetRoomId;
+            closeRoomActionSheet();
+            if (id) deleteItem(id);
         }
 
         // Render Denah Visual Kamar (Grouped per Floor)
@@ -1685,7 +1916,6 @@
             const container = document.getElementById('denahFloorsContainer');
             if (!container) return;
 
-            // Group rooms by rack/floor
             const floors = {};
             appData.forEach(room => {
                 const floorName = room.rack || 'Lantai 1';
@@ -1694,7 +1924,7 @@
             });
 
             if (Object.keys(floors).length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs">Belum ada denah kamar tercatat.</div>`;
+                container.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">Belum ada denah kamar tercatat.</div>`;
                 return;
             }
 
@@ -1702,13 +1932,13 @@
                 const roomsInFloor = floors[floorName];
 
                 return `
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">${floorName} (${roomsInFloor.length} Kamar)</h4>
                         </div>
                         
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-2.5">
                             ${roomsInFloor.map(r => {
                                 const isAvailable = r.pay_status === 'Tersedia' || r.work_status === 'Tersedia' || r.customer.includes('Belum Berpenghuni');
                                 
@@ -1737,19 +1967,19 @@
                                 }
 
                                 return `
-                                    <div class="p-3 rounded-2xl border ${cardBorder} ${cardBg} shadow-2xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer" onclick="openEditModal('${r.id}')">
+                                    <div class="p-2.5 sm:p-3 rounded-2xl border ${cardBorder} ${cardBg} shadow-2xs hover:shadow-md transition-all flex flex-col justify-between cursor-pointer" onclick="openRoomActionSheet('${r.id}')">
                                         <div>
-                                            <div class="flex items-center justify-between mb-1.5">
+                                            <div class="flex items-center justify-between mb-1">
                                                 <span class="font-mono font-extrabold text-xs text-slate-900">${r.id}</span>
-                                                <span class="w-2 h-2 rounded-full ${statusDot}" title="${statusText}"></span>
+                                                <span class="w-1.5 h-1.5 rounded-full ${statusDot}" title="${statusText}"></span>
                                             </div>
-                                            <h5 class="font-bold text-slate-800 text-xs truncate">${isAvailable ? 'Siap Huni' : r.customer}</h5>
-                                            <p class="text-[10px] text-slate-400 truncate mt-0.5">${r.service}</p>
+                                            <h5 class="font-bold text-slate-800 text-[11px] truncate">${isAvailable ? 'Siap Huni' : r.customer}</h5>
+                                            <p class="text-[9px] text-slate-400 truncate">${r.service}</p>
                                         </div>
 
-                                        <div class="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
-                                            <span class="font-bold text-slate-900">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
-                                            <span class="font-semibold text-slate-500">${statusText}</span>
+                                        <div class="pt-1.5 mt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                                            <span class="font-bold text-slate-900 font-mono">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
+                                            <span class="font-semibold text-slate-500 text-[9px]">${statusText}</span>
                                         </div>
                                     </div>
                                 `;
@@ -1770,15 +2000,15 @@
             let totalExp = appExpenses.reduce((acc, exp) => acc + (Number(exp.amount) || 0), 0);
 
             if (totalLabel) totalLabel.innerText = 'Rp ' + totalExp.toLocaleString('id-ID');
-            if (countLabel) countLabel.innerText = `Total ${appExpenses.length} pos pengeluaran tercatat`;
+            if (countLabel) countLabel.innerText = `Total ${appExpenses.length} pos`;
 
             if (!tbody) return;
 
             if (appExpenses.length === 0) {
                 const emptyExp = `
-                    <div class="text-center py-8 text-slate-400 text-xs">
-                        <i class="fa-solid fa-receipt text-2xl mb-1 text-slate-300"></i>
-                        <p>Belum ada catatan pengeluaran operasional.</p>
+                    <div class="text-center py-6 text-slate-400 text-xs">
+                        <i class="fa-solid fa-receipt text-xl mb-1 text-slate-300"></i>
+                        <p>Belum ada catatan biaya operasional.</p>
                     </div>
                 `;
                 tbody.innerHTML = `<tr><td colspan="6">${emptyExp}</td></tr>`;
@@ -1786,43 +2016,42 @@
                 return;
             }
 
-            // Desktop Rows
-            tbody.innerHTML = appExpenses.map((exp, idx) => `
+            // Desktop Table Rows
+            tbody.innerHTML = appExpenses.map(exp => `
                 <tr class="hover:bg-slate-50/80 transition-colors">
-                    <td class="px-5 py-3.5 font-semibold text-slate-700">${exp.expense_date}</td>
-                    <td class="px-5 py-3.5">
+                    <td class="px-4 py-3 font-semibold text-slate-700">${exp.expense_date}</td>
+                    <td class="px-4 py-3">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
                             ${exp.category}
                         </span>
                     </td>
-                    <td class="px-5 py-3.5 font-bold text-slate-900">${exp.title}</td>
-                    <td class="px-5 py-3.5 text-slate-400">${exp.notes || '-'}</td>
-                    <td class="px-5 py-3.5 text-right font-mono font-bold text-rose-600">
+                    <td class="px-4 py-3 font-bold text-slate-900">${exp.title}</td>
+                    <td class="px-4 py-3 text-slate-400">${exp.notes || '-'}</td>
+                    <td class="px-4 py-3 text-right font-mono font-bold text-rose-600">
                         Rp ${Number(exp.amount).toLocaleString('id-ID')}
                     </td>
-                    <td class="px-5 py-3.5 text-center">
-                        <button onclick="deleteExpense('${exp.id}')" title="Hapus Pengeluaran" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors">
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="deleteExpense('${exp.id}')" title="Hapus" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </td>
                 </tr>
             `).join('');
 
-            // Mobile Cards
+            // Mobile Compact Expense Cards
             if (mobileContainer) {
                 mobileContainer.innerHTML = appExpenses.map(exp => `
-                    <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                    <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
                         <div class="flex items-center justify-between text-xs">
-                            <span class="font-bold text-slate-500">${exp.expense_date}</span>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                            <span class="font-bold text-slate-500 text-[11px]">${exp.expense_date}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-700">
                                 ${exp.category}
                             </span>
                         </div>
-                        <h4 class="font-extrabold text-sm text-slate-900">${exp.title}</h4>
-                        <p class="text-xs text-slate-400">${exp.notes || '-'}</p>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <span class="font-mono font-bold text-rose-600 text-sm">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
-                            <button onclick="deleteExpense('${exp.id}')" class="p-1.5 rounded-xl text-slate-400 hover:text-rose-600">
+                        <h4 class="font-extrabold text-xs text-slate-900">${exp.title}</h4>
+                        <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 text-xs">
+                            <span class="font-mono font-bold text-rose-600">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
+                            <button onclick="deleteExpense('${exp.id}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-600">
                                 <i class="fa-solid fa-trash-can text-xs"></i>
                             </button>
                         </div>
@@ -1848,18 +2077,16 @@
             let msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
                       `Mengingatkan untuk pembayaran sewa kamar bulanan:%0A` +
                       `• No. Kamar: *${room.id}*%0A` +
-                      `• Tipe Kamar: ${room.service}%0A` +
+                      `• Tipe: ${room.service}%0A` +
                       `• Status: *${room.date || room.pay_status}*%0A` +
-                      `• Nominal Tagihan: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
-                      `Pembayaran dapat ditransfer melalui:%0A` +
+                      `• Nominal: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
+                      `Pembayaran dapat ditransfer via:%0A` +
                       `*Bank ${bankName}: ${bankNum}*%0A` +
                       `*A.N. ${bankHolder}*%0A%0A` +
-                      `Jika sudah melakukan pembayaran, mohon konfirmasi kembali dengan mengirimkan bukti transfer ya. Terima kasih banyak 🙏`;
+                      `Mohon konfirmasi jika sudah transfer ya. Terima kasih banyak 🙏`;
 
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
-            if (targetPhone) {
-                waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
-            }
+            if (targetPhone) waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
             window.open(waUrl, '_blank');
         }
 
@@ -1879,14 +2106,14 @@
                             date: room.date
                         }).eq('id', id);
                     } catch (err) {
-                        console.warn('Gagal update cloud, disimpan lokal');
+                        console.warn('Gagal update cloud, simpan lokal');
                     }
                 }
 
                 saveRoomsLocal();
                 renderAllViews();
                 
-                if (confirm('Status berhasil diubah menjadi Lunas. Ingin langsung membuat kuitansi pembayaran?')) {
+                if (confirm('Status berhasil diubah menjadi Lunas. Ingin langsung buat kuitansi pembayaran?')) {
                     openReceiptForItem(id);
                 }
             }
@@ -1923,7 +2150,7 @@
                 try {
                     await supabaseClient.from(SUPABASE_TABLE_EXPENSES).insert([newExp]);
                 } catch (err) {
-                    console.warn('Gagal simpan pengeluaran cloud, disimpan lokal');
+                    console.warn('Gagal simpan pengeluaran cloud');
                 }
             }
 
@@ -1932,8 +2159,8 @@
             closeExpenseModal();
             renderAllViews();
             btn.disabled = false;
-            btn.innerText = 'Simpan Pengeluaran';
-            alert('Pengeluaran berhasil dicatat ke dalam Buku Kas!');
+            btn.innerText = 'Simpan';
+            alert('Pengeluaran berhasil dicatat!');
         }
 
         async function deleteExpense(id) {
@@ -1942,7 +2169,7 @@
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_EXPENSES).delete().eq('id', id);
                     } catch (err) {
-                        console.warn('Gagal hapus cloud:', err);
+                        console.warn('Gagal hapus cloud');
                     }
                 }
                 appExpenses = appExpenses.filter(x => x.id !== id);
@@ -2009,7 +2236,7 @@
             closeEditModal();
             renderAllViews();
             btn.disabled = false;
-            btn.innerText = 'Simpan Perubahan';
+            btn.innerText = 'Simpan';
         }
 
         // Check-Out / Kosongkan Kamar
@@ -2018,7 +2245,7 @@
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
-            if (confirm(`Kosongkan kamar ${room.id}? Data penyewa ${room.customer} akan diselesaikan dan status kamar menjadi "Tersedia".`)) {
+            if (confirm(`Kosongkan kamar ${room.id}? Data penyewa ${room.customer} akan diselesaikan dan status menjadi Siap Huni.`)) {
                 const updated = {
                     customer: 'Belum Berpenghuni',
                     phone: '',
@@ -2031,7 +2258,7 @@
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_ROOMS).update(updated).eq('id', id);
                     } catch (err) {
-                        console.warn('Gagal update cloud:', err);
+                        console.warn('Gagal update cloud');
                     }
                 }
 
@@ -2039,7 +2266,7 @@
                 saveRoomsLocal();
                 closeEditModal();
                 renderAllViews();
-                alert(`Kamar ${room.id} sekarang kosong dan siap disewakan kembali.`);
+                alert(`Kamar ${room.id} sekarang kosong dan siap disewakan.`);
             }
         }
 
@@ -2069,9 +2296,7 @@
 
         function toggleNewTenantFields(isOccupied) {
             const section = document.getElementById('newTenantFieldsSection');
-            if (section) {
-                section.style.display = isOccupied ? 'block' : 'none';
-            }
+            if (section) section.style.display = isOccupied ? 'block' : 'none';
         }
 
         async function handleNewSubmit(e) {
@@ -2096,7 +2321,6 @@
                 date: isOccupied ? (document.getElementById('newDueDate').value.trim() || ('Jatuh Tempo: ' + new Date().toLocaleDateString('id-ID'))) : 'Siap Huni'
             };
 
-            // Cloud Sync
             if (supabaseClient) {
                 try {
                     await supabaseClient.from(SUPABASE_TABLE_ROOMS).insert([newItem]);
@@ -2110,7 +2334,7 @@
             closeNewModal();
             renderAllViews();
             btn.disabled = false;
-            btn.innerText = 'Simpan Data Kamar';
+            btn.innerText = 'Simpan Data';
             
             if (isOccupied) {
                 openReceiptForItem(newItem.id);
@@ -2120,12 +2344,12 @@
         }
 
         async function deleteItem(id) {
-            if (confirm(`Hapus kamar ${id} secara permanen dari sistem?`)) {
+            if (confirm(`Hapus kamar ${id} secara permanen?`)) {
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_ROOMS).delete().eq('id', id);
                     } catch (err) {
-                        console.warn('Penghapusan cloud error:', err);
+                        console.warn('Penghapusan cloud error');
                     }
                 }
                 appData = appData.filter(x => x.id !== id);
@@ -2178,7 +2402,7 @@
         }
 
         function addReceiptRow() {
-            receiptRows.push({ desc: 'Biaya Listrik Token / Tambahan', qty: 1, price: 50000 });
+            receiptRows.push({ desc: 'Biaya Tambahan', qty: 1, price: 50000 });
             renderReceiptEditorRows();
             recalculateReceipt();
         }
@@ -2195,11 +2419,11 @@
             if (!container) return;
 
             container.innerHTML = receiptRows.map((row, idx) => `
-                <div class="flex items-center gap-2 p-2 rounded-xl border border-slate-200 bg-white">
+                <div class="flex items-center gap-1.5 p-1.5 rounded-xl border border-slate-200 bg-white">
                     <input type="text" value="${row.desc}" oninput="updateRowDesc(${idx}, this.value)" placeholder="Nama tagihan" class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 outline-none">
-                    <input type="number" value="${row.qty}" min="1" oninput="updateRowQty(${idx}, this.value)" class="w-12 text-xs border border-slate-200 rounded-lg px-1 py-1 text-center outline-none">
-                    <input type="number" value="${row.price}" min="0" oninput="updateRowPrice(${idx}, this.value)" class="w-24 text-xs border border-slate-200 rounded-lg px-2 py-1 text-right font-mono outline-none">
-                    <button onclick="removeReceiptRow(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Hapus baris">
+                    <input type="number" value="${row.qty}" min="1" oninput="updateRowQty(${idx}, this.value)" class="w-10 text-xs border border-slate-200 rounded-lg px-1 py-1 text-center outline-none">
+                    <input type="number" value="${row.price}" min="0" oninput="updateRowPrice(${idx}, this.value)" class="w-20 text-xs border border-slate-200 rounded-lg px-1.5 py-1 text-right font-mono outline-none">
+                    <button onclick="removeReceiptRow(${idx})" class="text-slate-400 hover:text-rose-600 p-1">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
                 </div>
@@ -2304,7 +2528,7 @@
                       `Tanggal: ${new Date().toLocaleDateString('id-ID')}%0A%0A` +
                       `*Rincian Pembayaran:*%0A${itemsTxt}%0A%0A` +
                       `*TOTAL DIBAYAR: ${total}*%0A%0A` +
-                      `Terima kasih atas pembayarannya. Kuitansi ini adalah bukti pembayaran yang sah.`;
+                      `Terima kasih. Kuitansi ini adalah bukti pembayaran yang sah.`;
 
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
             if (phone) {
