@@ -53,29 +53,34 @@
             body * {
                 visibility: hidden !important;
             }
-            #printableReceiptArea, #printableReceiptArea * {
+            #printableReceiptArea, #printableReceiptArea *, #printableMonthlyReport, #printableMonthlyReport * {
                 visibility: visible !important;
             }
-            #printableReceiptArea {
+            #printableReceiptArea, #printableMonthlyReport {
                 position: fixed !important;
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
-                max-width: 80mm !important;
                 margin: 0 auto !important;
-                padding: 10px !important;
+                padding: 15px !important;
                 background: #ffffff !important;
                 color: #000000 !important;
                 box-shadow: none !important;
                 border: none !important;
                 z-index: 999999 !important;
             }
+            #printableReceiptArea {
+                max-width: 80mm !important;
+            }
+            #printableMonthlyReport {
+                max-width: 210mm !important;
+            }
             .no-print {
                 display: none !important;
             }
         }
 
-        /* Hide Scrollbar while keeping functionality */
+        /* Hide Scrollbar */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -84,7 +89,7 @@
             scrollbar-width: none;
         }
 
-        /* Slim Webkit Scrollbars for desktop */
+        /* Slim Webkit Scrollbars */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
@@ -97,13 +102,39 @@
             border-radius: 999px;
         }
 
-        /* Safe area for mobile iOS home indicators */
         .pb-safe {
             padding-bottom: env(safe-area-inset-bottom, 16px);
         }
     </style>
 </head>
 <body class="font-sans antialiased text-slate-800 bg-slate-50/70 min-h-full flex flex-col selection:bg-emerald-500 selection:text-white pb-24 md:pb-0">
+
+    <!-- ── IN-APP TOAST NOTIFICATION (MODERN FLOATING PILL) ─────────────── -->
+    <div id="toastNotification" class="fixed top-4 inset-x-0 mx-auto w-fit max-w-sm z-50 transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300 ease-out px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-bold bg-slate-900 text-white">
+        <span id="toastIcon" class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-check text-xs"></i>
+        </span>
+        <span id="toastMessage" class="flex-1">Pemberitahuan sistem</span>
+    </div>
+
+    <!-- ── SOFT CONFIRMATION MODAL (REPLACES NATIVE BROWSER CONFIRM) ──────── -->
+    <div id="confirmModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-200 overflow-hidden p-5 space-y-4">
+            <div class="flex items-center gap-3">
+                <div id="confirmIconBox" class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h4 id="confirmTitle" class="text-sm font-extrabold text-slate-900">Konfirmasi Tindakan</h4>
+                    <p id="confirmDesc" class="text-xs text-slate-500 mt-0.5 leading-relaxed">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button onclick="closeConfirmModal(false)" class="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Batal</button>
+                <button id="confirmActionBtn" onclick="closeConfirmModal(true)" class="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition-all shadow-sm">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Mobile Drawer Overlay -->
     <div id="drawerBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
@@ -124,22 +155,22 @@
             <button onclick="actionSheetWhatsApp()" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
                 <i class="fa-brands fa-whatsapp text-lg text-emerald-600 w-6 text-center"></i>
                 <div class="flex-1">
-                    <div>Kirim Pengingat Tagihan via WhatsApp</div>
-                    <span class="text-[10px] text-emerald-600 font-normal">Template pesan otomatis dengan rincian transfer</span>
+                    <div>Kirim Tagihan via WhatsApp</div>
+                    <span class="text-[10px] text-emerald-600 font-normal">Template pesan otomatis &amp; no. rekening transfer</span>
                 </div>
             </button>
             <button onclick="actionSheetReceipt()" class="w-full p-3 rounded-2xl bg-slate-50 text-slate-800 hover:bg-slate-100 flex items-center gap-3 transition-colors text-left">
                 <i class="fa-solid fa-receipt text-base text-slate-500 w-6 text-center"></i>
                 <div class="flex-1">
                     <div>Buat Nota / Kuitansi Pembayaran</div>
-                    <span class="text-[10px] text-slate-400 font-normal">Cetak nota thermal 58mm/80mm atau bagikan struk</span>
+                    <span class="text-[10px] text-slate-400 font-normal">Cetak nota thermal atau bagikan struk digital</span>
                 </div>
             </button>
             <button id="sheetMarkPaidBtn" onclick="actionSheetMarkPaid()" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
                 <i class="fa-solid fa-circle-check text-base text-amber-600 w-6 text-center"></i>
                 <div class="flex-1">
-                    <div>Tandai Sewa Sudah Lunas</div>
-                    <span class="text-[10px] text-amber-600 font-normal">Update status kamar seketika</span>
+                    <div>Perpanjang Sewa &amp; Tandai Lunas</div>
+                    <span class="text-[10px] text-amber-600 font-normal">Otomatis memajukan jatuh tempo ke bulan depan</span>
                 </div>
             </button>
             <button onclick="actionSheetEdit()" class="w-full p-3 rounded-2xl hover:bg-slate-100 flex items-center gap-3 transition-colors text-left text-slate-700">
@@ -209,6 +240,11 @@
                         <span>Buat Nota / Kuitansi</span>
                     </button>
 
+                    <button onclick="openMonthlyReportModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
+                        <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-slate-400"></i>
+                        <span>Laporan Rekap Bulanan</span>
+                    </button>
+
                     <button onclick="openExpenseModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-receipt-text w-5 text-center text-slate-400"></i>
                         <span>Catat Pengeluaran</span>
@@ -243,7 +279,7 @@
         <!-- ── MAIN CONTENT AREA ─────────────────────────────────────────── -->
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             
-            <!-- TOPBAR (COMPACT ON MOBILE & TABLET) -->
+            <!-- TOPBAR (COMPACT & MODERN) -->
             <header class="h-14 md:h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-3.5 sm:px-6 flex items-center justify-between gap-2.5">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <button onclick="toggleSidebar()" aria-label="Buka Menu" class="lg:hidden p-1.5 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors shrink-0">
@@ -290,13 +326,13 @@
                 </div>
             </header>
 
-            <!-- Collapsible Mobile Search Input (Slides down when search icon clicked) -->
+            <!-- Collapsible Mobile Search Input -->
             <div id="mobileSearchCollapse" class="hidden sm:hidden px-3.5 py-2.5 bg-white border-b border-slate-200">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input 
                         type="text" 
-                        id="mobileSearchInput"
+                        id="mobileSearchInput" 
                         oninput="handleSearch(this.value)" 
                         placeholder="Cari nomor kamar, nama penghuni, atau lantai..." 
                         class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-8 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white"
@@ -308,16 +344,16 @@
             </div>
 
             <!-- MAIN WORKSPACE CONTAINER -->
-            <main class="p-3 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 flex-1 max-w-7xl w-full mx-auto">
+            <main class="p-3 sm:p-5 lg:p-6 space-y-3.5 sm:space-y-4 flex-1 max-w-7xl w-full mx-auto">
 
-                <!-- ── 1. COMPACT FINANCIAL RIBBON (MOBILE ONLY: SAVES 300PX OF SPACE) ── -->
+                <!-- ── 1. COMPACT FINANCIAL RIBBON (MOBILE ONLY) ─────────────────── -->
                 <div class="md:hidden bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs">
                     <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
                         <div>
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi Laba Bersih</span>
                             <div class="flex items-baseline gap-2 mt-0.5">
-                                <h3 id="mobileNetProfit" class="text-lg font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
-                                <span id="mobileProfitMargin" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md">+0% Profit</span>
+                                <h3 id="mobileNetProfit" class="text-lg font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
+                                <span id="mobileProfitMargin" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md font-mono">+0% Margin</span>
                             </div>
                         </div>
                         <button onclick="toggleMobileMetrics()" id="mobileMetricsToggleBtn" class="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-600 text-[11px] font-bold hover:bg-slate-200 transition-colors flex items-center gap-1">
@@ -330,20 +366,20 @@
                     <div class="grid grid-cols-3 gap-2 pt-2.5 text-center text-xs">
                         <div>
                             <span class="text-[10px] text-slate-400 block">Okupansi</span>
-                            <span id="mobileOccupancy" class="font-bold text-slate-800 text-xs">0 / 0 (0%)</span>
+                            <span id="mobileOccupancy" class="font-bold text-slate-800 text-xs font-mono">0 / 0</span>
                         </div>
                         <div class="border-x border-slate-100">
                             <span class="text-[10px] text-slate-400 block">Pemasukan</span>
-                            <span id="mobileRevenue" class="font-bold text-emerald-600 text-xs">Rp 0</span>
+                            <span id="mobileRevenue" class="font-bold text-emerald-600 text-xs font-mono tabular-nums">Rp 0</span>
                         </div>
                         <div>
                             <span class="text-[10px] text-slate-400 block">Pengeluaran</span>
-                            <span id="mobileExpense" class="font-bold text-rose-600 text-xs">Rp 0</span>
+                            <span id="mobileExpense" class="font-bold text-rose-600 text-xs font-mono tabular-nums">Rp 0</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- ── 2. FULL 4 KPI BENTO CARDS (DEFAULT VISIBLE ON DESKTOP/TABLET, COLLAPSIBLE ON MOBILE) ── -->
+                <!-- ── 2. FULL 4 KPI BENTO CARDS ──────────────────────────────── -->
                 <div id="fullMetricsContainer" class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                     
                     <!-- Card 1: Pemasukan Sewa -->
@@ -355,7 +391,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <h3 id="kpiRevenue" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <h3 id="kpiRevenue" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
                             <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
                                 <span class="font-bold text-emerald-700 bg-emerald-50 px-1 rounded">Terbayar</span>
                                 <span class="text-slate-400 truncate">sewa aktif</span>
@@ -372,7 +408,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <h3 id="kpiExpense" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <h3 id="kpiExpense" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
                             <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
                                 <span class="font-bold text-rose-700 bg-rose-50 px-1 rounded" id="kpiExpenseCount">0 Pos</span>
                                 <span class="text-slate-400 truncate">operasional</span>
@@ -389,7 +425,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <h3 id="kpiNetProfit" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">Rp 0</h3>
+                            <h3 id="kpiNetProfit" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
                             <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
                                 <span class="font-bold text-indigo-700 bg-indigo-50 px-1 rounded" id="kpiProfitMargin">0% Margin</span>
                                 <span class="text-slate-400 truncate">profitabilitas</span>
@@ -406,7 +442,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <h3 id="kpiOccupancy" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">0 / 0 Kamar</h3>
+                            <h3 id="kpiOccupancy" class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight font-mono">0 / 0 Kamar</h3>
                             <div class="flex items-center gap-1.5 mt-0.5 text-[10px] sm:text-[11px]">
                                 <span class="font-bold text-blue-700 bg-blue-50 px-1 rounded" id="kpiOccupancyPct">0%</span>
                                 <span class="text-slate-400 truncate" id="kpiEmptySubtitle">0 Siap Huni</span>
@@ -416,7 +452,24 @@
 
                 </div>
 
-                <!-- ── 3. SLEEK SEGMENTED VIEW CONTROL (COMPACT & MODERN) ─────── -->
+                <!-- ── 3. URGENT ATTENTION RIBBON (ACTIONABLE DAILY REMINDER) ── -->
+                <div id="urgentActionRibbon" class="hidden p-3 rounded-2xl bg-amber-500/10 border border-amber-300/60 flex items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs">
+                            <i class="fa-solid fa-bell"></i>
+                        </span>
+                        <div class="min-w-0">
+                            <span id="urgentRibbonTitle" class="font-bold text-amber-950 block truncate">Perhatian Tagihan Kost</span>
+                            <span id="urgentRibbonSubtitle" class="text-[10px] text-amber-700/90 block truncate">Penghuni menunggu konfirmasi pembayaran</span>
+                        </div>
+                    </div>
+                    <button onclick="setFilter('Menunggak', document.querySelector('.filter-tab[onclick*=\'Menunggak\']'))" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1">
+                        <span>Lihat</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- ── 4. SEGMENTED VIEW CONTROL & UTILITY BAR ───────────────── -->
                 <div class="flex items-center justify-between gap-2">
                     <div class="bg-slate-200/70 p-1 rounded-2xl flex items-center gap-1">
                         <button onclick="switchView('kamar')" id="tabBtn-kamar" class="view-tab-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition-all flex items-center gap-1.5">
@@ -434,22 +487,23 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <button onclick="exportToCSV()" class="hidden sm:flex px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs items-center gap-1.5 transition-colors">
-                            <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                            <span class="hidden md:inline">Export Excel</span>
+                        <button onclick="openMonthlyReportModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5 transition-colors" title="Cetak Rekap Laporan Bulanan (PDF/A4)">
+                            <i class="fa-solid fa-file-invoice text-emerald-600"></i>
+                            <span class="hidden sm:inline">Laporan Bulanan</span>
                         </button>
-                        <button onclick="openSettingsModal()" class="hidden sm:flex p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs transition-colors" title="Pengaturan">
-                            <i class="fa-solid fa-gear"></i>
+                        <button onclick="exportToCSV()" class="hidden md:flex px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                            <span>CSV</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- ========================================================== -->
-                <!-- VIEW 1: DATA KAMAR & PENGHUNI (COMPACT & UNCLUTTERED)      -->
+                <!-- VIEW 1: DATA KAMAR & PENGHUNI (WITH VISUAL ACCENTS)       -->
                 <!-- ========================================================== -->
                 <div id="view-kamar-container" class="space-y-3">
                     
-                    <!-- Horizontal Scrolling Filter Chips (Single Row, Smooth Swipe) -->
+                    <!-- Horizontal Scrolling Filter Chips -->
                     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="filterTabGroup">
                         <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
                             Semua (<span id="countFilterSemua">0</span>)
@@ -471,9 +525,9 @@
                         </button>
                     </div>
 
-                    <!-- ── MOBILE & TABLET RESPONSIVE CARDS CONTAINER (DEFAULT < 1024px) ── -->
+                    <!-- ── MOBILE & TABLET RESPONSIVE CARDS CONTAINER (< 1024px) ── -->
                     <div id="mobileCardsContainer" class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
-                        <!-- Populated dynamically by JS as sleek modern mobile cards -->
+                        <!-- Injected by JS with Left Color Accent Borders -->
                     </div>
 
                     <!-- ── DESKTOP ONLY: FULL DATA TABLE (>= 1024px ONLY) ──────── -->
@@ -500,12 +554,12 @@
                         <div class="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                             <div id="tableCounter">Memuat data penyewa...</div>
                             <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
-                                <i class="fa-solid fa-circle-check"></i> Database Terkoneksi
+                                <i class="fa-solid fa-circle-check"></i> Database Terkoneksi Realtime
                             </span>
                         </div>
                     </div>
 
-                    <!-- Simple Mobile/Tablet Counter -->
+                    <!-- Mobile/Tablet Counter -->
                     <div class="lg:hidden text-center py-2 text-xs text-slate-400" id="mobileTableCounter">
                         Memuat data kamar...
                     </div>
@@ -517,7 +571,6 @@
                 <div id="view-denah-container" class="space-y-4 hidden">
                     <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs p-3.5 sm:p-5 space-y-4">
                         
-                        <!-- Denah Legend -->
                         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2">
                                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
@@ -526,7 +579,6 @@
                                 </h3>
                             </div>
                             
-                            <!-- Badges Legend -->
                             <div class="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-xs">
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-semibold">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Lunas
@@ -543,9 +595,8 @@
                             </div>
                         </div>
 
-                        <!-- Dynamic Floors Grid Container -->
                         <div id="denahFloorsContainer" class="space-y-4">
-                            <!-- Populated dynamically by JS per Floor -->
+                            <!-- Populated dynamically by JS -->
                         </div>
 
                     </div>
@@ -563,7 +614,7 @@
                                     <i class="fa-solid fa-money-bill-wave text-rose-600"></i>
                                     Buku Kas Pengeluaran
                                 </h3>
-                                <p class="text-[11px] text-slate-400 hidden sm:block">Catatan operasional listrik, air, internet, sampah &amp; perawatan.</p>
+                                <p class="text-[11px] text-slate-400 hidden sm:block">Catatan biaya listrik, air, internet, sampah &amp; perawatan.</p>
                             </div>
                             <button onclick="openExpenseModal()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all">
                                 <i class="fa-solid fa-plus text-xs"></i>
@@ -597,7 +648,7 @@
 
                         <div class="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                             <span id="expensesSummaryLabel">Total 0 pos</span>
-                            <span id="expensesSummaryTotal" class="font-extrabold text-slate-900 text-sm">Rp 0</span>
+                            <span id="expensesSummaryTotal" class="font-extrabold text-slate-900 text-sm font-mono tabular-nums">Rp 0</span>
                         </div>
 
                     </div>
@@ -672,7 +723,6 @@
                         
                         <!-- Header Logo & Store -->
                         <div class="text-center pb-3 border-b border-dashed border-slate-300">
-                            <!-- Logo Box (Managed ONLY in Settings) -->
                             <div class="flex justify-center mb-2">
                                 <img id="receiptLogoImg" src="" alt="Logo Toko" class="max-h-12 max-w-[140px] object-contain hidden">
                                 <div id="receiptLogoDefault" class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-2xs" style="background: linear-gradient(135deg, #059669, #10b981);">
@@ -719,27 +769,27 @@
                         <div class="py-2 text-[11px] space-y-1 border-b border-dashed border-slate-300">
                             <div class="flex justify-between text-slate-600">
                                 <span>Subtotal</span>
-                                <span id="receiptSubtotalText" class="font-semibold">Rp 0</span>
+                                <span id="receiptSubtotalText" class="font-semibold font-mono tabular-nums">Rp 0</span>
                             </div>
                             <div id="receiptDiscountRow" class="flex justify-between text-rose-600 text-[10px] hidden">
                                 <span>Diskon</span>
-                                <span id="receiptDiscountText">- Rp 0</span>
+                                <span id="receiptDiscountText" class="font-mono tabular-nums">- Rp 0</span>
                             </div>
                             <div id="receiptTaxRow" class="flex justify-between text-slate-500 text-[10px] hidden">
                                 <span>Biaya Layanan/Air</span>
-                                <span id="receiptTaxText">+ Rp 0</span>
+                                <span id="receiptTaxText" class="font-mono tabular-nums">+ Rp 0</span>
                             </div>
                             <div class="flex justify-between font-extrabold text-sm text-slate-900 pt-1.5 border-t border-slate-200">
                                 <span>TOTAL DIBAYAR</span>
-                                <span id="receiptGrandTotalText">Rp 0</span>
+                                <span id="receiptGrandTotalText" class="font-mono tabular-nums">Rp 0</span>
                             </div>
                             <div class="flex justify-between text-[10px] text-slate-600 pt-1">
                                 <span>Nominal Diterima</span>
-                                <span id="receiptCashGivenText">Rp 0</span>
+                                <span id="receiptCashGivenText" class="font-mono tabular-nums">Rp 0</span>
                             </div>
                             <div class="flex justify-between text-[10px] text-emerald-600 font-bold">
                                 <span>Kembalian</span>
-                                <span id="receiptChangeText">Rp 0</span>
+                                <span id="receiptChangeText" class="font-mono tabular-nums">Rp 0</span>
                             </div>
                         </div>
 
@@ -778,6 +828,39 @@
                         </div>
                     </div>
 
+                    <!-- ⚡ UTILITY / ELECTRICITY KWH CALCULATOR (ACCORDION) -->
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-2.5 text-xs">
+                        <button type="button" onclick="toggleUtilityCalc()" class="w-full flex items-center justify-between font-bold text-emerald-800 text-[11px]">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-bolt text-amber-500"></i> Hitung Biaya Listrik / Air (kWh)
+                            </span>
+                            <i id="utilityCalcIcon" class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        
+                        <div id="utilityCalcBody" class="hidden mt-2 pt-2 border-t border-emerald-200/60 space-y-2">
+                            <div class="grid grid-cols-3 gap-1.5">
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-500">Meter Awal</label>
+                                    <input type="number" id="calcMeterStart" placeholder="1200" oninput="recalcUtilityPreview()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-500">Meter Akhir</label>
+                                    <input type="number" id="calcMeterEnd" placeholder="1280" oninput="recalcUtilityPreview()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-500">Tarif/kWh</label>
+                                    <input type="number" id="calcRatePerKwh" value="1500" oninput="recalcUtilityPreview()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs outline-none">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-1">
+                                <span id="utilityCalcSummary" class="text-[10px] text-slate-600 font-semibold">0 kWh = Rp 0</span>
+                                <button type="button" onclick="addUtilityRowToReceipt()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] transition-colors">
+                                    + Tambah ke Nota
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Discount & Cash Controls -->
                     <div class="p-3 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-2.5 text-xs">
                         <div class="grid grid-cols-2 gap-2.5">
@@ -789,7 +872,7 @@
                                 <label class="block font-bold text-slate-700 mb-1">Biaya Tambahan</label>
                                 <div class="flex items-center gap-1.5 pt-1">
                                     <input type="checkbox" id="editTaxCheckbox" onchange="recalculateReceipt()" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 h-4 w-4">
-                                    <span class="text-slate-600 text-xs">+ Rp 25k Sampah</span>
+                                    <span class="text-slate-600 text-xs">+ Rp 25k Kebersihan</span>
                                 </div>
                             </div>
                         </div>
@@ -797,11 +880,11 @@
                         <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-200">
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Uang Diterima (Rp)</label>
-                                <input type="number" id="editCashInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none">
+                                <input type="number" id="editCashInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none font-mono">
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1">Kembalian</label>
-                                <div id="editChangeDisplay" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200 text-xs">
+                                <div id="editChangeDisplay" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-extrabold border border-emerald-200 text-xs font-mono">
                                     Rp 0
                                 </div>
                             </div>
@@ -823,6 +906,118 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL: PRINTABLE MONTHLY REPORT (REKAP KEUANGAN & OKUPANSI A4)     -->
+    <!-- ================================================================== -->
+    <div id="monthlyReportModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice text-emerald-600"></i> Rekap Laporan Bulanan Kost (A4)
+                </h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+                    </button>
+                    <button onclick="closeMonthlyReportModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-100/50">
+                <div id="printableMonthlyReport" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-3xl mx-auto space-y-6 text-xs text-slate-800">
+                    <!-- Report Header -->
+                    <div class="flex items-center justify-between border-b pb-4 border-slate-200">
+                        <div>
+                            <h2 id="reportTitleKost" class="text-lg font-extrabold text-slate-900 uppercase tracking-tight">KOST MAGNOLIA RESIDENCE</h2>
+                            <p id="reportAddressKost" class="text-xs text-slate-500 mt-0.5">Jl. Melati No. 12B, Syamsudin Noor</p>
+                            <p id="reportPhoneKost" class="text-xs text-slate-500">Telp/WA: 0813-8899-0011</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs border border-emerald-200">LAPORAN OPERASIONAL</span>
+                            <p class="text-xs text-slate-400 mt-1" id="reportDateNow">Tanggal: 15/10/2026</p>
+                        </div>
+                    </div>
+
+                    <!-- KPI Executive Summary -->
+                    <div>
+                        <h4 class="font-bold text-slate-700 uppercase tracking-wider mb-2 text-[10px]">1. Ringkasan Eksekutif Keuangan &amp; Okupansi</h4>
+                        <div class="grid grid-cols-4 gap-3 text-center">
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block">Total Pemasukan</span>
+                                <span id="reportRevText" class="font-bold text-emerald-700 text-sm font-mono">Rp 0</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block">Pengeluaran</span>
+                                <span id="reportExpText" class="font-bold text-rose-600 text-sm font-mono">Rp 0</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block">Laba Bersih</span>
+                                <span id="reportProfitText" class="font-bold text-slate-900 text-sm font-mono">Rp 0</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block">Okupansi Kamar</span>
+                                <span id="reportOccText" class="font-bold text-blue-700 text-sm font-mono">0 / 0 (0%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room Occupancy Table -->
+                    <div>
+                        <h4 class="font-bold text-slate-700 uppercase tracking-wider mb-2 text-[10px]">2. Rincian Kamar &amp; Status Pembayaran Sewa</h4>
+                        <table class="w-full border-collapse border border-slate-200 text-[11px]">
+                            <thead>
+                                <tr class="bg-slate-100 font-bold text-slate-700 text-left">
+                                    <th class="border border-slate-200 p-2">Kamar</th>
+                                    <th class="border border-slate-200 p-2">Penghuni</th>
+                                    <th class="border border-slate-200 p-2">Tipe Kamar</th>
+                                    <th class="border border-slate-200 p-2">Harga Sewa</th>
+                                    <th class="border border-slate-200 p-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportRoomsTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Operational Expenses Table -->
+                    <div>
+                        <h4 class="font-bold text-slate-700 uppercase tracking-wider mb-2 text-[10px]">3. Catatan Pengeluaran Operasional</h4>
+                        <table class="w-full border-collapse border border-slate-200 text-[11px]">
+                            <thead>
+                                <tr class="bg-slate-100 font-bold text-slate-700 text-left">
+                                    <th class="border border-slate-200 p-2">Tanggal</th>
+                                    <th class="border border-slate-200 p-2">Kategori</th>
+                                    <th class="border border-slate-200 p-2">Keperluan</th>
+                                    <th class="border border-slate-200 p-2 text-right">Nominal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportExpensesTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Signatures -->
+                    <div class="pt-6 flex justify-between text-center text-xs">
+                        <div class="w-48">
+                            <p class="text-slate-400">Mengetahui,</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold text-slate-800 border-t border-slate-300 pt-1">Pemilik / Investor Properti</p>
+                        </div>
+                        <div class="w-48">
+                            <p class="text-slate-400">Dibuat Oleh,</p>
+                            <div class="h-16"></div>
+                            <p class="font-bold text-slate-800 border-t border-slate-300 pt-1">Pengelola / Petugas Kost</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -912,7 +1107,7 @@
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Harga Sewa / Bln (Rp) *</label>
-                        <input type="number" id="newAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
+                        <input type="number" id="newAmount" required min="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none font-mono">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
@@ -981,7 +1176,7 @@
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Harga Sewa / Bln (Rp)</label>
-                        <input type="number" id="editAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
+                        <input type="number" id="editAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none font-mono">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
@@ -1251,6 +1446,14 @@
         let currentReceiptItem = null;
         let receiptRows = [];
         let activeActionSheetRoomId = null;
+        let toastTimeout = null;
+        let confirmResolver = null;
+
+        // Month Mapping for Date Parsing
+        const INDO_MONTH_MAP = {
+            'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'mei': 4, 'jun': 5,
+            'jul': 6, 'agu': 7, 'ags': 7, 'sep': 8, 'okt': 9, 'nov': 10, 'des': 11
+        };
 
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
@@ -1262,6 +1465,124 @@
             loadLogo();
             await syncAllData();
         });
+
+        // ── TOAST NOTIFICATION HELPER ─────────────────────────────────────────
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+            if (!toast || !msgEl) return;
+
+            msgEl.innerText = message;
+            if (type === 'success') {
+                iconEl.className = 'w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+                iconEl.innerHTML = '<i class="fa-solid fa-check text-xs"></i>';
+            } else if (type === 'warning') {
+                iconEl.className = 'w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0';
+                iconEl.innerHTML = '<i class="fa-solid fa-bell text-xs"></i>';
+            } else if (type === 'error') {
+                iconEl.className = 'w-6 h-6 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0';
+                iconEl.innerHTML = '<i class="fa-solid fa-circle-exclamation text-xs"></i>';
+            }
+
+            toast.classList.remove('-translate-y-24', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0', 'pointer-events-none');
+            }, 3200);
+        }
+
+        // ── CUSTOM SOFT CONFIRMATION DIALOG (PROMISE-BASED) ───────────────────
+        function showCustomConfirm({ title, desc, confirmText = 'Lanjutkan', isDanger = false }) {
+            return new Promise(resolve => {
+                confirmResolver = resolve;
+                document.getElementById('confirmTitle').innerText = title;
+                document.getElementById('confirmDesc').innerText = desc;
+                const btn = document.getElementById('confirmActionBtn');
+                const iconBox = document.getElementById('confirmIconBox');
+                
+                btn.innerText = confirmText;
+                if (isDanger) {
+                    btn.className = 'px-4 py-2 rounded-xl bg-rose-600 text-white hover:bg-rose-500 text-xs font-bold transition-all shadow-sm shadow-rose-600/20';
+                    iconBox.className = 'w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg shrink-0';
+                    iconBox.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 text-xs font-bold transition-all shadow-sm shadow-emerald-600/20';
+                    iconBox.className = 'w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0';
+                    iconBox.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                }
+
+                document.getElementById('confirmModal').classList.remove('hidden');
+            });
+        }
+
+        function closeConfirmModal(result) {
+            document.getElementById('confirmModal').classList.add('hidden');
+            if (confirmResolver) {
+                confirmResolver(result);
+                confirmResolver = null;
+            }
+        }
+
+        // ── SMART DATE PARSER & RELATIVE BADGES ───────────────────────────────
+        function parseCustomDate(str) {
+            if (!str || str.toLowerCase().includes('siap huni')) return null;
+            const clean = str.replace(/[^a-zA-Z0-9\s\-\/]/g, '').toLowerCase();
+            
+            // DD Mmm YYYY (e.g. 18 okt 2026)
+            const match = clean.match(/(\d{1,2})\s+([a-z]{3,4})\s+(\d{4})/);
+            if (match) {
+                const d = parseInt(match[1], 10);
+                const m = INDO_MONTH_MAP[match[2].slice(0, 3)];
+                const y = parseInt(match[3], 10);
+                if (m !== undefined) return new Date(y, m, d);
+            }
+            // ISO YYYY-MM-DD
+            const isoMatch = clean.match(/(\d{4})-(\d{2})-(\d{2})/);
+            if (isoMatch) return new Date(isoMatch[1], parseInt(isoMatch[2], 10) - 1, isoMatch[3]);
+            
+            // DD/MM/YYYY
+            const slashMatch = clean.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (slashMatch) return new Date(slashMatch[3], parseInt(slashMatch[2], 10) - 1, slashMatch[1]);
+            
+            return null;
+        }
+
+        function getRelativeDateBadge(dateStr, payStatus) {
+            if (payStatus === 'Tersedia' || !dateStr || dateStr.toLowerCase().includes('siap huni')) {
+                return { text: 'Siap Huni', color: 'bg-blue-50 text-blue-700 border-blue-200' };
+            }
+            const d = parseCustomDate(dateStr);
+            if (!d) return { text: dateStr, color: 'bg-slate-100 text-slate-700 border-slate-200' };
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            d.setHours(0,0,0,0);
+            const diffTime = d - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                return { text: `Telat ${Math.abs(diffDays)} hari`, color: 'bg-rose-50 text-rose-700 border-rose-200 font-bold' };
+            } else if (diffDays === 0) {
+                return { text: 'Hari Ini', color: 'bg-amber-50 text-amber-700 border-amber-200 font-bold animate-pulse' };
+            } else if (diffDays <= 7) {
+                return { text: `${diffDays} hari lagi`, color: 'bg-amber-50 text-amber-700 border-amber-200 font-semibold' };
+            } else {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                return { text: `s/d ${d.getDate()} ${months[d.getMonth()]}`, color: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+            }
+        }
+
+        function advanceDueDateByOneMonth(oldDateStr) {
+            let d = parseCustomDate(oldDateStr) || new Date();
+            d.setMonth(d.getMonth() + 1);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const pad = n => String(n).padStart(2, '0');
+            return `Jatuh Tempo: ${pad(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
 
         // Mobile Search Input Toggle
         function toggleMobileSearch(show) {
@@ -1309,6 +1630,7 @@
             if (syncIcon) syncIcon.classList.remove('fa-spin');
             renderAllViews();
             updateKPIs();
+            showToast('Data berhasil disinkronkan dengan cloud!', 'success');
         }
 
         async function syncRoomsData() {
@@ -1412,7 +1734,7 @@
             if (elPhone) elPhone.innerText = 'Telp/WA: ' + phone;
         }
 
-        // Logo Logic (Centered in Settings only)
+        // Logo Logic
         function loadLogo() {
             const customLogo = localStorage.getItem(APP_LOGO_KEY);
             const receiptImg = document.getElementById('receiptLogoImg');
@@ -1441,6 +1763,7 @@
                 const dataUrl = e.target.result;
                 localStorage.setItem(APP_LOGO_KEY, dataUrl);
                 loadLogo();
+                showToast('Logo usaha berhasil diperbarui!', 'success');
             };
             reader.readAsDataURL(file);
         }
@@ -1448,6 +1771,7 @@
         function resetLogoToDefault() {
             localStorage.removeItem(APP_LOGO_KEY);
             loadLogo();
+            showToast('Logo dikembalikan ke ikon bawaan.', 'info');
         }
 
         // View Switcher (Kamar / Denah / Expenses)
@@ -1507,7 +1831,7 @@
             updateKPIs();
         }
 
-        // Dynamic KPI Recalculation
+        // Dynamic KPI Recalculation & Urgent Ribbon
         function updateKPIs() {
             let totalRevenue = 0;
             let occupiedRooms = 0;
@@ -1555,7 +1879,7 @@
             
             if (netProfitEl) {
                 netProfitEl.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
-                netProfitEl.className = netProfit >= 0 ? "text-base sm:text-xl font-extrabold text-slate-900 tracking-tight" : "text-base sm:text-xl font-extrabold text-rose-600 tracking-tight";
+                netProfitEl.className = netProfit >= 0 ? "text-base sm:text-xl font-extrabold text-slate-900 tracking-tight font-mono tabular-nums" : "text-base sm:text-xl font-extrabold text-rose-600 tracking-tight font-mono tabular-nums";
             }
             if (marginEl) marginEl.innerText = `${profitMargin}% Margin`;
 
@@ -1571,10 +1895,29 @@
             const mExp = document.getElementById('mobileExpense');
 
             if (mNetProfit) mNetProfit.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
-            if (mMargin) mMargin.innerText = `${profitMargin}% Profit`;
+            if (mMargin) mMargin.innerText = `${profitMargin}% Margin`;
             if (mOcc) mOcc.innerText = `${occupiedRooms}/${appData.length} (${occupancyPct}%)`;
             if (mRev) mRev.innerText = 'Rp ' + (totalRevenue >= 1000000 ? (totalRevenue/1000000).toFixed(1) + 'M' : totalRevenue.toLocaleString('id-ID'));
             if (mExp) mExp.innerText = 'Rp ' + (totalExpenses >= 1000000 ? (totalExpenses/1000000).toFixed(1) + 'M' : totalExpenses.toLocaleString('id-ID'));
+
+            // Urgent Attention Ribbon Trigger
+            const ribbon = document.getElementById('urgentActionRibbon');
+            const ribbonTitle = document.getElementById('urgentRibbonTitle');
+            const ribbonSub = document.getElementById('urgentRibbonSubtitle');
+            if (ribbon) {
+                if (lateRooms > 0 || dueRooms > 0) {
+                    ribbon.classList.remove('hidden');
+                    if (lateRooms > 0) {
+                        ribbonTitle.innerText = `${lateRooms} Penghuni Menunggak Pembayaran Sewa`;
+                        ribbonSub.innerText = 'Kirimkan pengingat tagihan WhatsApp sekarang';
+                    } else {
+                        ribbonTitle.innerText = `${dueRooms} Kamar Memasuki Jatuh Tempo`;
+                        ribbonSub.innerText = 'Siapkan nota kuitansi & konfirmasi pembayaran';
+                    }
+                } else {
+                    ribbon.classList.add('hidden');
+                }
+            }
 
             // Filter Badges Count Update
             const countSemua = document.getElementById('countFilterSemua');
@@ -1599,14 +1942,15 @@
                 b.classList.remove('active', 'bg-slate-900', 'text-white');
                 b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
             });
-            btn.classList.add('active', 'bg-slate-900', 'text-white');
-            btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            if (btn) {
+                btn.classList.add('active', 'bg-slate-900', 'text-white');
+                btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            }
             renderTable();
         }
 
         function handleSearch(query) {
             searchQuery = query.toLowerCase().trim();
-            // Sync desktop and mobile search inputs
             const dInput = document.getElementById('searchInput');
             const mInput = document.getElementById('mobileSearchInput');
             if (dInput && dInput.value !== query) dInput.value = query;
@@ -1646,8 +1990,9 @@
             if (filtered.length === 0) {
                 const emptyHtml = `
                     <div class="col-span-full text-center py-8 text-slate-400 bg-white rounded-2xl border border-slate-200/80 p-5">
-                        <i class="fa-solid fa-inbox text-2xl mb-1 text-slate-300"></i>
-                        <p class="font-medium text-xs">Tidak ada data kamar yang sesuai.</p>
+                        <i class="fa-solid fa-circle-check text-2xl mb-1 text-emerald-400"></i>
+                        <p class="font-bold text-xs text-slate-700">Tidak ada data kamar pada kategori ini.</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Semua penghuni terorganisir dengan rapi.</p>
                     </div>
                 `;
                 tbody.innerHTML = `<tr><td colspan="8">${emptyHtml}</td></tr>`;
@@ -1661,16 +2006,29 @@
             // 1. Desktop Only: Full Data Table (>= 1024px)
             tbody.innerHTML = filtered.map(item => {
                 const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
-                
+                const relBadge = getRelativeDateBadge(item.date, item.pay_status);
+
                 let payBadge = 'bg-slate-100 text-slate-600';
-                if (item.pay_status === 'Lunas') payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                else if (item.pay_status === 'Belum Lunas') payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
-                else if (item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
-                else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
-                else if (isAvailable) payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
+                let borderAccent = 'border-l-4 border-l-slate-300';
+                if (item.pay_status === 'Lunas') {
+                    payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    borderAccent = 'border-l-4 border-l-emerald-500';
+                } else if (item.pay_status === 'Belum Lunas') {
+                    payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+                    borderAccent = 'border-l-4 border-l-amber-500';
+                } else if (item.pay_status === 'Menunggak') {
+                    payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
+                    borderAccent = 'border-l-4 border-l-rose-500';
+                } else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) {
+                    payBadge = 'bg-purple-50 text-purple-700 border border-purple-200';
+                    borderAccent = 'border-l-4 border-l-purple-500';
+                } else if (isAvailable) {
+                    payBadge = 'bg-blue-50 text-blue-700 border border-blue-200';
+                    borderAccent = 'border-l-4 border-l-blue-500';
+                }
 
                 return `
-                    <tr class="hover:bg-slate-50/80 transition-colors">
+                    <tr class="hover:bg-slate-50/80 transition-colors ${borderAccent}">
                         <td class="px-5 py-3 font-extrabold text-slate-900 font-mono">
                             <span class="hover:underline cursor-pointer" onclick="openEditModal('${item.id}')">${item.id}</span>
                         </td>
@@ -1699,7 +2057,7 @@
                                 ${item.rack || 'Lantai 1'}
                             </span>
                         </td>
-                        <td class="px-5 py-3 font-bold text-slate-900">
+                        <td class="px-5 py-3 font-bold text-slate-900 font-mono tabular-nums">
                             Rp ${Number(item.amount).toLocaleString('id-ID')}
                         </td>
                         <td class="px-5 py-3">
@@ -1708,8 +2066,8 @@
                             </span>
                         </td>
                         <td class="px-5 py-3">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700">
-                                ${item.date || item.work_status}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] ${relBadge.color}">
+                                ${relBadge.text}
                             </span>
                         </td>
                         <td class="px-5 py-3 whitespace-nowrap text-center">
@@ -1722,8 +2080,8 @@
                                         <i class="fa-solid fa-receipt"></i>
                                     </button>
                                     ${item.pay_status !== 'Lunas' ? `
-                                        <button onclick="markAsPaidQuick('${item.id}')" title="Tandai Lunas" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
-                                            <i class="fa-solid fa-check"></i>
+                                        <button onclick="markAsPaidQuick('${item.id}')" title="Perpanjang Sewa & Tandai Lunas" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-emerald-600 hover:text-white text-amber-700 font-bold transition-colors">
+                                            <i class="fa-solid fa-circle-check"></i>
                                         </button>
                                     ` : ''}
                                 ` : ''}
@@ -1739,32 +2097,40 @@
                 `;
             }).join('');
 
-            // 2. Mobile & Tablet (< 1024px): Sleek, Uncluttered Responsive Bento Cards
+            // 2. Mobile & Tablet (< 1024px): Sleek, Uncluttered Responsive Bento Cards with Left Color Accent
             if (mobileContainer) {
                 mobileContainer.innerHTML = filtered.map(item => {
                     const isAvailable = item.pay_status === 'Tersedia' || item.work_status === 'Tersedia' || item.customer.includes('Belum Berpenghuni');
-                    
+                    const relBadge = getRelativeDateBadge(item.date, item.pay_status);
+
                     let payBadge = 'bg-slate-100 text-slate-600';
                     let dotColor = 'bg-slate-400';
+                    let borderAccent = 'border-l-4 border-l-slate-300';
+
                     if (item.pay_status === 'Lunas') {
                         payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200/80';
                         dotColor = 'bg-emerald-500';
+                        borderAccent = 'border-l-4 border-l-emerald-500';
                     } else if (item.pay_status === 'Belum Lunas') {
                         payBadge = 'bg-amber-50 text-amber-700 border border-amber-200/80';
                         dotColor = 'bg-amber-500';
+                        borderAccent = 'border-l-4 border-l-amber-500';
                     } else if (item.pay_status === 'Menunggak') {
                         payBadge = 'bg-rose-50 text-rose-700 border border-rose-200/80';
                         dotColor = 'bg-rose-500';
+                        borderAccent = 'border-l-4 border-l-rose-500';
                     } else if (item.pay_status.includes('DP') || item.pay_status.includes('Booking')) {
                         payBadge = 'bg-purple-50 text-purple-700 border border-purple-200/80';
                         dotColor = 'bg-purple-500';
+                        borderAccent = 'border-l-4 border-l-purple-500';
                     } else if (isAvailable) {
                         payBadge = 'bg-blue-50 text-blue-700 border border-blue-200/80';
                         dotColor = 'bg-blue-500';
+                        borderAccent = 'border-l-4 border-l-blue-500';
                     }
 
                     return `
-                        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between ${borderAccent}">
                             
                             <!-- Card Header: Room ID, Floor, Status Badge -->
                             <div>
@@ -1784,12 +2150,15 @@
                                 </div>
 
                                 <!-- Tenant Info / Availability -->
-                                <div class="mt-2.5">
+                                <div class="mt-2">
                                     ${isAvailable ? `
                                         <h4 class="text-xs sm:text-sm font-extrabold text-blue-700">Kamar Kosong / Siap Huni</h4>
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
                                     ` : `
-                                        <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                            <span class="px-1.5 py-0.2 rounded text-[10px] ${relBadge.color} shrink-0">${relBadge.text}</span>
+                                        </div>
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
                                     `}
                                 </div>
@@ -1798,7 +2167,7 @@
                             <!-- Card Bottom: Rent Price + Compact Action Pills -->
                             <div class="flex items-center justify-between pt-2.5 mt-2.5 border-t border-slate-100">
                                 <div>
-                                    <span class="text-xs font-extrabold text-slate-900 block font-mono">
+                                    <span class="text-xs font-extrabold text-slate-900 block font-mono tabular-nums">
                                         Rp ${Number(item.amount).toLocaleString('id-ID')}
                                     </span>
                                     <span class="text-[9px] text-slate-400 block">${item.date || 'Bulanan'}</span>
@@ -1911,7 +2280,7 @@
             if (id) deleteItem(id);
         }
 
-        // Render Denah Visual Kamar (Grouped per Floor)
+        // Render Denah Visual Kamar
         function renderDenah() {
             const container = document.getElementById('denahFloorsContainer');
             if (!container) return;
@@ -1978,7 +2347,7 @@
                                         </div>
 
                                         <div class="pt-1.5 mt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
-                                            <span class="font-bold text-slate-900 font-mono">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
+                                            <span class="font-bold text-slate-900 font-mono tabular-nums">Rp ${(r.amount/1000).toLocaleString('id-ID')}k</span>
                                             <span class="font-semibold text-slate-500 text-[9px]">${statusText}</span>
                                         </div>
                                     </div>
@@ -1990,7 +2359,7 @@
             }).join('');
         }
 
-        // Render Expenses (Buku Kas Operasional)
+        // Render Expenses
         function renderExpenses() {
             const tbody = document.getElementById('expensesTableBody');
             const mobileContainer = document.getElementById('mobileExpensesContainer');
@@ -2016,7 +2385,6 @@
                 return;
             }
 
-            // Desktop Table Rows
             tbody.innerHTML = appExpenses.map(exp => `
                 <tr class="hover:bg-slate-50/80 transition-colors">
                     <td class="px-4 py-3 font-semibold text-slate-700">${exp.expense_date}</td>
@@ -2027,7 +2395,7 @@
                     </td>
                     <td class="px-4 py-3 font-bold text-slate-900">${exp.title}</td>
                     <td class="px-4 py-3 text-slate-400">${exp.notes || '-'}</td>
-                    <td class="px-4 py-3 text-right font-mono font-bold text-rose-600">
+                    <td class="px-4 py-3 text-right font-mono font-bold text-rose-600 tabular-nums">
                         Rp ${Number(exp.amount).toLocaleString('id-ID')}
                     </td>
                     <td class="px-4 py-3 text-center">
@@ -2038,7 +2406,6 @@
                 </tr>
             `).join('');
 
-            // Mobile Compact Expense Cards
             if (mobileContainer) {
                 mobileContainer.innerHTML = appExpenses.map(exp => `
                     <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
@@ -2050,7 +2417,7 @@
                         </div>
                         <h4 class="font-extrabold text-xs text-slate-900">${exp.title}</h4>
                         <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 text-xs">
-                            <span class="font-mono font-bold text-rose-600">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
+                            <span class="font-mono font-bold text-rose-600 tabular-nums">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
                             <button onclick="deleteExpense('${exp.id}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-600">
                                 <i class="fa-solid fa-trash-can text-xs"></i>
                             </button>
@@ -2079,31 +2446,38 @@
                       `• No. Kamar: *${room.id}*%0A` +
                       `• Tipe: ${room.service}%0A` +
                       `• Status: *${room.date || room.pay_status}*%0A` +
-                      `• Nominal: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
+                      `• Nominal Tagihan: *Rp ${Number(room.amount).toLocaleString('id-ID')}*%0A%0A` +
                       `Pembayaran dapat ditransfer via:%0A` +
                       `*Bank ${bankName}: ${bankNum}*%0A` +
                       `*A.N. ${bankHolder}*%0A%0A` +
-                      `Mohon konfirmasi jika sudah transfer ya. Terima kasih banyak 🙏`;
+                      `Mohon kirimkan bukti transfer jika sudah melakukan pembayaran ya. Terima kasih banyak 🙏`;
 
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
             if (targetPhone) waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
             window.open(waUrl, '_blank');
         }
 
-        // Quick Mark as Paid
+        // ── SMART RENT RENEWAL & ADVANCE DUE DATE (+1 MONTH) ───────────────────
         async function markAsPaidQuick(id) {
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
-            if (confirm(`Tandai sewa kamar ${room.id} (${room.customer}) sudah LUNAS?`)) {
+            const nextDueDate = advanceDueDateByOneMonth(room.date);
+            const confirmed = await showCustomConfirm({
+                title: 'Perpanjang Sewa & Tandai Lunas?',
+                desc: `Tandai sewa kamar ${room.id} (${room.customer}) Lunas dan majukan jatuh tempo ke "${nextDueDate}"?`,
+                confirmText: 'Lunas & Perpanjang'
+            });
+
+            if (confirmed) {
                 room.pay_status = 'Lunas';
-                room.date = 'Lunas: ' + new Date().toLocaleDateString('id-ID');
+                room.date = nextDueDate;
                 
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
                             pay_status: 'Lunas',
-                            date: room.date
+                            date: nextDueDate
                         }).eq('id', id);
                     } catch (err) {
                         console.warn('Gagal update cloud, simpan lokal');
@@ -2112,10 +2486,8 @@
 
                 saveRoomsLocal();
                 renderAllViews();
-                
-                if (confirm('Status berhasil diubah menjadi Lunas. Ingin langsung buat kuitansi pembayaran?')) {
-                    openReceiptForItem(id);
-                }
+                showToast(`Sewa ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
+                openReceiptForItem(id);
             }
         }
 
@@ -2160,11 +2532,18 @@
             renderAllViews();
             btn.disabled = false;
             btn.innerText = 'Simpan';
-            alert('Pengeluaran berhasil dicatat!');
+            showToast('Pengeluaran berhasil dicatat ke Buku Kas!', 'success');
         }
 
         async function deleteExpense(id) {
-            if (confirm('Hapus pos pengeluaran ini dari Buku Kas?')) {
+            const confirmed = await showCustomConfirm({
+                title: 'Hapus Pos Pengeluaran?',
+                desc: 'Catatan pengeluaran ini akan dihapus permanen dari buku kas operasional.',
+                confirmText: 'Hapus Biaya',
+                isDanger: true
+            });
+
+            if (confirmed) {
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_EXPENSES).delete().eq('id', id);
@@ -2175,6 +2554,7 @@
                 appExpenses = appExpenses.filter(x => x.id !== id);
                 saveExpensesLocal();
                 renderAllViews();
+                showToast('Catatan pengeluaran berhasil dihapus.', 'info');
             }
         }
 
@@ -2237,6 +2617,7 @@
             renderAllViews();
             btn.disabled = false;
             btn.innerText = 'Simpan';
+            showToast(`Data kamar ${room.id} berhasil diperbarui!`, 'success');
         }
 
         // Check-Out / Kosongkan Kamar
@@ -2245,7 +2626,14 @@
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
-            if (confirm(`Kosongkan kamar ${room.id}? Data penyewa ${room.customer} akan diselesaikan dan status menjadi Siap Huni.`)) {
+            const confirmed = await showCustomConfirm({
+                title: `Kosongkan Kamar ${room.id}?`,
+                desc: `Data penyewa "${room.customer}" akan diselesaikan dan status kamar menjadi "Siap Huni".`,
+                confirmText: 'Kosongkan Kamar',
+                isDanger: true
+            });
+
+            if (confirmed) {
                 const updated = {
                     customer: 'Belum Berpenghuni',
                     phone: '',
@@ -2266,7 +2654,7 @@
                 saveRoomsLocal();
                 closeEditModal();
                 renderAllViews();
-                alert(`Kamar ${room.id} sekarang kosong dan siap disewakan.`);
+                showToast(`Kamar ${room.id} berhasil dikosongkan & siap huni kembali!`, 'info');
             }
         }
 
@@ -2276,7 +2664,11 @@
             document.getElementById('editCustomer').value = '';
             document.getElementById('editCustomer').focus();
             document.getElementById('editPayStatus').value = 'Belum Lunas';
-            document.getElementById('editDueDate').value = 'Jatuh Tempo: ' + new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('id-ID');
+            
+            const nextMonth = new Date(Date.now() + 30*24*60*60*1000);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const pad = n => String(n).padStart(2, '0');
+            document.getElementById('editDueDate').value = `Jatuh Tempo: ${pad(nextMonth.getDate())} ${months[nextMonth.getMonth()]} ${nextMonth.getFullYear()}`;
         }
 
         // Add Data Modal Logic
@@ -2335,16 +2727,22 @@
             renderAllViews();
             btn.disabled = false;
             btn.innerText = 'Simpan Data';
-            
+            showToast(`Kamar ${newItem.id} berhasil ditambahkan!`, 'success');
+
             if (isOccupied) {
                 openReceiptForItem(newItem.id);
-            } else {
-                alert(`Kamar ${newItem.id} berhasil ditambahkan dan berstatus Siap Huni!`);
             }
         }
 
         async function deleteItem(id) {
-            if (confirm(`Hapus kamar ${id} secara permanen?`)) {
+            const confirmed = await showCustomConfirm({
+                title: `Hapus Kamar ${id}?`,
+                desc: `Kamar ${id} beserta riwayat sewanya akan dihapus permanen dari sistem.`,
+                confirmText: 'Hapus Kamar',
+                isDanger: true
+            });
+
+            if (confirmed) {
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_ROOMS).delete().eq('id', id);
@@ -2355,6 +2753,7 @@
                 appData = appData.filter(x => x.id !== id);
                 saveRoomsLocal();
                 renderAllViews();
+                showToast(`Kamar ${id} berhasil dihapus.`, 'info');
             }
         }
 
@@ -2391,6 +2790,12 @@
             document.getElementById('editDiscountInput').value = 0;
             document.getElementById('editTaxCheckbox').checked = false;
             document.getElementById('editCashInput').value = item.amount;
+
+            // Reset utility calculator
+            const uBody = document.getElementById('utilityCalcBody');
+            if (uBody) uBody.classList.add('hidden');
+            const uIcon = document.getElementById('utilityCalcIcon');
+            if (uIcon) uIcon.className = 'fa-solid fa-chevron-down text-[10px]';
 
             renderReceiptEditorRows();
             recalculateReceipt();
@@ -2442,7 +2847,7 @@
                 <div>
                     <div class="flex justify-between font-semibold">
                         <span>${row.desc}</span>
-                        <span class="font-mono">Rp ${Number(row.qty * row.price).toLocaleString('id-ID')}</span>
+                        <span class="font-mono tabular-nums">Rp ${Number(row.qty * row.price).toLocaleString('id-ID')}</span>
                     </div>
                     <div class="text-[9px] text-slate-400">
                         ${row.qty} x Rp ${Number(row.price).toLocaleString('id-ID')}
@@ -2485,6 +2890,53 @@
             document.getElementById('receiptCashGivenText').innerText = 'Rp ' + cashGiven.toLocaleString('id-ID');
             document.getElementById('receiptChangeText').innerText = 'Rp ' + change.toLocaleString('id-ID');
             document.getElementById('editChangeDisplay').innerText = 'Rp ' + change.toLocaleString('id-ID');
+        }
+
+        // Utility Calculator Helpers in Receipt Modal
+        function toggleUtilityCalc() {
+            const body = document.getElementById('utilityCalcBody');
+            const icon = document.getElementById('utilityCalcIcon');
+            if (!body) return;
+            body.classList.toggle('hidden');
+            if (icon) {
+                icon.className = body.classList.contains('hidden') ? 'fa-solid fa-chevron-down text-[10px]' : 'fa-solid fa-chevron-up text-[10px]';
+            }
+        }
+
+        function recalcUtilityPreview() {
+            const start = Number(document.getElementById('calcMeterStart').value) || 0;
+            const end = Number(document.getElementById('calcMeterEnd').value) || 0;
+            const rate = Number(document.getElementById('calcRatePerKwh').value) || 1500;
+            const used = Math.max(0, end - start);
+            const total = used * rate;
+
+            const summary = document.getElementById('utilityCalcSummary');
+            if (summary) {
+                summary.innerText = `${used} kWh × Rp ${rate.toLocaleString('id-ID')} = Rp ${total.toLocaleString('id-ID')}`;
+            }
+        }
+
+        function addUtilityRowToReceipt() {
+            const start = Number(document.getElementById('calcMeterStart').value) || 0;
+            const end = Number(document.getElementById('calcMeterEnd').value) || 0;
+            const rate = Number(document.getElementById('calcRatePerKwh').value) || 1500;
+            const used = Math.max(0, end - start);
+            
+            if (used <= 0) {
+                showToast('Meteran akhir harus lebih besar dari meteran awal!', 'warning');
+                return;
+            }
+
+            receiptRows.push({
+                desc: `Biaya Listrik (${used} kWh @ Rp ${rate.toLocaleString('id-ID')})`,
+                qty: 1,
+                price: used * rate
+            });
+
+            renderReceiptEditorRows();
+            recalculateReceipt();
+            toggleUtilityCalc();
+            showToast('Biaya listrik berhasil ditambahkan ke nota!', 'success');
         }
 
         function updateReceiptCustomer(val) { document.getElementById('receiptCustomerText').innerText = val || 'Penyewa'; }
@@ -2538,6 +2990,68 @@
             window.open(waUrl, '_blank');
         }
 
+        // ── MONTHLY RECAP REPORT MODAL (A4 PRINTABLE) ─────────────────────────
+        function openMonthlyReportModal() {
+            const titleEl = document.getElementById('reportTitleKost');
+            const addrEl = document.getElementById('reportAddressKost');
+            const phoneEl = document.getElementById('reportPhoneKost');
+            const dateEl = document.getElementById('reportDateNow');
+
+            if (titleEl) titleEl.innerText = appSettings.storeName || DEFAULT_SETTINGS.storeName;
+            if (addrEl) addrEl.innerText = appSettings.address || DEFAULT_SETTINGS.address;
+            if (phoneEl) phoneEl.innerText = 'Telp/WA: ' + (appSettings.phone || DEFAULT_SETTINGS.phone);
+            if (dateEl) dateEl.innerText = 'Periode: ' + new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+            // Executive Summary KPIs
+            let totalRev = 0;
+            let occupiedCount = 0;
+            appData.forEach(r => {
+                if (r.pay_status === 'Lunas') totalRev += Number(r.amount) || 0;
+                if (r.pay_status !== 'Tersedia' && !r.customer.includes('Belum Berpenghuni')) occupiedCount++;
+            });
+            let totalExp = appExpenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
+            let netProfit = totalRev - totalExp;
+            let occPct = appData.length > 0 ? Math.round((occupiedCount / appData.length) * 100) : 0;
+
+            document.getElementById('reportRevText').innerText = 'Rp ' + totalRev.toLocaleString('id-ID');
+            document.getElementById('reportExpText').innerText = 'Rp ' + totalExp.toLocaleString('id-ID');
+            document.getElementById('reportProfitText').innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
+            document.getElementById('reportOccText').innerText = `${occupiedCount} / ${appData.length} (${occPct}%)`;
+
+            // Rooms Table
+            const roomsTbody = document.getElementById('reportRoomsTableBody');
+            if (roomsTbody) {
+                roomsTbody.innerHTML = appData.map(r => `
+                    <tr>
+                        <td class="border border-slate-200 p-2 font-mono font-bold">${r.id}</td>
+                        <td class="border border-slate-200 p-2">${r.customer}</td>
+                        <td class="border border-slate-200 p-2">${r.service}</td>
+                        <td class="border border-slate-200 p-2 font-mono">Rp ${Number(r.amount).toLocaleString('id-ID')}</td>
+                        <td class="border border-slate-200 p-2 font-semibold">${r.pay_status}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Expenses Table
+            const expTbody = document.getElementById('reportExpensesTableBody');
+            if (expTbody) {
+                expTbody.innerHTML = appExpenses.map(e => `
+                    <tr>
+                        <td class="border border-slate-200 p-2">${e.expense_date}</td>
+                        <td class="border border-slate-200 p-2">${e.category}</td>
+                        <td class="border border-slate-200 p-2">${e.title}</td>
+                        <td class="border border-slate-200 p-2 text-right font-mono">Rp ${Number(e.amount).toLocaleString('id-ID')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('monthlyReportModal').classList.remove('hidden');
+        }
+
+        function closeMonthlyReportModal() {
+            document.getElementById('monthlyReportModal').classList.add('hidden');
+        }
+
         // Settings Modal
         function openSettingsModal() {
             document.getElementById('settingStoreName').value = appSettings.storeName || DEFAULT_SETTINGS.storeName;
@@ -2568,7 +3082,7 @@
             updateStoreLabels();
             setReceiptFormat(appSettings.defaultPaper);
             closeSettingsModal();
-            alert('Pengaturan usaha kost dan rekening bank berhasil disimpan!');
+            showToast('Pengaturan usaha dan rekening bank berhasil disimpan!', 'success');
         }
 
         // Backup Data (JSON Export)
@@ -2586,6 +3100,7 @@
             a.href = url;
             a.download = `backup_simkost_${new Date().toISOString().slice(0, 10)}.json`;
             a.click();
+            showToast('Berkas cadangan JSON berhasil diunduh.', 'success');
         }
 
         // Drawer Sidebar Toggle
@@ -2613,6 +3128,7 @@
             a.href = url;
             a.download = `laporan_kamar_kost_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
+            showToast('Laporan CSV berhasil diunduh.', 'success');
         }
     </script>
 </body>
