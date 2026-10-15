@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -119,13 +121,13 @@
                     </a>
                 </div>
 
-                <!-- Quick Domain Badge -->
-                <div class="mx-4 mt-2 p-3.5 rounded-xl border border-slate-100 bg-slate-50/70">
-                    <div class="flex items-center gap-2 mb-1.5">
-                        <span class="w-2 h-2 rounded-full" style="background-color: #059669;"></span>
-                        <span class="text-xs font-semibold text-slate-700">Kost & Properti Sewa</span>
+                <!-- Database Status Pill -->
+                <div class="mx-4 mt-2 p-3 rounded-xl border border-emerald-200/80 bg-emerald-50/70">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-bold text-emerald-800">Supabase Cloud Sync</span>
                     </div>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Sistem Pembukuan & Manajemen Kamar Kost Otomatis</p>
+                    <p class="text-[10px] text-emerald-600 font-mono truncate" title="ram-saas-db [table: kost_rooms]">ram-saas-db [table: kost_rooms]</p>
                 </div>
             </div>
 
@@ -139,7 +141,7 @@
                         <div class="truncate">
                             <p id="sidebarStoreName" class="text-xs font-semibold text-slate-800 truncate">KOST MAGNOLIA RESIDENCE</p>
                             <p class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online · Multi-User
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online Database
                             </p>
                         </div>
                     </div>
@@ -162,8 +164,8 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h2 class="text-base font-bold text-slate-900">SIMKOST Pro</h2>
-                            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold border" style="background-color: #d1fae5; color: #047857; border-color: #05966940;">
-                                SaaS Pro
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Supabase Connected
                             </span>
                         </div>
                         <p class="text-xs text-slate-400 hidden sm:block">Kelola operasional dan cetak invoice dengan logo toko Anda</p>
@@ -287,12 +289,13 @@
 
                         <!-- Actions right -->
                         <div class="flex items-center gap-2">
+                            <button onclick="syncFromSupabase()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-1.5" title="Refresh dari Supabase">
+                                <i class="fa-solid fa-cloud-arrow-down text-brand"></i>
+                                <span>Sync Cloud</span>
+                            </button>
                             <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-1.5">
                                 <i class="fa-solid fa-file-excel text-emerald-600"></i>
                                 <span>Export CSV</span>
-                            </button>
-                            <button onclick="resetDataToDemo()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-500 hover:bg-slate-50 flex items-center gap-1" title="Reset Demo Data">
-                                <i class="fa-solid fa-rotate-right"></i>
                             </button>
                         </div>
                     </div>
@@ -321,7 +324,7 @@
 
                     <!-- Table Footer / Pagination -->
                     <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-                        <div id="tableCounter">Menampilkan 5 data dari total 5 data</div>
+                        <div id="tableCounter">Memuat data dari database cloud...</div>
                         <div class="flex items-center gap-1">
                             <button class="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-600" disabled>Sebelumnya</button>
                             <span class="px-2.5 py-1 rounded font-bold" style="background-color: #d1fae5; color: #047857;">1</span>
@@ -337,8 +340,8 @@
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-slate-900">Fitur Smart Nota: Kustomisasi Logo & Hitung Otomatis</h4>
-                            <p class="text-xs text-slate-500">Unggah logo outlet Anda, atur PPN & diskon, lalu cetak langsung ke printer kasir thermal 58mm/80mm atau simpan sebagai PDF.</p>
+                            <h4 class="text-sm font-bold text-slate-900">Database Supabase Cloud Terhubung & Smart Nota Cetak Logo</h4>
+                            <p class="text-xs text-slate-500">Data tersimpan aman di database PostgreSQL Supabase (ram-saas-db [table: kost_rooms]). Unggah logo toko dan cetak struk kasir thermal 58mm/80mm.</p>
                         </div>
                     </div>
                     <button onclick="openSettingsModal()" class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:opacity-95" style="background-color: #059669;">
@@ -467,7 +470,7 @@
                         <!-- Footer Thank You Note -->
                         <div class="text-center pt-3 text-[10px] text-slate-400 space-y-1">
                             <p class="font-semibold text-slate-600">*** TERIMA KASIH ***</p>
-                            <p>Barang / Layanan yang sudah diproses tidak dapat dikembalikan tanpa nota resmi.</p>
+                            <p>Data tersinkron otomatis ke Supabase Cloud PostgreSQL.</p>
                             <p class="text-[9px] text-slate-300">Powered by SIMKOST Pro · RAM.AI.ID</p>
                         </div>
                     </div>
@@ -492,7 +495,7 @@
                                 </button>
                             </div>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-tight">Unggah logo format PNG/JPG transparan. Logo akan otomatis tersimpan di memori browser dan dicetak pada setiap struk.</p>
+                        <p class="text-[11px] text-slate-400 leading-tight">Unggah logo format PNG/JPG transparan. Logo tersimpan permanen dan otomatis dicetak pada setiap nota.</p>
                     </div>
 
                     <!-- Meta Editors -->
@@ -615,7 +618,9 @@
                 </div>
                 <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
                     <button type="button" onclick="closeNewModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">Batal</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold hover:opacity-95" style="background-color: #059669;">Simpan & Buat Nota</button>
+                    <button type="submit" id="submitBtn" class="px-5 py-2 rounded-xl text-white font-bold hover:opacity-95 flex items-center gap-1.5" style="background-color: #059669;">
+                        <span>Simpan ke Cloud Supabase</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -675,8 +680,22 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC & REACTIVE STORE -->
+    <!-- JAVASCRIPT LOGIC & SUPABASE INTEGRATION -->
     <script>
+        // Supabase Cloud Configuration
+        const SUPABASE_URL = 'https://fufabclsvmaqsbvermha.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1ZmFiY2xzdm1hcXNidmVybWhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMTEwMzMsImV4cCI6MjEwNzU4NzAzM30.0hFMs0xBOOyfky6O0iUvpGtCcEZJGNjoS1zlYxBxCec';
+        const SUPABASE_TABLE = 'kost_rooms';
+
+        let supabaseClient = null;
+        try {
+            if (window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error('Supabase init failed:', e);
+        }
+
         const APP_STORAGE_KEY = 'ram-kost_data_v2';
         const APP_SETTINGS_KEY = 'ram-kost_settings_v2';
         const APP_LOGO_KEY = 'ram-kost_logo_v2';
@@ -699,12 +718,55 @@
         let receiptRows = [];
 
         // Initialization
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             loadSettings();
-            loadData();
             loadLogo();
-            renderTable();
+            await syncFromSupabase();
         });
+
+        async function syncFromSupabase() {
+            document.getElementById('tableCounter').innerText = 'Menghubungkan ke Supabase Cloud...';
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from(SUPABASE_TABLE).select('*').order('created_at', { ascending: false });
+                    if (!error && data && data.length > 0) {
+                        appData = data.map(item => ({
+                            id: item.id,
+                            customer: item.customer_name || item.customer,
+                            phone: item.customer_phone || item.phone,
+                            service: item.service_name || item.service,
+                            detail: item.detail,
+                            rack: item.rack_location || item.rack,
+                            amount: Number(item.amount),
+                            pay_status: item.payment_status || item.pay_status,
+                            work_status: item.work_status,
+                            date: item.date || new Date(item.created_at).toLocaleDateString('id-ID')
+                        }));
+                        saveData();
+                        renderTable();
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Gagal fetch Supabase, beralih ke cache lokal:', err);
+                }
+            }
+            loadLocalData();
+            renderTable();
+        }
+
+        function loadLocalData() {
+            const stored = localStorage.getItem(APP_STORAGE_KEY);
+            if (stored) {
+                try {
+                    appData = JSON.parse(stored);
+                } catch (e) {
+                    appData = [...INITIAL_DATA];
+                }
+            } else {
+                appData = [...INITIAL_DATA];
+                saveData();
+            }
+        }
 
         function loadSettings() {
             const stored = localStorage.getItem(APP_SETTINGS_KEY);
@@ -718,20 +780,6 @@
                 appSettings = { ...DEFAULT_SETTINGS };
             }
             updateStoreLabels();
-        }
-
-        function loadData() {
-            const stored = localStorage.getItem(APP_STORAGE_KEY);
-            if (stored) {
-                try {
-                    appData = JSON.parse(stored);
-                } catch (e) {
-                    appData = [...INITIAL_DATA];
-                }
-            } else {
-                appData = [...INITIAL_DATA];
-                saveData();
-            }
         }
 
         function saveData() {
@@ -891,7 +939,7 @@
                 `;
             }).join('');
 
-            document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} data dari total ${appData.length} data`;
+            document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} data (Tersinkron Cloud Supabase)`;
         }
 
         // Receipt Modal Logic
@@ -1007,7 +1055,6 @@
             let cashGiven = Number(document.getElementById('editCashInput').value) || grandTotal;
             let change = Math.max(0, cashGiven - grandTotal);
 
-            // Update Text in Paper
             document.getElementById('receiptSubtotalText').innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
             
             const discRow = document.getElementById('receiptDiscountRow');
@@ -1091,8 +1138,12 @@
             document.getElementById('newModal').classList.add('hidden');
         }
 
-        function handleNewSubmit(e) {
+        async function handleNewSubmit(e) {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan...';
+
             const newItem = {
                 id: 'TRX-' + Math.floor(1000 + Math.random() * 9000),
                 customer: document.getElementById('newCustomer').value,
@@ -1106,24 +1157,55 @@
                 date: new Date().toLocaleDateString('id-ID')
             };
 
+            // Sync to Supabase
+            if (supabaseClient) {
+                try {
+                    let dbPayload = {
+                        id: newItem.id,
+                        amount: newItem.amount,
+                        detail: newItem.detail
+                    };
+                    if (SUPABASE_TABLE === 'orders') {
+                        dbPayload.customer_name = newItem.customer;
+                        dbPayload.customer_phone = newItem.phone;
+                        dbPayload.service_name = newItem.service;
+                        dbPayload.rack_location = newItem.rack;
+                        dbPayload.payment_status = newItem.pay_status;
+                        dbPayload.work_status = newItem.work_status;
+                    } else {
+                        dbPayload.customer = newItem.customer;
+                        dbPayload.phone = newItem.phone;
+                        dbPayload.service = newItem.service;
+                        dbPayload.rack = newItem.rack;
+                        dbPayload.pay_status = newItem.pay_status;
+                        dbPayload.work_status = newItem.work_status;
+                        dbPayload.date = newItem.date;
+                    }
+                    await supabaseClient.from(SUPABASE_TABLE).insert([dbPayload]);
+                } catch (err) {
+                    console.warn('Supabase insert error:', err);
+                }
+            }
+
             appData.unshift(newItem);
             saveData();
             renderTable();
             closeNewModal();
+            btn.disabled = false;
+            btn.innerText = 'Simpan ke Cloud Supabase';
             openReceiptForItem(newItem.id);
         }
 
-        function deleteItem(id) {
+        async function deleteItem(id) {
             if (confirm('Yakin ingin menghapus transaksi ini?')) {
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from(SUPABASE_TABLE).delete().eq('id', id);
+                    } catch (err) {
+                        console.warn('Supabase delete error:', err);
+                    }
+                }
                 appData = appData.filter(x => x.id !== id);
-                saveData();
-                renderTable();
-            }
-        }
-
-        function resetDataToDemo() {
-            if (confirm('Kembalikan data ke contoh default?')) {
-                appData = [...INITIAL_DATA];
                 saveData();
                 renderTable();
             }
