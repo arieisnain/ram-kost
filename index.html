@@ -53,10 +53,14 @@
             body * {
                 visibility: hidden !important;
             }
-            #printableReceiptArea, #printableReceiptArea *, #printableMonthlyReport, #printableMonthlyReport * {
+            #receiptModal:not(.hidden) #printableReceiptArea, 
+            #receiptModal:not(.hidden) #printableReceiptArea *, 
+            #monthlyReportModal:not(.hidden) #printableMonthlyReport, 
+            #monthlyReportModal:not(.hidden) #printableMonthlyReport * {
                 visibility: visible !important;
             }
-            #printableReceiptArea, #printableMonthlyReport {
+            #receiptModal:not(.hidden) #printableReceiptArea, 
+            #monthlyReportModal:not(.hidden) #printableMonthlyReport {
                 position: fixed !important;
                 left: 0 !important;
                 top: 0 !important;
@@ -69,10 +73,10 @@
                 border: none !important;
                 z-index: 999999 !important;
             }
-            #printableReceiptArea {
+            #receiptModal:not(.hidden) #printableReceiptArea {
                 max-width: 80mm !important;
             }
-            #printableMonthlyReport {
+            #monthlyReportModal:not(.hidden) #printableMonthlyReport {
                 max-width: 210mm !important;
             }
             #printableMonthlyReport .overflow-x-auto {
@@ -1618,12 +1622,18 @@
                     </div>
                 </div>
 
-                <!-- 4. BACKUP DATA -->
+                <!-- 4. CADANGAN & PEMULIHAN DATA -->
                 <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                     <span class="text-slate-500 font-semibold">Cadangan Data:</span>
-                    <button type="button" onclick="exportBackupJSON()" class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700">
-                        <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
-                    </button>
+                    <div class="flex items-center gap-1.5">
+                        <label for="importBackupInput" class="cursor-pointer px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700 flex items-center gap-1 transition-colors text-[11px]">
+                            <i class="fa-solid fa-upload text-blue-600"></i> Pulihkan
+                        </label>
+                        <input type="file" id="importBackupInput" accept=".json,application/json" class="hidden" onchange="importBackupJSON(event)">
+                        <button type="button" onclick="exportBackupJSON()" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold text-slate-700 flex items-center gap-1 transition-colors text-[11px]">
+                            <i class="fa-solid fa-download text-emerald-600"></i> Unduh JSON
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 5. MODE AKUN DEMO / RESET SIMULASI -->
@@ -1897,12 +1907,43 @@
             }
         }
 
-        function advanceDueDateByOneMonth(oldDateStr) {
-            let d = parseCustomDate(oldDateStr) || new Date();
+        // Safe Date Math Helpers (Handles 31st day rollovers and leap years)
+        function addOneMonthSafe(inputDate) {
+            let d;
+            if (typeof inputDate === 'string') {
+                d = parseCustomDate(inputDate) || new Date(inputDate);
+            } else if (inputDate instanceof Date) {
+                d = new Date(inputDate.getTime());
+            } else {
+                d = new Date();
+            }
+            if (isNaN(d.getTime())) d = new Date();
+
+            const origDay = d.getDate();
+            d.setDate(1); // Set to 1st to prevent overflow into month-after-next
             d.setMonth(d.getMonth() + 1);
+            const maxDays = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            d.setDate(Math.min(origDay, maxDays)); // Clamp to last valid day of month
+            return d;
+        }
+
+        function formatDueDateIndo(d) {
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
             const pad = n => String(n).padStart(2, '0');
             return `Jatuh Tempo: ${pad(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        // WhatsApp Indonesian Phone Number Normalization
+        function formatIndonesianWaNumber(rawPhone) {
+            if (!rawPhone) return '';
+            let p = String(rawPhone).replace(/[^0-9]/g, '');
+            if (p.startsWith('0')) p = '62' + p.slice(1);
+            else if (p.startsWith('8')) p = '62' + p;
+            return p;
+        }
+
+        function advanceDueDateByOneMonth(oldDateStr) {
+            return formatDueDateIndo(addOneMonthSafe(oldDateStr));
         }
 
         // Mobile Search Input Toggle
@@ -1969,7 +2010,7 @@
                             amount: Number(item.amount) || 0,
                             pay_status: item.payment_status || item.pay_status || 'Lunas',
                             work_status: item.work_status || (item.pay_status === 'Tersedia' ? 'Tersedia' : 'Terisi'),
-                            date: item.date || 'Jatuh Tempo: 01 Nov 2026'
+                            date: item.date || ((item.payment_status === 'Tersedia' || item.pay_status === 'Tersedia') ? 'Siap Huni' : 'Jatuh Tempo: 01 Nov 2026')
                         }));
                         saveRoomsLocal();
                         return;
@@ -3205,12 +3246,9 @@
 
             const phone = phoneInput ? phoneInput.value.trim() : '';
 
-            // Calculate due date (+1 month)
-            const baseDate = moveInDateInput ? new Date(moveInDateInput) : new Date();
-            baseDate.setMonth(baseDate.getMonth() + 1);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const pad = n => String(n).padStart(2, '0');
-            const nextDueDate = `Jatuh Tempo: ${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+            // Calculate due date (+1 month safely)
+            const baseDate = moveInDateInput ? new Date(moveInDateInput + 'T00:00:00') : new Date();
+            const nextDueDate = formatDueDateIndo(addOneMonthSafe(baseDate));
 
             let payStatus = 'Lunas';
             let workStatus = 'Terisi';
@@ -3266,11 +3304,7 @@
             });
 
             if (confirmed) {
-                const nextMonth = new Date();
-                nextMonth.setMonth(nextMonth.getMonth() + 1);
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                const pad = n => String(n).padStart(2, '0');
-                const nextDueDate = `Jatuh Tempo: ${pad(nextMonth.getDate())} ${months[nextMonth.getMonth()]} ${nextMonth.getFullYear()}`;
+                const nextDueDate = formatDueDateIndo(addOneMonthSafe(new Date()));
 
                 const updatePayload = {
                     pay_status: 'Lunas',
@@ -3486,16 +3520,26 @@
             if (!container) return;
 
             const floors = {};
-            appData.forEach(room => {
+            const visibleRooms = searchQuery ? appData.filter(room => {
+                const str = (room.id + ' ' + room.customer + ' ' + room.service + ' ' + (room.phone || '') + ' ' + (room.rack || '')).toLowerCase();
+                return str.includes(searchQuery);
+            }) : appData;
+
+            if (visibleRooms.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 bg-white rounded-2xl border border-slate-200/80 p-5">
+                        <i class="fa-solid fa-magnifying-glass text-xl mb-1 text-slate-300"></i>
+                        <p class="font-bold text-xs text-slate-700">Tidak ada kamar denah yang cocok dengan "${searchQuery}".</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Coba gunakan kata kunci pencarian nomor kamar atau nama yang lain.</p>
+                    </div>`;
+                return;
+            }
+
+            visibleRooms.forEach(room => {
                 const floorName = room.rack || 'Lantai 1';
                 if (!floors[floorName]) floors[floorName] = [];
                 floors[floorName].push(room);
             });
-
-            if (Object.keys(floors).length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">Belum ada denah kamar tercatat.</div>`;
-                return;
-            }
 
             container.innerHTML = Object.keys(floors).sort().map(floorName => {
                 const roomsInFloor = floors[floorName];
@@ -3632,14 +3676,11 @@
             if (!room) return;
 
             const cond = getRoomCondition(room);
-            const phone = (room.phone || '').replace(/[^0-9]/g, '');
+            const targetPhone = formatIndonesianWaNumber(room.phone);
             const storeName = appSettings.storeName || DEFAULT_SETTINGS.storeName;
             const bankName = appSettings.bankName || DEFAULT_SETTINGS.bankName;
             const bankNum = appSettings.bankNumber || DEFAULT_SETTINGS.bankNumber;
             const bankHolder = appSettings.bankHolder || DEFAULT_SETTINGS.bankHolder;
-
-            let targetPhone = phone;
-            if (targetPhone.startsWith('0')) targetPhone = '62' + targetPhone.slice(1);
 
             const d = parseCustomDate(room.date);
             let diffDays = 0;
@@ -4041,11 +4082,11 @@
             const dueText = document.getElementById('checkInDueDateText');
             if (!dueText) return;
 
-            const baseDate = startVal ? new Date(startVal) : new Date();
-            baseDate.setMonth(baseDate.getMonth() + 1);
+            const baseDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
+            const dueD = addOneMonthSafe(baseDate);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
             const pad = n => String(n).padStart(2, '0');
-            dueText.innerText = `${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+            dueText.innerText = `${pad(dueD.getDate())} ${months[dueD.getMonth()]} ${dueD.getFullYear()}`;
         }
 
         async function handleCheckInSubmit(e) {
@@ -4076,12 +4117,9 @@
                 submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
             }
 
-            // Calculate due date (+1 month from start date)
-            const baseDate = startVal ? new Date(startVal) : new Date();
-            baseDate.setMonth(baseDate.getMonth() + 1);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const pad = n => String(n).padStart(2, '0');
-            const calculatedDue = `Jatuh Tempo: ${pad(baseDate.getDate())} ${months[baseDate.getMonth()]} ${baseDate.getFullYear()}`;
+            // Calculate due date (+1 month safely from start date)
+            const baseDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
+            const calculatedDue = formatDueDateIndo(addOneMonthSafe(baseDate));
 
             let payStatus = 'Lunas';
             let workStatus = 'Terisi';
@@ -4299,13 +4337,26 @@
             document.getElementById('editCustomerInput').value = item.customer;
             document.getElementById('receiptDateText').innerText = new Date().toLocaleDateString('id-ID');
 
+            const isBooking = getRoomCondition(item) === 'booking' || (item.pay_status || '').toLowerCase().includes('dp');
+            let receiptPrice = item.amount;
+            let receiptDesc = item.service;
+            if (isBooking) {
+                receiptDesc = `Tanda Jadi / DP Reservasi ${item.service}`;
+                receiptPrice = 300000;
+                const dpMatch = (item.detail || '').match(/dp\s+(?:rp\.?\s*)?([\d\.]+)/i);
+                if (dpMatch) {
+                    const parsed = parseInt(dpMatch[1].replace(/[^0-9]/g, ''), 10);
+                    if (parsed > 0) receiptPrice = parsed;
+                }
+            }
+
             receiptRows = [
-                { desc: item.service, qty: 1, price: item.amount }
+                { desc: receiptDesc, qty: 1, price: receiptPrice }
             ];
 
             document.getElementById('editDiscountInput').value = 0;
             document.getElementById('editTaxCheckbox').checked = false;
-            document.getElementById('editCashInput').value = item.amount;
+            document.getElementById('editCashInput').value = receiptPrice;
 
             // Reset utility calculator
             const uBody = document.getElementById('utilityCalcBody');
@@ -4487,7 +4538,7 @@
             const nota = document.getElementById('receiptIdText').innerText;
             const total = document.getElementById('receiptGrandTotalText').innerText;
             const store = appSettings.storeName || DEFAULT_SETTINGS.storeName;
-            const phone = (currentReceiptItem && currentReceiptItem.phone) ? currentReceiptItem.phone.replace(/[^0-9]/g, '') : '';
+            const targetPhone = formatIndonesianWaNumber(currentReceiptItem?.phone);
 
             let itemsTxt = receiptRows.map(r => `- ${r.desc} (${r.qty}x): Rp ${Number(r.qty * r.price).toLocaleString('id-ID')}`).join('%0A');
             let msg = `*KUITANSI PEMBAYARAN ${store}*%0A` +
@@ -4499,8 +4550,7 @@
                       `Terima kasih. Kuitansi ini adalah bukti pembayaran yang sah.`;
 
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
-            if (phone) {
-                let targetPhone = phone.startsWith('0') ? '62' + phone.slice(1) : phone;
+            if (targetPhone) {
                 waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
             }
             window.open(waUrl, '_blank');
@@ -4518,12 +4568,19 @@
             if (phoneEl) phoneEl.innerText = 'Telp/WA: ' + (appSettings.phone || DEFAULT_SETTINGS.phone);
             if (dateEl) dateEl.innerText = 'Periode: ' + new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
-            // Executive Summary KPIs
+            // Executive Summary KPIs (Synchronized with Dashboard KPI engine)
             let totalRev = 0;
             let occupiedCount = 0;
             appData.forEach(r => {
-                if (r.pay_status === 'Lunas') totalRev += Number(r.amount) || 0;
-                if (r.pay_status !== 'Tersedia' && !r.customer.includes('Belum Berpenghuni')) occupiedCount++;
+                const cond = getRoomCondition(r);
+                if (cond === 'lunas') {
+                    totalRev += Number(r.amount) || 0;
+                    occupiedCount++;
+                } else if (cond === 'jatuh_tempo' || cond === 'menunggak') {
+                    occupiedCount++;
+                } else if (cond === 'booking') {
+                    totalRev += 300000; // DP reservasi
+                }
             });
             let totalExp = appExpenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
             let netProfit = totalRev - totalExp;
@@ -4686,6 +4743,48 @@
             a.download = `backup_simkost_${new Date().toISOString().slice(0, 10)}.json`;
             a.click();
             showToast('Berkas cadangan JSON berhasil diunduh.', 'success');
+        }
+
+        // Restore Data (JSON Import)
+        async function importBackupJSON(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.rooms || !Array.isArray(data.rooms)) {
+                        throw new Error('Format berkas cadangan JSON tidak valid (data kamar tidak ditemukan)');
+                    }
+                    const confirmed = await showCustomConfirm({
+                        title: 'Pulihkan Cadangan JSON?',
+                        desc: `Data saat ini akan ditimpa dengan data cadangan (${data.rooms.length} kamar, ${(data.expenses || []).length} pos pengeluaran). Lanjutkan?`,
+                        confirmText: 'Pulihkan Data'
+                    });
+
+                    if (confirmed) {
+                        appData = data.rooms;
+                        if (Array.isArray(data.expenses)) appExpenses = data.expenses;
+                        if (data.settings && typeof data.settings === 'object') {
+                            appSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+                            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+                            loadSettings();
+                        }
+                        saveRoomsLocal();
+                        saveExpensesLocal();
+                        renderAllViews();
+                        updateKPIs();
+                        showToast('Data cadangan berhasil dipulihkan!', 'success');
+                        closeSettingsModal();
+                    }
+                } catch (err) {
+                    showToast('Gagal memproses berkas cadangan: ' + err.message, 'error');
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Drawer Sidebar Toggle
