@@ -291,6 +291,11 @@
                         <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
                         <span>Pengaturan Usaha &amp; Logo</span>
                     </button>
+
+                    <button onclick="openDemoInfoModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/60 hover:bg-amber-100/80 border border-amber-200/80 transition-colors text-left">
+                        <i class="fa-solid fa-flask w-5 text-center text-amber-600"></i>
+                        <span>Mode Akun Demo (Reset)</span>
+                    </button>
                 </nav>
             </div>
 
@@ -303,7 +308,10 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <p id="sidebarStoreName" class="text-xs font-bold text-slate-800 truncate">KOST MAGNOLIA RESIDENCE</p>
-                            <p class="text-[10px] text-slate-500 font-medium truncate">Pengelola Aktif</p>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Akun Demo</span>
+                                <span class="text-[10px] text-slate-500 font-medium truncate">Simulasi Usaha</span>
+                            </div>
                         </div>
                     </div>
                     <button onclick="openSettingsModal()" title="Pengaturan Usaha" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-white transition-colors">
@@ -323,9 +331,13 @@
                         <i class="fa-solid fa-bars text-base"></i>
                     </button>
                     <div class="min-w-0">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-2">
                             <h2 class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 tracking-tight truncate" id="topbarStoreTitle">KOST MAGNOLIA RESIDENCE</h2>
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                            <button onclick="openDemoInfoModal()" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition-colors shrink-0 shadow-2xs" title="Mode Akun Demo (Klik untuk info &amp; reset)">
+                                <i class="fa-solid fa-flask text-amber-600 text-[10px]"></i>
+                                <span>Akun Demo</span>
+                            </button>
+                            <span class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online
                             </span>
                         </div>
@@ -490,18 +502,18 @@
                 </div>
 
                 <!-- ── 3. URGENT ATTENTION RIBBON (ACTIONABLE DAILY REMINDER) ── -->
-                <div id="urgentActionRibbon" class="hidden p-3 rounded-2xl bg-amber-500/10 border border-amber-300/60 flex items-center justify-between gap-3 text-xs">
+                <div id="urgentActionRibbon" class="hidden p-3 rounded-2xl bg-amber-500/10 border border-amber-300/60 flex items-center justify-between gap-3 text-xs transition-all">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs">
-                            <i class="fa-solid fa-bell"></i>
+                        <span id="urgentRibbonIconBox" class="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs">
+                            <i id="urgentRibbonIcon" class="fa-solid fa-bell"></i>
                         </span>
                         <div class="min-w-0">
                             <span id="urgentRibbonTitle" class="font-bold text-amber-950 block truncate">Perhatian Tagihan Kost</span>
                             <span id="urgentRibbonSubtitle" class="text-[10px] text-amber-700/90 block truncate">Penghuni menunggu konfirmasi pembayaran</span>
                         </div>
                     </div>
-                    <button onclick="setFilter('Menunggak', document.querySelector('.filter-tab[onclick*=\'Menunggak\']'))" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1">
-                        <span>Lihat</span>
+                    <button id="urgentRibbonBtn" onclick="handleUrgentRibbonClick()" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1">
+                        <span id="urgentRibbonBtnText">Lihat</span>
                         <i class="fa-solid fa-arrow-right text-[10px]"></i>
                     </button>
                 </div>
@@ -542,25 +554,25 @@
                     
                     <!-- Horizontal Scrolling Filter Chips -->
                     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="filterTabGroup">
-                        <button onclick="setFilter('Semua', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
+                        <button onclick="setFilter('Semua', this)" data-filter="Semua" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all active bg-slate-900 text-white shrink-0">
                             Semua (<span id="countFilterSemua">0</span>)
                         </button>
-                        <button onclick="setFilter('Terisi', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                        <button onclick="setFilter('Terisi', this)" data-filter="Terisi" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Terisi (<span id="countFilterTerisi">0</span>)
                         </button>
-                        <button onclick="setFilter('Tersedia', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                        <button onclick="setFilter('Tersedia', this)" data-filter="Tersedia" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Siap Huni (<span id="countFilterTersedia">0</span>)
                         </button>
-                        <button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
-                            Jatuh Tempo (<span id="countFilterDue">0</span>)
+                        <button onclick="setFilter('Segera Tempo', this)" data-filter="Segera Tempo" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                            Segera Tempo (<span id="countFilterDue">0</span>)
                         </button>
-                        <button onclick="setFilter('Menunggak', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                        <button onclick="setFilter('Menunggak', this)" data-filter="Menunggak" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Menunggak (<span id="countFilterLate">0</span>)
                         </button>
-                        <button onclick="setFilter('Booking', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                        <button onclick="setFilter('Booking', this)" data-filter="Booking" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Booking (<span id="countFilterBooking">0</span>)
                         </button>
-                        <button onclick="setFilter('Perbaikan', this)" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
+                        <button onclick="setFilter('Perbaikan', this)" data-filter="Perbaikan" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Perbaikan (<span id="countFilterRepair">0</span>)
                         </button>
                     </div>
@@ -1417,12 +1429,83 @@
                     </button>
                 </div>
 
+                <!-- 5. MODE AKUN DEMO / RESET SIMULASI -->
+                <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2.5">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs">
+                                <i class="fa-solid fa-flask"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-amber-950">Mode Akun Demo (Simulasi Aktif)</h4>
+                                <p class="text-[10px] text-amber-800 leading-tight">Gunakan untuk mencoba alur check-in, pelunasan sewa, &amp; buku kas secara bebas.</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900 border border-amber-300 shrink-0">Demo Aktif</span>
+                    </div>
+                    <div class="pt-2 border-t border-amber-200/60 flex items-center justify-between gap-2">
+                        <span class="text-[11px] text-amber-900/90 font-medium">Kembalikan semua data ke kondisi awal?</span>
+                        <button type="button" onclick="resetDemoData()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Reset Data Demo</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Action Buttons -->
                 <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
                     <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Tutup</button>
                     <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">Simpan</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 6: INFO AKUN DEMO & RESET DATA SIMULASI                      -->
+    <!-- ================================================================== -->
+    <div id="demoInfoModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-amber-500/10">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-2xs">
+                        <i class="fa-solid fa-flask"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">Mode Akun Demo Aktif</h3>
+                        <p class="text-[10px] text-amber-800 font-medium">SIMKOST Pro • Lingkungan Simulasi Interaktif</p>
+                    </div>
+                </div>
+                <button onclick="closeDemoInfoModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4 text-xs">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                    <h4 class="font-bold text-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-emerald-600"></i> Panduan Uji Coba Demo
+                    </h4>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                        Anda saat ini sedang mencoba aplikasi <strong>SIMKOST Pro</strong> dalam mode demo dengan data simulasi kost <em>Kost Magnolia Residence</em>.
+                    </p>
+                    <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc list-inside">
+                        <li><strong>Bebas Bereksperimen:</strong> Anda dapat menambah kamar baru, check-in tamu, melakukan pelunasan sewa, mencetak nota, serta mencatat pengeluaran kas.</li>
+                        <li><strong>Sinkronisasi Aman:</strong> Uji coba tidak akan mengganggu data pemilik kost lainnya.</li>
+                        <li><strong>Tombol Reset:</strong> Kapan pun Anda ingin mengembalikan data ke simulasi semula, cukup tekan tombol <em>Reset Data Demo</em> di bawah.</li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="resetDemoData()" class="w-full sm:flex-1 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Reset Data Demo Awal</span>
+                    </button>
+                    <button type="button" onclick="closeDemoInfoModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1917,8 +2000,8 @@
                 return 'menunggak';
             }
 
-            // 6. Jatuh Tempo (H-7 s/d Hari H, atau status Belum Lunas)
-            if (payStatus === 'Belum Lunas' || (diffDays !== null && diffDays >= 0 && diffDays <= 7 && payStatus !== 'Lunas')) {
+            // 6. Jatuh Tempo (H-7 s/d Hari H, atau status Belum Lunas saat tempo dekat)
+            if ((diffDays !== null && diffDays >= 0 && diffDays <= 7 && payStatus !== 'Lunas') || (diffDays === null && payStatus === 'Belum Lunas')) {
                 return 'jatuh_tempo';
             }
 
@@ -2010,18 +2093,21 @@
                         `
                     };
                 case 'jatuh_tempo':
-                    const dueLabel = diffDays === 0 ? 'Jatuh Tempo Hari Ini!' : `Jatuh Tempo ${diffDays} Hari Lagi`;
+                    const isDueToday = diffDays === 0;
+                    const dueLabel = isDueToday ? 'Jatuh Tempo Hari Ini' : `Akan Jatuh Tempo (${diffDays} Hari Lagi)`;
                     return {
                         id: 'jatuh_tempo',
-                        label: diffDays === 0 ? 'Hari Ini' : `${diffDays} hari lagi`,
-                        badgeClass: 'bg-amber-50 text-amber-700 border border-amber-200/80 font-bold',
-                        dotClass: 'bg-amber-500 animate-pulse',
+                        label: isDueToday ? 'Tempo Hari Ini' : `Tempo H-${diffDays}`,
+                        badgeClass: isDueToday ? 'bg-amber-500 text-white font-bold shadow-2xs' : 'bg-amber-50 text-amber-800 border border-amber-200/80 font-bold',
+                        dotClass: isDueToday ? 'bg-white animate-ping' : 'bg-amber-500',
                         borderAccent: 'border-l-4 border-l-amber-500',
-                        icon: 'fa-solid fa-bell',
+                        icon: isDueToday ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-clock',
                         heroBg: 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200',
                         heroIconBg: 'bg-amber-500 text-white',
                         heroTitle: dueLabel,
-                        heroSubtitle: `Masa sewa periode ini akan habis pada ${room.date || 'bulan ini'}. Segera kirimkan pengingat ramah.`,
+                        heroSubtitle: isDueToday
+                            ? `Masa sewa periode ini jatuh tempo HARI INI (${room.date || '-'}). Segera tagih dan konfirmasi penerimaan sewa.`
+                            : `Masa sewa periode ini berakhir dalam ${diffDays} hari (${room.date || '-'}). Kirimkan pengingat ramah sebelum terlambat.`,
                         cardActionPill: `
                             <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white text-[11px] font-bold transition-colors flex items-center gap-1">
                                 <i class="fa-brands fa-whatsapp text-xs"></i> Ingatkan
@@ -2227,27 +2313,64 @@
             const mRev = document.getElementById('mobileRevenue');
             const mExp = document.getElementById('mobileExpense');
 
+            // Indonesian Short Currency Formatter (Jt / Rb / Miliar)
+            const formatShortIDR = (val) => {
+                if (val >= 1000000000) return (val / 1000000000).toFixed(1).replace('.', ',') + ' M';
+                if (val >= 1000000) return (val / 1000000).toFixed(1).replace('.', ',') + ' Jt';
+                if (val >= 1000) return (val / 1000).toFixed(0) + ' Rb';
+                return Number(val).toLocaleString('id-ID');
+            };
+
             if (mNetProfit) mNetProfit.innerText = (netProfit >= 0 ? 'Rp ' : '-Rp ') + Math.abs(netProfit).toLocaleString('id-ID');
             if (mMargin) mMargin.innerText = `${profitMargin}% Margin`;
             if (mOcc) mOcc.innerText = `${occupiedRooms}/${appData.length} (${occupancyPct}%)`;
-            if (mRev) mRev.innerText = 'Rp ' + (totalRevenue >= 1000000 ? (totalRevenue/1000000).toFixed(1) + 'M' : totalRevenue.toLocaleString('id-ID'));
-            if (mExp) mExp.innerText = 'Rp ' + (totalExpenses >= 1000000 ? (totalExpenses/1000000).toFixed(1) + 'M' : totalExpenses.toLocaleString('id-ID'));
+            if (mRev) mRev.innerText = 'Rp ' + formatShortIDR(totalRevenue);
+            if (mExp) mExp.innerText = 'Rp ' + formatShortIDR(totalExpenses);
 
-            // Urgent Attention Ribbon Trigger
+            // Urgent Attention Ribbon Trigger (State-Aware Routing)
             const ribbon = document.getElementById('urgentActionRibbon');
             const ribbonTitle = document.getElementById('urgentRibbonTitle');
             const ribbonSub = document.getElementById('urgentRibbonSubtitle');
+            const ribbonBtn = document.getElementById('urgentRibbonBtn');
+            const ribbonBtnText = document.getElementById('urgentRibbonBtnText');
+            const ribbonIconBox = document.getElementById('urgentRibbonIconBox');
+            const ribbonIcon = document.getElementById('urgentRibbonIcon');
+
             if (ribbon) {
-                if (lateRooms > 0 || dueRooms > 0) {
-                    ribbon.classList.remove('hidden');
-                    if (lateRooms > 0) {
+                if (lateRooms > 0) {
+                    activeUrgentFilter = 'Menunggak';
+                    ribbon.className = 'p-3 rounded-2xl bg-rose-50 border border-rose-200/90 flex items-center justify-between gap-3 text-xs transition-all';
+                    if (ribbonIconBox) ribbonIconBox.className = 'w-7 h-7 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs';
+                    if (ribbonIcon) ribbonIcon.className = 'fa-solid fa-triangle-exclamation';
+                    if (ribbonTitle) {
+                        ribbonTitle.className = 'font-bold text-rose-950 block truncate';
                         ribbonTitle.innerText = `${lateRooms} Penghuni Menunggak Pembayaran Sewa`;
-                        ribbonSub.innerText = 'Kirimkan pengingat tagihan WhatsApp sekarang';
-                    } else {
-                        ribbonTitle.innerText = `${dueRooms} Kamar Memasuki Jatuh Tempo`;
-                        ribbonSub.innerText = 'Siapkan nota kuitansi & konfirmasi pembayaran';
                     }
+                    if (ribbonSub) {
+                        ribbonSub.className = 'text-[10px] text-rose-700 block truncate';
+                        ribbonSub.innerText = 'Kirim tagihan tegas WhatsApp untuk kepastian pelunasan';
+                    }
+                    if (ribbonBtn) ribbonBtn.className = 'px-2.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1';
+                    if (ribbonBtnText) ribbonBtnText.innerText = 'Lihat Tunggakan';
+                    ribbon.classList.remove('hidden');
+                } else if (dueRooms > 0) {
+                    activeUrgentFilter = 'Segera Tempo';
+                    ribbon.className = 'p-3 rounded-2xl bg-amber-50 border border-amber-200/90 flex items-center justify-between gap-3 text-xs transition-all';
+                    if (ribbonIconBox) ribbonIconBox.className = 'w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 font-bold shadow-2xs';
+                    if (ribbonIcon) ribbonIcon.className = 'fa-solid fa-clock';
+                    if (ribbonTitle) {
+                        ribbonTitle.className = 'font-bold text-amber-950 block truncate';
+                        ribbonTitle.innerText = `${dueRooms} Kamar Mendekati Jatuh Tempo`;
+                    }
+                    if (ribbonSub) {
+                        ribbonSub.className = 'text-[10px] text-amber-700 block truncate';
+                        ribbonSub.innerText = 'Siapkan nota kuitansi & kirim pengingat ramah konfirmasi sewa';
+                    }
+                    if (ribbonBtn) ribbonBtn.className = 'px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1';
+                    if (ribbonBtnText) ribbonBtnText.innerText = 'Lihat Segera Tempo';
+                    ribbon.classList.remove('hidden');
                 } else {
+                    activeUrgentFilter = null;
                     ribbon.classList.add('hidden');
                 }
             }
@@ -2270,6 +2393,18 @@
             if (countRepair) countRepair.innerText = repairRooms;
         }
 
+        let activeUrgentFilter = null;
+
+        function handleUrgentRibbonClick() {
+            switchView('kamar');
+            const target = activeUrgentFilter || 'Menunggak';
+            const targetBtn = document.querySelector(`.filter-tab[data-filter='${target}']`) || 
+                              document.querySelector(`.filter-tab[onclick*='${target}']`);
+            setFilter(target, targetBtn);
+            const container = document.getElementById('view-kamar-container');
+            if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         // Table & Mobile Cards Filtering & Rendering
         function setFilter(tab, btn) {
             currentFilter = tab;
@@ -2277,6 +2412,10 @@
                 b.classList.remove('active', 'bg-slate-900', 'text-white');
                 b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
             });
+            if (!btn) {
+                btn = document.querySelector(`.filter-tab[data-filter='${tab}']`) || 
+                      document.querySelector(`.filter-tab[onclick*='${tab}']`);
+            }
             if (btn) {
                 btn.classList.add('active', 'bg-slate-900', 'text-white');
                 btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
@@ -2307,7 +2446,7 @@
                     if (cond === 'kosong' || cond === 'perbaikan') return false;
                 } else if (currentFilter === 'Tersedia') {
                     if (cond !== 'kosong') return false;
-                } else if (currentFilter === 'Jatuh Tempo') {
+                } else if (currentFilter === 'Segera Tempo' || currentFilter === 'Jatuh Tempo') {
                     if (cond !== 'jatuh_tempo') return false;
                 } else if (currentFilter === 'Menunggak') {
                     if (cond !== 'menunggak') return false;
@@ -2444,7 +2583,7 @@
                                     ` : `
                                         <div class="flex items-center justify-between gap-2">
                                             <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
-                                            <span class="px-1.5 py-0.2 rounded text-[10px] ${relBadge.color} shrink-0">${relBadge.text}</span>
+                                            ${item.phone ? `<span class="text-[10px] text-slate-400 font-mono shrink-0 flex items-center gap-1"><i class="fa-brands fa-whatsapp text-emerald-600"></i>${item.phone}</span>` : ''}
                                         </div>
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
                                     `}
@@ -3998,6 +4137,63 @@
 
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        // ── MODE AKUN DEMO & DATA SIMULASI CONTROLLERS ─────────────────────────
+        function openDemoInfoModal() {
+            const m = document.getElementById('demoInfoModal');
+            if (m) m.classList.remove('hidden');
+        }
+
+        function closeDemoInfoModal() {
+            const m = document.getElementById('demoInfoModal');
+            if (m) m.classList.add('hidden');
+        }
+
+        async function resetDemoData() {
+            closeDemoInfoModal();
+            const confirmed = await showCustomConfirm({
+                title: 'Reset ke Data Demo Awal?',
+                desc: 'Semua perubahan data kamar, penambahan pengeluaran kas, dan riwayat perpanjangan sewa akan dikembalikan ke data simulasi default Kost Magnolia Residence.',
+                confirmText: 'Reset Data Sekarang',
+                isDanger: true
+            });
+
+            if (confirmed) {
+                appData = JSON.parse(JSON.stringify(INITIAL_DATA));
+                appExpenses = JSON.parse(JSON.stringify(INITIAL_EXPENSES));
+                appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+                saveRoomsLocal();
+                saveExpensesLocal();
+                localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+                loadSettings();
+
+                if (supabaseClient) {
+                    try {
+                        for (const item of INITIAL_DATA) {
+                            await supabaseClient.from(SUPABASE_TABLE_ROOMS).upsert({
+                                id: item.id,
+                                customer: item.customer,
+                                phone: item.phone,
+                                service: item.service,
+                                detail: item.detail,
+                                rack: item.rack,
+                                amount: item.amount,
+                                pay_status: item.pay_status,
+                                work_status: item.work_status,
+                                date: item.date
+                            });
+                        }
+                    } catch(e) {
+                        console.warn('Supabase sync during demo reset:', e);
+                    }
+                }
+
+                renderAllViews();
+                updateKPIs();
+                showToast('Data demo berhasil di-reset ke kondisi awal!', 'success');
+                closeSettingsModal();
+            }
         }
 
         function handleSettingsSave(e) {
