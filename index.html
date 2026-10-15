@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMKOST Pro — Aplikasi Manajemen Kost, Kontrakan & Kamar Sewa Modern</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#059669',
+                            hover: '#047857',
+                            light: '#d1fae5',
+                            text: '#047857',
+                            accent: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .receipt-paper {
+            background: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            border: 1px dashed #cbd5e1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printableReceiptArea, #printableReceiptArea * {
+                visibility: visible !important;
+            }
+            #printableReceiptArea {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 80mm !important;
+                margin: 0 auto !important;
+                padding: 10px !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: none !important;
+                z-index: 999999 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col bg-slate-50/50">
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="drawerBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside id="mainSidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white border-r border-slate-200/80 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col justify-between">
+            <div>
+                <!-- Brand Header -->
+                <div class="h-16 px-6 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-sm" style="background: linear-gradient(135deg, #059669, #10b981);">
+                            <i class="fa-solid fa-building-user text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-sm font-bold text-slate-900 tracking-tight leading-tight">SIMKOST Pro</h1>
+                            <span class="text-[11px] font-medium text-slate-400">v2.4 Enterprise</span>
+                        </div>
+                    </div>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="px-4 py-5 space-y-1">
+                    <div class="px-3 pb-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Menu Navigasi</div>
+                    
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors" style="background-color: #d1fae5; color: #047857;">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>Dashboard Utama</span>
+                    </a>
+                    
+                    <a href="#" onclick="showNewModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-circle-plus w-5 text-center text-slate-400"></i>
+                        <span>+ Transaksi Baru</span>
+                    </a>
+
+                    <a href="#" onclick="openQuickReceiptModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-receipt w-5 text-center text-slate-400"></i>
+                        <span>Smart Nota & Struk</span>
+                    </a>
+
+                    <a href="#" onclick="openSettingsModal()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
+                        <span>Pengaturan Toko & Logo</span>
+                    </a>
+                </div>
+
+                <!-- Quick Domain Badge -->
+                <div class="mx-4 mt-2 p-3.5 rounded-xl border border-slate-100 bg-slate-50/70">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="w-2 h-2 rounded-full" style="background-color: #059669;"></span>
+                        <span class="text-xs font-semibold text-slate-700">Kost & Properti Sewa</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">Sistem Pembukuan & Manajemen Kamar Kost Otomatis</p>
+                </div>
+            </div>
+
+            <!-- Footer Profile & Outlet -->
+            <div class="p-4 border-t border-slate-100">
+                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs" style="background-color: #d1fae5; color: #047857;">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <div class="truncate">
+                            <p id="sidebarStoreName" class="text-xs font-semibold text-slate-800 truncate">KOST MAGNOLIA RESIDENCE</p>
+                            <p class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online · Multi-User
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="openSettingsModal()" title="Pengaturan Toko" class="text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-gear text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+            
+            <!-- TOPBAR -->
+            <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 lg:px-8 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-base font-bold text-slate-900">SIMKOST Pro</h2>
+                            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold border" style="background-color: #d1fae5; color: #047857; border-color: #05966940;">
+                                SaaS Pro
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 hidden sm:block">Kelola operasional dan cetak invoice dengan logo toko Anda</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                    <!-- Global Search -->
+                    <div class="relative hidden md:block w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Cari nama, ID, no nota..." class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand focus:bg-white transition-all">
+                    </div>
+
+                    <!-- Quick Receipt Button -->
+                    <button onclick="openQuickReceiptModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-sm flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-receipt text-slate-500"></i>
+                        <span class="hidden sm:inline">Cetak Nota Pintar</span>
+                    </button>
+
+                    <!-- Add New CTA Button -->
+                    <button onclick="showNewModal()" class="px-4 py-1.5 rounded-xl text-white text-xs font-bold shadow-sm hover:opacity-95 flex items-center gap-1.5 transition-all" style="background-color: #059669;">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>+ Tambah Data</span>
+                    </button>
+
+                    <!-- User Profile Avatar -->
+                    <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border" style="background-color: #d1fae5; color: #047857; border-color: #05966940;">
+                            OP
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN WORKSPACE -->
+            <main class="p-4 lg:p-8 space-y-6 flex-1">
+
+                <!-- 4 KPI CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pemasukan Bulan Ini</span>
+                <span class="w-10 h-10 rounded-xl flex items-center justify-center text-base" style="background-color: #d1fae5; color: #059669;">
+                    <i class="fa-solid fa-wallet"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <h3 class="text-2xl font-bold text-slate-900">Rp 18.750.000</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background-color: #d1fae5; color: #047857;">Target</span>
+                    <span class="text-xs text-slate-400">+8.2% vs target bulanan</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Okupansi Kamar</span>
+                <span class="w-10 h-10 rounded-xl flex items-center justify-center text-base" style="background-color: #d1fae5; color: #059669;">
+                    <i class="fa-solid fa-bed"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <h3 class="text-2xl font-bold text-slate-900">16 / 20 Kamar</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background-color: #d1fae5; color: #047857;">80%</span>
+                    <span class="text-xs text-slate-400">80% kamar terisi</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Jatuh Tempo Minggu Ini</span>
+                <span class="w-10 h-10 rounded-xl flex items-center justify-center text-base" style="background-color: #d1fae5; color: #059669;">
+                    <i class="fa-regular fa-bell"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <h3 class="text-2xl font-bold text-slate-900">4 Kamar</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background-color: #d1fae5; color: #047857;">Perhatian</span>
+                    <span class="text-xs text-slate-400">Invoice siap kirim WA</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Kamar Kosong</span>
+                <span class="w-10 h-10 rounded-xl flex items-center justify-center text-base" style="background-color: #d1fae5; color: #059669;">
+                    <i class="fa-solid fa-door-open"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <h3 class="text-2xl font-bold text-slate-900">3 Kamar Siap</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background-color: #d1fae5; color: #047857;">Tersedia</span>
+                    <span class="text-xs text-slate-400">1 Kamar proses cat/perbaikan</span>
+                </div>
+            </div>
+        </div>
+        
+                </div>
+
+                <!-- DATA TABLE CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                    
+                    <!-- Table Toolbar -->
+                    <div class="p-5 border-b border-slate-100 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
+                        <!-- Filter Tabs -->
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <button onclick="setFilter('Semua', this)" class="filter-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all active bg-slate-900 text-white">Semua</button>
+<button onclick="setFilter('Lunas', this)" class="filter-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Lunas</button>
+<button onclick="setFilter('Jatuh Tempo', this)" class="filter-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Jatuh Tempo</button>
+<button onclick="setFilter('Menunggak', this)" class="filter-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Menunggak</button>
+<button onclick="setFilter('Booking Baru', this)" class="filter-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Booking Baru</button>
+
+                        </div>
+
+                        <!-- Actions right -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="exportToCSV()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                                <span>Export CSV</span>
+                            </button>
+                            <button onclick="resetDataToDemo()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-500 hover:bg-slate-50 flex items-center gap-1" title="Reset Demo Data">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/80 border-b border-slate-100">
+                                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">No. Kamar</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Penyewa</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Tipe Kamar & Fasilitas</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Periode Sewa</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Biaya Bulanan</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status Tagihan</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Jatuh Tempo</th>
+<th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+                                <!-- Rendered dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Table Footer / Pagination -->
+                    <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                        <div id="tableCounter">Menampilkan 5 data dari total 5 data</div>
+                        <div class="flex items-center gap-1">
+                            <button class="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-600" disabled>Sebelumnya</button>
+                            <span class="px-2.5 py-1 rounded font-bold" style="background-color: #d1fae5; color: #047857;">1</span>
+                            <button class="px-2.5 py-1 rounded border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-600" disabled>Berikutnya</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFO BANNER: CUSTOM LOGO & THERMAL PRINT -->
+                <div class="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background-color: #d1fae5; color: #059669;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900">Fitur Smart Nota: Kustomisasi Logo & Hitung Otomatis</h4>
+                            <p class="text-xs text-slate-500">Unggah logo outlet Anda, atur PPN & diskon, lalu cetak langsung ke printer kasir thermal 58mm/80mm atau simpan sebagai PDF.</p>
+                        </div>
+                    </div>
+                    <button onclick="openSettingsModal()" class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:opacity-95" style="background-color: #059669;">
+                        <i class="fa-solid fa-gear mr-1.5"></i> Atur Logo & Toko
+                    </button>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: SMART RECEIPT & INVOICE BUILDER -->
+    <!-- ========================================== -->
+    <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style="background-color: #d1fae5; color: #059669;">
+                        <i class="fa-solid fa-receipt"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900">Smart Nota & Kuitansi Otomatis</h3>
+                        <p class="text-[11px] text-slate-400">Pratinjau langsung, unggah logo, dan cetak thermal 58mm/80mm</p>
+                    </div>
+                </div>
+                <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Grid: Left Paper Preview, Right Live Editor) -->
+            <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 overflow-y-auto flex-1">
+                
+                <!-- LEFT COLUMN: RECEIPT PAPER PREVIEW (PRINTABLE TARGET) -->
+                <div class="md:col-span-6 flex flex-col items-center">
+                    <div class="w-full mb-3 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye text-slate-400"></i> Pratinjau Kertas
+                        </span>
+                        <div class="flex items-center gap-1 text-[11px]">
+                            <button onclick="setReceiptFormat('58mm')" id="btnFormat58" class="px-2 py-0.5 rounded border border-slate-200 bg-slate-100 font-semibold text-slate-700">58mm</button>
+                            <button onclick="setReceiptFormat('80mm')" id="btnFormat80" class="px-2 py-0.5 rounded border border-slate-200 bg-white text-slate-500 font-semibold">80mm</button>
+                            <button onclick="setReceiptFormat('a4')" id="btnFormatA4" class="px-2 py-0.5 rounded border border-slate-200 bg-white text-slate-500 font-semibold">A4</button>
+                        </div>
+                    </div>
+
+                    <!-- The Actual Paper Container -->
+                    <div id="printableReceiptArea" class="receipt-paper w-full max-w-[340px] p-5 rounded-lg text-slate-800 text-xs transition-all duration-200">
+                        
+                        <!-- Header Logo & Store -->
+                        <div class="text-center pb-3 border-b border-dashed border-slate-300">
+                            <!-- Logo Box -->
+                            <div class="flex justify-center mb-2">
+                                <img id="receiptLogoImg" src="" alt="Logo" class="max-h-12 max-w-[140px] object-contain hidden">
+                                <div id="receiptLogoDefault" class="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-bold" style="background: linear-gradient(135deg, #059669, #10b981);">
+                                    <i class="fa-solid fa-building-user"></i>
+                                </div>
+                            </div>
+                            <h4 id="receiptStoreName" class="font-bold text-sm tracking-wide text-slate-900">KOST MAGNOLIA RESIDENCE</h4>
+                            <p id="receiptStoreAddress" class="text-[10px] text-slate-500 leading-tight mt-0.5">Jl. Melati No. 12B, Syamsudin Noor</p>
+                            <p id="receiptStorePhone" class="text-[10px] text-slate-500 mt-0.5">Telp/WA: 0813-8899-0011</p>
+                        </div>
+
+                        <!-- Transaction Meta -->
+                        <div class="py-2.5 text-[10px] border-b border-dashed border-slate-300 space-y-1">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">No. Nota</span>
+                                <span id="receiptIdText" class="font-bold">#TRX-001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Tanggal</span>
+                                <span id="receiptDateText">15/10/2026 15:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Pelanggan</span>
+                                <span id="receiptCustomerText" class="font-bold">Bpk. Pelanggan</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Kasir / Petugas</span>
+                                <span>Admin Utama</span>
+                            </div>
+                        </div>
+
+                        <!-- Itemized Table -->
+                        <div class="py-3 border-b border-dashed border-slate-300">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+                                <span>Deskripsi</span>
+                                <span>Total</span>
+                            </div>
+                            <div id="receiptItemsContainer" class="space-y-1.5 text-[11px]">
+                                <!-- Dynamic Rows -->
+                            </div>
+                        </div>
+
+                        <!-- Calculation Summary -->
+                        <div class="py-2.5 text-[11px] space-y-1 border-b border-dashed border-slate-300">
+                            <div class="flex justify-between text-slate-600">
+                                <span>Subtotal</span>
+                                <span id="receiptSubtotalText" class="font-semibold">Rp 0</span>
+                            </div>
+                            <div id="receiptDiscountRow" class="flex justify-between text-rose-600 text-[10px] hidden">
+                                <span>Diskon</span>
+                                <span id="receiptDiscountText">- Rp 0</span>
+                            </div>
+                            <div id="receiptTaxRow" class="flex justify-between text-slate-500 text-[10px] hidden">
+                                <span>PPN (11%)</span>
+                                <span id="receiptTaxText">+ Rp 0</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-sm text-slate-900 pt-1.5 border-t border-slate-200">
+                                <span>TOTAL</span>
+                                <span id="receiptGrandTotalText">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-slate-600 pt-1">
+                                <span>Bayar (Tunai)</span>
+                                <span id="receiptCashGivenText">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-emerald-600 font-bold">
+                                <span>Kembalian</span>
+                                <span id="receiptChangeText">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer Thank You Note -->
+                        <div class="text-center pt-3 text-[10px] text-slate-400 space-y-1">
+                            <p class="font-semibold text-slate-600">*** TERIMA KASIH ***</p>
+                            <p>Barang / Layanan yang sudah diproses tidak dapat dikembalikan tanpa nota resmi.</p>
+                            <p class="text-[9px] text-slate-300">Powered by SIMKOST Pro · RAM.AI.ID</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: INTERACTIVE CONTROLS & CALCULATOR -->
+                <div class="md:col-span-6 space-y-4">
+                    
+                    <!-- Store Logo Quick Upload -->
+                    <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                <i class="fa-solid fa-image text-slate-400"></i> Logo Struk
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <label for="logoFileInput" class="cursor-pointer px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-bold text-slate-700 hover:bg-slate-100 shadow-xs flex items-center gap-1">
+                                    <i class="fa-solid fa-upload"></i> Unggah Logo
+                                </label>
+                                <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                                <button onclick="resetLogoToDefault()" class="px-2 py-1 rounded-lg border border-slate-200 text-[11px] text-slate-400 hover:text-rose-600" title="Reset ke Default">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-tight">Unggah logo format PNG/JPG transparan. Logo akan otomatis tersimpan di memori browser dan dicetak pada setiap struk.</p>
+                    </div>
+
+                    <!-- Meta Editors -->
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">Nama Pelanggan</label>
+                            <input type="text" id="editCustomerInput" oninput="updateReceiptCustomer(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:bg-white focus:ring-1 focus:ring-brand">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">No. Nota / Kwitansi</label>
+                            <input type="text" id="editIdInput" oninput="updateReceiptId(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus:bg-white focus:ring-1 focus:ring-brand">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Line Items Editor -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="text-xs font-bold text-slate-700">Rincian Item / Layanan</label>
+                            <button onclick="addReceiptRow()" class="text-[11px] font-bold text-brand hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-plus-circle"></i> Tambah Item
+                            </button>
+                        </div>
+                        <div id="editorItemsContainer" class="space-y-2 max-h-44 overflow-y-auto pr-1">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Discount, Tax & Cash Controls -->
+                    <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-2.5 text-xs">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-semibold text-slate-600 mb-1">Diskon (Rp)</label>
+                                <input type="number" id="editDiscountInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-600 mb-1">Pajak PPN (11%)</label>
+                                <div class="flex items-center gap-2 pt-1.5">
+                                    <input type="checkbox" id="editTaxCheckbox" onchange="recalculateReceipt()" class="rounded border-slate-300 text-brand focus:ring-brand h-4 w-4">
+                                    <span class="text-slate-600 text-[11px]">Aktifkan PPN 11%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-200/60">
+                            <div>
+                                <label class="block font-semibold text-slate-600 mb-1">Uang Diterima / Bayar (Rp)</label>
+                                <input type="number" id="editCashInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-slate-600 mb-1">Kembalian Otomatis</label>
+                                <div id="editChangeDisplay" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                                    Rp 0
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-2 flex items-center gap-2">
+                        <button onclick="printReceiptNow()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs shadow-md hover:opacity-95 flex items-center justify-center gap-2 transition-all" style="background-color: #059669;">
+                            <i class="fa-solid fa-print"></i> Cetak Struk (Thermal / PDF)
+                        </button>
+                        <button onclick="sendReceiptViaWA()" class="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition-all" title="Kirim Nota via WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span class="hidden sm:inline">Kirim WA</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: TAMBAH DATA / TRANSAKSI BARU -->
+    <!-- ========================================== -->
+    <div id="newModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle" style="color: #059669;"></i> Tambah Transaksi / Data Baru
+                </h3>
+                <button onclick="closeNewModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleNewSubmit(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Pelanggan / Subjek *</label>
+                    <input type="text" id="newCustomer" required placeholder="Contoh: Bpk. Gunawan / Kamar 104" class="w-full border border-slate-200 rounded-xl px-3 py-2 focus:ring-1 focus:ring-brand">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Kontak / No. WA</label>
+                        <input type="text" id="newPhone" placeholder="0812..." class="w-full border border-slate-200 rounded-xl px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Status Pembayaran</label>
+                        <select id="newPayStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white">
+                            <option value="Lunas">Lunas</option>
+                            <option value="Belum Lunas">Belum Lunas</option>
+                            <option value="DP Terbayar">DP Terbayar</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Layanan / Item Utama *</label>
+                    <input type="text" id="newService" required placeholder="Nama layanan / paket" class="w-full border border-slate-200 rounded-xl px-3 py-2">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Total Biaya (Rp) *</label>
+                        <input type="number" id="newAmount" required min="1000" placeholder="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Status Progres</label>
+                        <input type="text" id="newWorkStatus" placeholder="Aktif / Siap" value="Lunas" class="w-full border border-slate-200 rounded-xl px-3 py-2">
+                    </div>
+                </div>
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeNewModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold hover:opacity-95" style="background-color: #059669;">Simpan & Buat Nota</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: PENGATURAN TOKO & IDENTITAS NOTA -->
+    <!-- ========================================== -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-store" style="color: #059669;"></i> Pengaturan Profil Toko & Nota
+                </h3>
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSettingsSave(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nama Toko / Bisnis *</label>
+                    <input type="text" id="settingStoreName" required class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Alamat Lengkap</label>
+                    <input type="text" id="settingStoreAddress" class="w-full border border-slate-200 rounded-xl px-3 py-2">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Nomor Telepon / WhatsApp</label>
+                        <input type="text" id="settingStorePhone" class="w-full border border-slate-200 rounded-xl px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Format Kertas Default</label>
+                        <select id="settingDefaultPaper" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white">
+                            <option value="58mm">Thermal 58mm</option>
+                            <option value="80mm">Thermal 80mm</option>
+                            <option value="a4">Standar A4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-bold text-slate-700">Logo Toko Saat Ini</span>
+                            <p class="text-[11px] text-slate-400">Tampil di header setiap nota cetak</p>
+                        </div>
+                        <img id="settingsLogoPreview" src="" alt="Logo" class="max-h-8 max-w-[100px] object-contain hidden border rounded p-1 bg-white">
+                        <span id="settingsLogoPlaceholder" class="text-[11px] text-slate-400 italic">Default Icon</span>
+                    </div>
+                </div>
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold">Tutup</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold hover:opacity-95" style="background-color: #059669;">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & REACTIVE STORE -->
+    <script>
+        const APP_STORAGE_KEY = 'ram-kost_data_v2';
+        const APP_SETTINGS_KEY = 'ram-kost_settings_v2';
+        const APP_LOGO_KEY = 'ram-kost_logo_v2';
+
+        const DEFAULT_SETTINGS = {
+            storeName: "KOST MAGNOLIA RESIDENCE",
+            address: "Jl. Melati No. 12B, Syamsudin Noor",
+            phone: "0813-8899-0011",
+            defaultPaper: "58mm"
+        };
+
+        const INITIAL_DATA = [{"id": "KMR-101", "customer": "Agus Setiawan", "phone": "081299881122", "service": "Kamar Deluxe AC + KM Dalam", "detail": "Lt. 1 \u00b7 Listrik Token Mandiri", "rack": "Lantai 1", "amount": 1500000, "pay_status": "Lunas", "work_status": "Lunas", "date": "Jatuh Tempo: 01 Nov 2026"}, {"id": "KMR-102", "customer": "Fajar Nugroho", "phone": "085277665544", "service": "Kamar Executive Balkon", "detail": "Lt. 1 \u00b7 Smart TV & Water Heater", "rack": "Lantai 1", "amount": 2200000, "pay_status": "Belum Lunas", "work_status": "Jatuh Tempo", "date": "Jatuh Tempo: 18 Okt 2026"}, {"id": "KMR-201", "customer": "Indah Permatasari", "phone": "081344556677", "service": "Kamar Deluxe AC + KM Dalam", "detail": "Lt. 2 \u00b7 Parkir Mobil", "rack": "Lantai 2", "amount": 1600000, "pay_status": "Lunas", "work_status": "Lunas", "date": "Jatuh Tempo: 05 Nov 2026"}, {"id": "KMR-203", "customer": "Dimas Anggara", "phone": "087811223399", "service": "Kamar Standar Non-AC", "detail": "Lt. 2 \u00b7 KM Luar Bersih", "rack": "Lantai 2", "amount": 850000, "pay_status": "Menunggak", "work_status": "Menunggak", "date": "Jatuh Tempo: 10 Okt 2026"}, {"id": "KMR-205", "customer": "Calon Penyewa (Rizky)", "phone": "082199882233", "service": "Kamar Standar Non-AC", "detail": "Masuk 1 Nov 2026 \u00b7 DP Rp 300rb", "rack": "Lantai 2", "amount": 850000, "pay_status": "DP Terbayar", "work_status": "Booking Baru", "date": "Mulai: 01 Nov 2026"}];
+
+        // State variables
+        let appData = [];
+        let appSettings = {};
+        let currentFilter = 'Semua';
+        let searchQuery = '';
+        let currentReceiptItem = null;
+        let receiptRows = [];
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            loadData();
+            loadLogo();
+            renderTable();
+        });
+
+        function loadSettings() {
+            const stored = localStorage.getItem(APP_SETTINGS_KEY);
+            if (stored) {
+                try {
+                    appSettings = JSON.parse(stored);
+                } catch (e) {
+                    appSettings = { ...DEFAULT_SETTINGS };
+                }
+            } else {
+                appSettings = { ...DEFAULT_SETTINGS };
+            }
+            updateStoreLabels();
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem(APP_STORAGE_KEY);
+            if (stored) {
+                try {
+                    appData = JSON.parse(stored);
+                } catch (e) {
+                    appData = [...INITIAL_DATA];
+                }
+            } else {
+                appData = [...INITIAL_DATA];
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function updateStoreLabels() {
+            const el1 = document.getElementById('sidebarStoreName');
+            const el2 = document.getElementById('receiptStoreName');
+            const el3 = document.getElementById('receiptStoreAddress');
+            const el4 = document.getElementById('receiptStorePhone');
+            if (el1) el1.innerText = appSettings.storeName;
+            if (el2) el2.innerText = appSettings.storeName;
+            if (el3) el3.innerText = appSettings.address;
+            if (el4) el4.innerText = 'Telp/WA: ' + appSettings.phone;
+        }
+
+        // Logo Logic
+        function loadLogo() {
+            const customLogo = localStorage.getItem(APP_LOGO_KEY);
+            const receiptImg = document.getElementById('receiptLogoImg');
+            const receiptDef = document.getElementById('receiptLogoDefault');
+            const settingsImg = document.getElementById('settingsLogoPreview');
+            const settingsPlace = document.getElementById('settingsLogoPlaceholder');
+
+            if (customLogo) {
+                if (receiptImg) {
+                    receiptImg.src = customLogo;
+                    receiptImg.classList.remove('hidden');
+                }
+                if (receiptDef) receiptDef.classList.add('hidden');
+                if (settingsImg) {
+                    settingsImg.src = customLogo;
+                    settingsImg.classList.remove('hidden');
+                }
+                if (settingsPlace) settingsPlace.classList.add('hidden');
+            } else {
+                if (receiptImg) receiptImg.classList.add('hidden');
+                if (receiptDef) receiptDef.classList.remove('hidden');
+                if (settingsImg) settingsImg.classList.add('hidden');
+                if (settingsPlace) settingsPlace.classList.remove('hidden');
+            }
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                localStorage.setItem(APP_LOGO_KEY, dataUrl);
+                loadLogo();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetLogoToDefault() {
+            localStorage.removeItem(APP_LOGO_KEY);
+            loadLogo();
+        }
+
+        // Table Rendering & Filters
+        function setFilter(tab, btn) {
+            currentFilter = tab;
+            document.querySelectorAll('.filter-tab').forEach(b => {
+                b.classList.remove('active', 'bg-slate-900', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            btn.classList.add('active', 'bg-slate-900', 'text-white');
+            btn.classList.remove('bg-slate-100', 'text-slate-600');
+            renderTable();
+        }
+
+        function handleSearch(query) {
+            searchQuery = query.toLowerCase().trim();
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataTableBody');
+            if (!tbody) return;
+
+            let filtered = appData.filter(item => {
+                if (currentFilter !== 'Semua') {
+                    const matchWork = item.work_status && item.work_status.toLowerCase().includes(currentFilter.toLowerCase());
+                    const matchPay = item.pay_status && item.pay_status.toLowerCase().includes(currentFilter.toLowerCase());
+                    if (!matchWork && !matchPay) return false;
+                }
+                if (searchQuery) {
+                    const str = (item.id + ' ' + item.customer + ' ' + item.service + ' ' + item.phone).toLowerCase();
+                    if (!str.includes(searchQuery)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-10 text-slate-400">
+                            <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+                            <p class="font-medium">Tidak ada data transaksi yang cocok.</p>
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('tableCounter').innerText = 'Menampilkan 0 data';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => {
+                let payBadge = 'bg-slate-100 text-slate-600';
+                if (item.pay_status === 'Lunas') payBadge = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                else if (item.pay_status === 'Belum Lunas' || item.pay_status === 'Menunggak') payBadge = 'bg-rose-50 text-rose-700 border border-rose-200';
+                else if (item.pay_status.includes('DP') || item.pay_status.includes('Menunggu')) payBadge = 'bg-amber-50 text-amber-700 border border-amber-200';
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-5 py-3.5 font-bold text-slate-900 font-mono">
+                            <span class="hover:underline cursor-pointer" onclick="openReceiptForItem('${item.id}')">${item.id}</span>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="font-bold text-slate-800">${item.customer}</div>
+                            <div class="text-[11px] text-slate-400">${item.phone || '-'}</div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="font-semibold text-slate-700">${item.service}</div>
+                            <div class="text-[11px] text-slate-400">${item.detail || ''}</div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
+                                ${item.rack || '-'}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 font-bold text-slate-900">
+                            Rp ${Number(item.amount).toLocaleString('id-ID')}
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${payBadge}">
+                                ${item.pay_status}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold" style="background-color: #d1fae5; color: #047857;">
+                                ${item.work_status}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 whitespace-nowrap">
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="openReceiptForItem('${item.id}')" title="Cetak Nota Pintar" class="px-2 py-1 rounded bg-slate-100 hover:bg-brand hover:text-white text-slate-600 transition-colors">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>
+                                <button onclick="deleteItem('${item.id}')" title="Hapus" class="px-2 py-1 rounded bg-slate-100 hover:bg-rose-500 hover:text-white text-slate-400 transition-colors">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('tableCounter').innerText = `Menampilkan ${filtered.length} data dari total ${appData.length} data`;
+        }
+
+        // Receipt Modal Logic
+        function openQuickReceiptModal() {
+            if (appData.length > 0) {
+                openReceiptForItem(appData[0].id);
+            } else {
+                openReceiptForItem(null);
+            }
+        }
+
+        function openReceiptForItem(id) {
+            const item = appData.find(x => x.id === id) || {
+                id: 'TRX-' + Math.floor(1000 + Math.random() * 9000),
+                customer: 'Pelanggan Umum',
+                phone: '08123456789',
+                service: 'Transaksi Layanan',
+                amount: 50000
+            };
+
+            currentReceiptItem = item;
+            document.getElementById('receiptIdText').innerText = '#' + item.id;
+            document.getElementById('editIdInput').value = item.id;
+            document.getElementById('receiptCustomerText').innerText = item.customer;
+            document.getElementById('editCustomerInput').value = item.customer;
+            document.getElementById('receiptDateText').innerText = new Date().toLocaleString('id-ID');
+
+            receiptRows = [
+                { desc: item.service, qty: 1, price: item.amount }
+            ];
+
+            document.getElementById('editDiscountInput').value = 0;
+            document.getElementById('editTaxCheckbox').checked = false;
+            document.getElementById('editCashInput').value = item.amount;
+
+            renderReceiptEditorRows();
+            recalculateReceipt();
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+
+        function addReceiptRow() {
+            receiptRows.push({ desc: 'Layanan / Item Tambahan', qty: 1, price: 10000 });
+            renderReceiptEditorRows();
+            recalculateReceipt();
+        }
+
+        function removeReceiptRow(idx) {
+            if (receiptRows.length <= 1) return;
+            receiptRows.splice(idx, 1);
+            renderReceiptEditorRows();
+            recalculateReceipt();
+        }
+
+        function renderReceiptEditorRows() {
+            const container = document.getElementById('editorItemsContainer');
+            if (!container) return;
+
+            container.innerHTML = receiptRows.map((row, idx) => `
+                <div class="flex items-center gap-2 p-1.5 rounded-lg border border-slate-200 bg-white">
+                    <input type="text" value="${row.desc}" oninput="updateRowDesc(${idx}, this.value)" placeholder="Nama item" class="flex-1 text-xs border border-slate-200 rounded px-2 py-1">
+                    <input type="number" value="${row.qty}" min="1" oninput="updateRowQty(${idx}, this.value)" class="w-14 text-xs border border-slate-200 rounded px-1.5 py-1 text-center">
+                    <input type="number" value="${row.price}" min="0" oninput="updateRowPrice(${idx}, this.value)" class="w-24 text-xs border border-slate-200 rounded px-2 py-1 text-right font-mono">
+                    <button onclick="removeReceiptRow(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Hapus baris">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateRowDesc(idx, val) {
+            receiptRows[idx].desc = val;
+            renderReceiptPaperRows();
+        }
+        function updateRowQty(idx, val) {
+            receiptRows[idx].qty = Number(val) || 1;
+            recalculateReceipt();
+        }
+        function updateRowPrice(idx, val) {
+            receiptRows[idx].price = Number(val) || 0;
+            recalculateReceipt();
+        }
+
+        function renderReceiptPaperRows() {
+            const container = document.getElementById('receiptItemsContainer');
+            if (!container) return;
+
+            container.innerHTML = receiptRows.map(row => `
+                <div>
+                    <div class="flex justify-between font-semibold">
+                        <span>${row.desc}</span>
+                        <span class="font-mono">Rp ${Number(row.qty * row.price).toLocaleString('id-ID')}</span>
+                    </div>
+                    <div class="text-[9px] text-slate-400">
+                        ${row.qty} x Rp ${Number(row.price).toLocaleString('id-ID')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function recalculateReceipt() {
+            renderReceiptPaperRows();
+
+            let subtotal = receiptRows.reduce((acc, row) => acc + (row.qty * row.price), 0);
+            let discount = Number(document.getElementById('editDiscountInput').value) || 0;
+            let isTax = document.getElementById('editTaxCheckbox').checked;
+            let tax = isTax ? Math.round((subtotal - discount) * 0.11) : 0;
+            let grandTotal = Math.max(0, subtotal - discount + tax);
+
+            let cashGiven = Number(document.getElementById('editCashInput').value) || grandTotal;
+            let change = Math.max(0, cashGiven - grandTotal);
+
+            // Update Text in Paper
+            document.getElementById('receiptSubtotalText').innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
+            
+            const discRow = document.getElementById('receiptDiscountRow');
+            if (discount > 0) {
+                discRow.classList.remove('hidden');
+                document.getElementById('receiptDiscountText').innerText = '- Rp ' + discount.toLocaleString('id-ID');
+            } else {
+                discRow.classList.add('hidden');
+            }
+
+            const taxRow = document.getElementById('receiptTaxRow');
+            if (isTax) {
+                taxRow.classList.remove('hidden');
+                document.getElementById('receiptTaxText').innerText = '+ Rp ' + tax.toLocaleString('id-ID');
+            } else {
+                taxRow.classList.add('hidden');
+            }
+
+            document.getElementById('receiptGrandTotalText').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+            document.getElementById('receiptCashGivenText').innerText = 'Rp ' + cashGiven.toLocaleString('id-ID');
+            document.getElementById('receiptChangeText').innerText = 'Rp ' + change.toLocaleString('id-ID');
+            document.getElementById('editChangeDisplay').innerText = 'Rp ' + change.toLocaleString('id-ID');
+        }
+
+        function updateReceiptCustomer(val) {
+            document.getElementById('receiptCustomerText').innerText = val || 'Umum';
+        }
+        function updateReceiptId(val) {
+            document.getElementById('receiptIdText').innerText = '#' + (val || 'TRX');
+        }
+
+        function setReceiptFormat(fmt) {
+            const paper = document.getElementById('printableReceiptArea');
+            const btn58 = document.getElementById('btnFormat58');
+            const btn80 = document.getElementById('btnFormat80');
+            const btnA4 = document.getElementById('btnFormatA4');
+
+            [btn58, btn80, btnA4].forEach(b => {
+                b.className = "px-2 py-0.5 rounded border border-slate-200 bg-white text-slate-500 font-semibold";
+            });
+
+            if (fmt === '58mm') {
+                paper.style.maxWidth = '290px';
+                btn58.className = "px-2 py-0.5 rounded border border-slate-200 bg-slate-900 text-white font-semibold";
+            } else if (fmt === '80mm') {
+                paper.style.maxWidth = '360px';
+                btn80.className = "px-2 py-0.5 rounded border border-slate-200 bg-slate-900 text-white font-semibold";
+            } else {
+                paper.style.maxWidth = '100%';
+                btnA4.className = "px-2 py-0.5 rounded border border-slate-200 bg-slate-900 text-white font-semibold";
+            }
+        }
+
+        function printReceiptNow() {
+            window.print();
+        }
+
+        function sendReceiptViaWA() {
+            const cust = document.getElementById('receiptCustomerText').innerText;
+            const nota = document.getElementById('receiptIdText').innerText;
+            const total = document.getElementById('receiptGrandTotalText').innerText;
+            const store = appSettings.storeName;
+
+            let itemsTxt = receiptRows.map(r => `- ${r.desc} (${r.qty}x): Rp ${Number(r.qty * r.price).toLocaleString('id-ID')}`).join('%0A');
+            let msg = `*NOTA RESMI ${store}*%0A` +
+                      `No: ${nota}%0A` +
+                      `Pelanggan: ${cust}%0A` +
+                      `Tanggal: ${new Date().toLocaleDateString('id-ID')}%0A%0A` +
+                      `*Rincian Transaksi:*%0A${itemsTxt}%0A%0A` +
+                      `*TOTAL: ${total}*%0A` +
+                      `Terima kasih atas kepercayaan Anda!`;
+
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+        }
+
+        // New Item Modal
+        function showNewModal() {
+            document.getElementById('newModal').classList.remove('hidden');
+        }
+        function closeNewModal() {
+            document.getElementById('newModal').classList.add('hidden');
+        }
+
+        function handleNewSubmit(e) {
+            e.preventDefault();
+            const newItem = {
+                id: 'TRX-' + Math.floor(1000 + Math.random() * 9000),
+                customer: document.getElementById('newCustomer').value,
+                phone: document.getElementById('newPhone').value || '08123456789',
+                service: document.getElementById('newService').value,
+                detail: 'Transaksi Baru ' + new Date().toLocaleTimeString('id-ID'),
+                rack: 'Baru',
+                amount: Number(document.getElementById('newAmount').value),
+                pay_status: document.getElementById('newPayStatus').value,
+                work_status: document.getElementById('newWorkStatus').value || 'Proses',
+                date: new Date().toLocaleDateString('id-ID')
+            };
+
+            appData.unshift(newItem);
+            saveData();
+            renderTable();
+            closeNewModal();
+            openReceiptForItem(newItem.id);
+        }
+
+        function deleteItem(id) {
+            if (confirm('Yakin ingin menghapus transaksi ini?')) {
+                appData = appData.filter(x => x.id !== id);
+                saveData();
+                renderTable();
+            }
+        }
+
+        function resetDataToDemo() {
+            if (confirm('Kembalikan data ke contoh default?')) {
+                appData = [...INITIAL_DATA];
+                saveData();
+                renderTable();
+            }
+        }
+
+        // Settings Modal
+        function openSettingsModal() {
+            document.getElementById('settingStoreName').value = appSettings.storeName;
+            document.getElementById('settingStoreAddress').value = appSettings.address;
+            document.getElementById('settingStorePhone').value = appSettings.phone;
+            document.getElementById('settingDefaultPaper').value = appSettings.defaultPaper || '58mm';
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function handleSettingsSave(e) {
+            e.preventDefault();
+            appSettings.storeName = document.getElementById('settingStoreName').value;
+            appSettings.address = document.getElementById('settingStoreAddress').value;
+            appSettings.phone = document.getElementById('settingStorePhone').value;
+            appSettings.defaultPaper = document.getElementById('settingDefaultPaper').value;
+            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+            updateStoreLabels();
+            setReceiptFormat(appSettings.defaultPaper);
+            closeSettingsModal();
+            alert('Pengaturan toko & logo berhasil disimpan!');
+        }
+
+        // Sidebar drawer toggle
+        function toggleSidebar() {
+            const sb = document.getElementById('mainSidebar');
+            const bd = document.getElementById('drawerBackdrop');
+            if (sb.classList.contains('-translate-x-full')) {
+                sb.classList.remove('-translate-x-full');
+                bd.classList.remove('hidden');
+            } else {
+                sb.classList.add('-translate-x-full');
+                bd.classList.add('hidden');
+            }
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            let csv = "No,ID,Pelanggan,Telepon,Layanan,Total,Status_Bayar,Status_Pengerjaan\n";
+            appData.forEach((row, i) => {
+                csv += `${i+1},"${row.id}","${row.customer}","${row.phone}","${row.service}",${row.amount},"${row.pay_status}","${row.work_status}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ram-kost_laporan_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        }
+    </script>
+</body>
+</html>

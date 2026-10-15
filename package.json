@@ -1,0 +1,25 @@
+{
+  "name": "ram-kost",
+  "private": true,
+  "version": "2.4.0",
+  "description": "Sistem Pembukuan & Manajemen Kamar Kost Otomatis",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "kost & properti sewa",
+    "pos",
+    "saas",
+    "dashboard",
+    "tailwind",
+    "ram-ai"
+  ],
+  "author": "Arie Isnain <info@ram.ai.id>",
+  "license": "MIT"
+}
