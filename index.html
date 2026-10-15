@@ -1551,20 +1551,48 @@
                 </button>
             </div>
 
-            <!-- Segmented Sub-Tabs Bar (Fixed) -->
-            <div class="px-3 sm:px-5 pt-2.5 pb-0 border-b border-slate-100 bg-slate-50/50 flex items-center gap-1 shrink-0 overflow-x-auto no-scrollbar">
-                <button type="button" onclick="switchSettingsTab('profile')" id="settingsTabBtn-profile" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-bold transition-all border-b-2 border-emerald-600 text-emerald-800 bg-white shadow-2xs flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-house-chimney text-emerald-600"></i>
-                    <span>Identitas &amp; Logo</span>
-                </button>
-                <button type="button" onclick="switchSettingsTab('bank')" id="settingsTabBtn-bank" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-building-columns text-slate-400"></i>
-                    <span>Rekening Pembayaran</span>
-                </button>
-                <button type="button" onclick="switchSettingsTab('system')" id="settingsTabBtn-system" class="settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-gear text-slate-400"></i>
-                    <span>Format &amp; Cadangan</span>
-                </button>
+            <!-- Modern High-Contrast Segmented Tabs (Fixed) -->
+            <div class="px-4 sm:px-5 pt-3 pb-2.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
+                <!-- Top Info Strip showing available sections -->
+                <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold mb-2">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-layer-group text-emerald-600 text-xs"></i>
+                        <span>3 Kategori Pengaturan:</span>
+                    </span>
+                    <span id="settingsTabBadgeStatus" class="text-[10px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        Bagian 1 / 3
+                    </span>
+                </div>
+
+                <!-- 3 Segmented Pill Buttons -->
+                <div class="p-1.5 bg-slate-200/70 rounded-2xl grid grid-cols-3 gap-1.5 text-center">
+                    <!-- Tab 1: Profile -->
+                    <button type="button" onclick="switchSettingsTab('profile')" id="settingsTabBtn-profile" class="settings-tab-btn py-2 px-1.5 sm:px-2 rounded-xl text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-white text-emerald-800 shadow-sm ring-1 ring-slate-200/90 cursor-pointer">
+                        <span id="settingsTabBadge-profile" class="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-mono font-extrabold shrink-0">1</span>
+                        <div class="text-center sm:text-left leading-tight min-w-0">
+                            <span class="block text-[11px] sm:text-xs font-extrabold truncate">Profil Kost</span>
+                            <span class="hidden sm:block text-[9px] text-slate-500 font-medium">Nama &amp; Logo</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 2: Bank -->
+                    <button type="button" onclick="switchSettingsTab('bank')" id="settingsTabBtn-bank" class="settings-tab-btn py-2 px-1.5 sm:px-2 rounded-xl text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/60 cursor-pointer">
+                        <span id="settingsTabBadge-bank" class="w-5 h-5 rounded-full bg-slate-300 text-slate-700 text-[10px] flex items-center justify-center font-mono font-extrabold shrink-0">2</span>
+                        <div class="text-center sm:text-left leading-tight min-w-0">
+                            <span class="block text-[11px] sm:text-xs font-extrabold truncate">Rekening Bank</span>
+                            <span class="hidden sm:block text-[9px] text-slate-400 font-medium">Tagihan &amp; WA</span>
+                        </div>
+                    </button>
+
+                    <!-- Tab 3: System -->
+                    <button type="button" onclick="switchSettingsTab('system')" id="settingsTabBtn-system" class="settings-tab-btn py-2 px-1.5 sm:px-2 rounded-xl text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/60 cursor-pointer">
+                        <span id="settingsTabBadge-system" class="w-5 h-5 rounded-full bg-slate-300 text-slate-700 text-[10px] flex items-center justify-center font-mono font-extrabold shrink-0">3</span>
+                        <div class="text-center sm:text-left leading-tight min-w-0">
+                            <span class="block text-[11px] sm:text-xs font-extrabold truncate">Format &amp; Backup</span>
+                            <span class="hidden sm:block text-[9px] text-slate-400 font-medium">Kertas &amp; Data</span>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <!-- Form Wrapper with Scrollable Content Body -->
@@ -1615,6 +1643,18 @@
                                 <input type="text" id="settingStoreAddress" placeholder="Jl. Melati No. 12B, Syamsudin Noor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:bg-white focus:border-emerald-500">
                             </div>
                         </div>
+
+                        <!-- Stepper Prompt Tab 1 -> Tab 2 -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100 mt-2">
+                            <div>
+                                <span class="text-[11px] font-extrabold text-emerald-950 block">Lanjut Atur Rekening Transfer</span>
+                                <span class="text-[10px] text-emerald-700 block">Sematkan info rekening bank pada struk &amp; pesan WA tagihan</span>
+                            </div>
+                            <button type="button" onclick="switchSettingsTab('bank')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all shrink-0 cursor-pointer">
+                                <span>Buka Tab 2: Rekening</span>
+                                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- ── TAB 2: REKENING PEMBAYARAN ───────────────────────── -->
@@ -1641,6 +1681,18 @@
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Atas Nama Pemilik Rekening *</label>
                             <input type="text" id="settingBankHolder" placeholder="Contoh: Bpk. Hendra (Pengelola Kost)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white focus:border-emerald-500">
+                        </div>
+
+                        <!-- Stepper Prompt Tab 2 -> Tab 3 & Back -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
+                            <button type="button" onclick="switchSettingsTab('profile')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                <span>Tab 1: Profil</span>
+                            </button>
+                            <button type="button" onclick="switchSettingsTab('system')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all cursor-pointer">
+                                <span>Lanjut ke Tab 3: Format &amp; Backup</span>
+                                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -1694,19 +1746,35 @@
                                 <span>Reset Demo</span>
                             </button>
                         </div>
+
+                        <!-- Stepper Prompt Tab 3 Back & Ready -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
+                            <button type="button" onclick="switchSettingsTab('bank')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+                                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                <span>Tab 2: Rekening</span>
+                            </button>
+                            <span class="text-[11px] text-emerald-700 font-extrabold flex items-center gap-1 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl">
+                                <i class="fa-solid fa-circle-check text-emerald-500"></i> Semua Bagian Siap Disimpan
+                            </span>
+                        </div>
                     </div>
 
                 </div>
 
                 <!-- Modal Footer (Fixed) -->
-                <div class="px-4 sm:px-5 py-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
-                    <span class="text-[11px] text-slate-400 hidden sm:inline">Pengaturan disimpan secara lokal &amp; cloud</span>
+                <div class="px-4 sm:px-5 py-3 border-t border-slate-100 bg-slate-50/90 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-1.5 text-[11px] text-slate-500">
+                        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                        <span class="hidden sm:inline">1x Simpan memperbarui Profil, Rekening &amp; Format</span>
+                        <span class="sm:hidden">Menyimpan 3 tab</span>
+                    </div>
                     <div class="flex items-center gap-2 ml-auto">
-                        <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-200/60 font-bold text-xs transition-colors">
+                        <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-200/60 font-bold text-xs transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition-all">
-                            Simpan Pengaturan
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-floppy-disk text-xs"></i>
+                            <span>Simpan Semua Pengaturan</span>
                         </button>
                     </div>
                 </div>
@@ -4694,23 +4762,40 @@
             document.getElementById('monthlyReportModal').classList.add('hidden');
         }
 
-        // Sub-Tab Switcher for Settings Modal (Tidy & Segmented)
+        // Sub-Tab Switcher for Settings Modal (High-Contrast Segmented & Numbered)
         function switchSettingsTab(tabName) {
-            ['profile', 'bank', 'system'].forEach(t => {
-                const tabEl = document.getElementById(`settingsTab-${t}`);
-                const btnEl = document.getElementById(`settingsTabBtn-${t}`);
+            const tabs = [
+                { id: 'profile', num: '1 / 3' },
+                { id: 'bank', num: '2 / 3' },
+                { id: 'system', num: '3 / 3' }
+            ];
+
+            tabs.forEach(t => {
+                const tabEl = document.getElementById(`settingsTab-${t.id}`);
+                const btnEl = document.getElementById(`settingsTabBtn-${t.id}`);
+                const badgeEl = document.getElementById(`settingsTabBadge-${t.id}`);
+
                 if (tabEl) {
-                    if (t === tabName) tabEl.classList.remove('hidden');
+                    if (t.id === tabName) tabEl.classList.remove('hidden');
                     else tabEl.classList.add('hidden');
                 }
+
                 if (btnEl) {
-                    if (t === tabName) {
-                        btnEl.className = "settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-bold transition-all border-b-2 border-emerald-600 text-emerald-800 bg-white shadow-2xs flex items-center gap-1.5 shrink-0";
+                    if (t.id === tabName) {
+                        btnEl.className = "settings-tab-btn py-2 px-1.5 sm:px-2 rounded-xl text-xs font-bold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 bg-white text-emerald-800 shadow-sm ring-1 ring-slate-200/90 cursor-pointer";
+                        if (badgeEl) badgeEl.className = "w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-mono font-extrabold shrink-0";
                     } else {
-                        btnEl.className = "settings-tab-btn px-3 py-1.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-1.5 shrink-0";
+                        btnEl.className = "settings-tab-btn py-2 px-1.5 sm:px-2 rounded-xl text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-slate-600 hover:text-slate-900 hover:bg-white/60 cursor-pointer";
+                        if (badgeEl) badgeEl.className = "w-5 h-5 rounded-full bg-slate-300 text-slate-700 text-[10px] flex items-center justify-center font-mono font-extrabold shrink-0";
                     }
                 }
             });
+
+            const statusBadge = document.getElementById('settingsTabBadgeStatus');
+            if (statusBadge) {
+                const active = tabs.find(x => x.id === tabName);
+                if (active) statusBadge.innerText = `Bagian ${active.num}`;
+            }
         }
 
         // Settings Modal
