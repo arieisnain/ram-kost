@@ -122,7 +122,31 @@
         .pb-safe {
             padding-bottom: env(safe-area-inset-bottom, 16px);
         }
+
+        /* Anti-FOUC (Flash of Unauthenticated Content / Login Modal Flash Prevention) */
+        html.is-authenticated #loginScreen {
+            display: none !important;
+        }
+        html.is-unauthenticated #appLayout {
+            display: none !important;
+        }
+        html.is-unauthenticated #loginScreen {
+            display: flex !important;
+        }
     </style>
+    <!-- Pre-paint Synchronous Auth Check to eliminate login screen flash on refresh -->
+    <script>
+        (function() {
+            try {
+                var s = localStorage.getItem('simkost_auth_active') || sessionStorage.getItem('simkost_auth_active');
+                if (s) {
+                    document.documentElement.classList.add('is-authenticated');
+                } else {
+                    document.documentElement.classList.add('is-unauthenticated');
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body class="font-sans antialiased text-slate-800 bg-slate-50/70 min-h-full flex flex-col selection:bg-emerald-500 selection:text-white pb-24 md:pb-0">
 
@@ -296,7 +320,7 @@
     <!-- ================================================================== -->
     <!-- AUTHENTICATION GATEWAY & LOGIN SCREEN (#loginScreen)               -->
     <!-- ================================================================== -->
-    <div id="loginScreen" class="fixed inset-0 z-[65] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-5 overflow-y-auto">
+    <div id="loginScreen" class="fixed inset-0 z-[65] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-5 overflow-y-auto hidden">
         <div class="bg-white w-full max-w-sm sm:max-w-md rounded-3xl shadow-2xl border border-slate-200/90 p-5 sm:p-8 space-y-5 animate-scaleUp my-auto">
             
             <!-- Brand Logo & Header -->
@@ -3598,6 +3622,8 @@
             if (propLabel && appSettings) propLabel.innerText = appSettings.storeName || DEFAULT_SETTINGS.storeName;
 
             if (sessionRaw) {
+                document.documentElement.classList.add('is-authenticated');
+                document.documentElement.classList.remove('is-unauthenticated');
                 try {
                     const sessionObj = JSON.parse(sessionRaw);
                     if (sessionObj.tenantId && sessionObj.tenantId !== currentTenantId) {
@@ -3609,6 +3635,8 @@
                 if (appLayout) appLayout.classList.remove('hidden');
                 updateAccountManagementUI();
             } else {
+                document.documentElement.classList.remove('is-authenticated');
+                document.documentElement.classList.add('is-unauthenticated');
                 if (loginScreen) loginScreen.classList.remove('hidden');
                 if (appLayout) appLayout.classList.add('hidden');
             }
@@ -4581,6 +4609,9 @@
 
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
+            // Segera sinkronkan tampilan auth tanpa menunggu sinkronisasi database/network
+            checkAuthSession();
+
             const todayStr = new Date().toISOString().slice(0, 10);
             const expDateInput = document.getElementById('expenseDate');
             if (expDateInput) expDateInput.value = todayStr;
