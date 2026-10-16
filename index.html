@@ -245,6 +245,12 @@
                                 <span class="text-slate-400 italic text-[11px]">Belum diunggah</span>
                             </span>
                         </div>
+                        <div id="ctxProofRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60 hidden">
+                            <span class="text-slate-500 font-medium">Bukti Bayar Check-In</span>
+                            <span id="ctxProofActionArea" class="flex items-center gap-1.5">
+                                <span class="text-slate-400 italic text-[11px]">Tidak Ada</span>
+                            </span>
+                        </div>
                         <div id="ctxDueDateRow" class="flex items-center justify-between">
                             <span class="text-slate-500 font-medium">Periode / Jatuh Tempo</span>
                             <span id="ctxDueDate" class="font-bold text-slate-800">Jatuh Tempo: 01 Nov 2026</span>
@@ -1354,18 +1360,61 @@
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
-                            <div class="flex items-center gap-2">
-                                <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
-                                    <i class="fa-solid fa-id-card text-emerald-600 text-xs"></i>
-                                    <span id="checkInKtpLabel" class="text-[11px] font-semibold truncate">Upload Foto KTP</span>
+                            <div class="flex items-center gap-1.5">
+                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto KTP langsung dengan kamera">
+                                    <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
+                                    <span>Foto</span>
+                                    <input type="file" id="checkInKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
+                                </label>
+                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto KTP dari berkas atau galeri">
+                                    <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
+                                    <span>Unggah</span>
                                     <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
                                 </label>
-                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto KTP">
                                     <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
+                            <div id="checkInKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
+                                <span id="checkInKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                    <span>Foto KTP Terpilih</span>
+                                </span>
+                                <button type="button" onclick="previewKtpSelected('checkIn')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                            </div>
                             <input type="hidden" id="checkInKtpBase64">
                         </div>
+                    </div>
+
+                    <!-- Row 5b: Bukti Pembayaran / Transfer / DP (Opsional) -->
+                    <div class="pt-1 border-t border-slate-100">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
+                            <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto bukti bayar langsung dengan kamera">
+                                <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
+                                <span>Foto</span>
+                                <input type="file" id="checkInProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
+                            </label>
+                            <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto bukti bayar dari berkas atau galeri">
+                                <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
+                                <span>Unggah</span>
+                                <input type="file" id="checkInProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
+                            </label>
+                            <button type="button" id="checkInProofClearBtn" onclick="clearProofFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus bukti pembayaran">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                        <div id="checkInProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
+                            <span id="checkInProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Bukti Bayar Terpilih</span>
+                            </span>
+                            <button type="button" onclick="previewProofSelected('checkIn')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                        </div>
+                        <input type="hidden" id="checkInProofBase64">
                     </div>
 
                     <!-- Row 5b: Rincian & Jumlah Yang Harus Dibayar -->
@@ -1703,14 +1752,26 @@
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas Penyewa</label>
                     <div class="flex items-center gap-2">
-                        <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
-                            <i class="fa-solid fa-id-card text-emerald-600 text-sm"></i>
-                            <span id="editKtpLabel" class="text-xs font-semibold truncate">Upload / Ganti Foto KTP</span>
+                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-xs" title="Jepret foto KTP langsung dengan kamera">
+                            <i class="fa-solid fa-camera text-emerald-600"></i>
+                            <span>Foto</span>
+                            <input type="file" id="editKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
+                        </label>
+                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-2 px-3 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-xs" title="Pilih foto KTP dari berkas atau galeri">
+                            <i class="fa-solid fa-folder-open text-slate-500"></i>
+                            <span>Unggah</span>
                             <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
                         </label>
-                        <button type="button" id="editKtpClearBtn" onclick="clearKtpFile('edit')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                        <button type="button" id="editKtpClearBtn" onclick="clearKtpFile('edit')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto KTP">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
+                    </div>
+                    <div id="editKtpIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                        <span id="editKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Foto KTP Terpilih</span>
+                        </span>
+                        <button type="button" onclick="previewKtpSelected('edit')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
                     </div>
                     <input type="hidden" id="editKtpBase64">
                 </div>
@@ -1779,6 +1840,38 @@
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
                     <input type="text" id="expenseNotes" placeholder="No. Struk Toko / Bukti transfer" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block font-bold text-slate-700 text-xs">Foto / Bukti Struk <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <span class="text-[10px] text-slate-400">Nota / Kwitansi / Struk</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-rose-500 rounded-xl py-2 px-2 bg-slate-50 hover:bg-rose-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto nota langsung dengan kamera">
+                            <i class="fa-solid fa-camera text-rose-600 text-xs"></i>
+                            <span>Foto</span>
+                            <input type="file" id="expensePhotoCamera" accept="image/*" capture="environment" onchange="handleExpensePhotoSelect(event)" class="hidden">
+                        </label>
+                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-2 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto dari berkas atau galeri">
+                            <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
+                            <span>Unggah</span>
+                            <input type="file" id="expensePhotoFile" accept="image/*" onchange="handleExpensePhotoSelect(event)" class="hidden">
+                        </label>
+                        <button type="button" id="expensePhotoClearBtn" onclick="clearExpensePhoto()" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto struk">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                    <div id="expensePhotoIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
+                        <span id="expensePhotoName" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Foto struk terpilih</span>
+                        </span>
+                        <button type="button" onclick="previewExpensePhotoSelected()" class="text-emerald-700 underline font-bold text-[10px] hover:text-emerald-900 shrink-0">
+                            Lihat Foto
+                        </button>
+                    </div>
+                    <input type="hidden" id="expensePhotoBase64">
                 </div>
 
                 <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
@@ -2093,18 +2186,18 @@
     </div>
 
     <!-- ================================================================== -->
-    <!-- MODAL 7: LIGHTBOX PREVIEW FOTO KTP PENYEWA (#ktpPreviewModal)     -->
+    <!-- MODAL 7: LIGHTBOX PREVIEW FOTO KTP / DOKUMEN (#ktpPreviewModal)    -->
     <!-- ================================================================== -->
     <div id="ktpPreviewModal" onclick="if(event.target === this) closeKtpPreviewModal()" class="fixed inset-0 z-[80] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 hidden overflow-y-auto">
         <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-scaleUp">
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-2xs">
-                        <i class="fa-solid fa-id-card"></i>
+                    <div id="ktpPreviewIconContainer" class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-2xs">
+                        <i id="ktpPreviewIcon" class="fa-solid fa-id-card"></i>
                     </div>
                     <div>
                         <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
-                            <span>Arsip KTP Penghuni</span>
+                            <span id="ktpPreviewTitle">Arsip KTP Penghuni</span>
                             <span id="ktpPreviewRoomId" class="px-2 py-0.5 rounded-md bg-slate-900 text-white font-mono text-[10px]">KMR-101</span>
                         </h3>
                         <p id="ktpPreviewCustomerName" class="text-[11px] text-slate-500 font-semibold truncate max-w-[250px]">Agus Setiawan</p>
@@ -2116,14 +2209,14 @@
             </div>
             <div class="p-4 sm:p-5 flex flex-col items-center justify-center bg-slate-900/5">
                 <div class="relative w-full max-h-[60vh] flex items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/90 shadow-inner">
-                    <img id="ktpPreviewImage" src="" alt="Foto KTP Penghuni" class="max-w-full max-h-[58vh] object-contain rounded-xl transition-transform hover:scale-105 duration-200">
+                    <img id="ktpPreviewImage" src="" alt="Preview Dokumen" class="max-w-full max-h-[58vh] object-contain rounded-xl transition-transform hover:scale-105 duration-200">
                 </div>
                 <div class="w-full flex items-center justify-between pt-3 mt-3 border-t border-slate-200/80 text-xs">
                     <span class="text-[11px] text-slate-500 flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Dokumen terenkripsi lokal
+                        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Dokumen tersimpan aman di perangkat
                     </span>
                     <div class="flex items-center gap-2">
-                        <a id="ktpPreviewDownloadBtn" href="" download="ktp-penghuni.jpg" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs">
+                        <a id="ktpPreviewDownloadBtn" href="" download="dokumen.jpg" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs">
                             <i class="fa-solid fa-download text-xs"></i> Unduh
                         </a>
                         <button type="button" onclick="closeKtpPreviewModal()" class="px-4 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors">
@@ -3592,6 +3685,8 @@
             const depositText = document.getElementById('ctxDepositText');
             const ktpRow = document.getElementById('ctxKtpRow');
             const ktpActionArea = document.getElementById('ctxKtpActionArea');
+            const proofRow = document.getElementById('ctxProofRow');
+            const proofActionArea = document.getElementById('ctxProofActionArea');
             const historyBadge = document.getElementById('ctxHistoryBadgeCount');
 
             if (elService) elService.innerText = room.service + (room.detail ? ` (${room.detail})` : '');
@@ -3605,11 +3700,13 @@
                 if (termRow) termRow.classList.add('hidden');
                 if (depositRow) depositRow.classList.add('hidden');
                 if (ktpRow) ktpRow.classList.add('hidden');
+                if (proofRow) proofRow.classList.add('hidden');
             } else if (cond === 'perbaikan') {
                 if (tenantRow) tenantRow.classList.add('hidden');
                 if (termRow) termRow.classList.add('hidden');
                 if (depositRow) depositRow.classList.add('hidden');
                 if (ktpRow) ktpRow.classList.add('hidden');
+                if (proofRow) proofRow.classList.add('hidden');
                 if (dueDateRow) {
                     dueDateRow.classList.remove('hidden');
                     if (dueDate) dueDate.innerText = 'Status Servis / Pemeliharaan Aktif';
@@ -3657,6 +3754,21 @@
                         }
                     }
                 }
+                if (proofRow) {
+                    if (room.payment_proof) {
+                        proofRow.classList.remove('hidden');
+                        if (proofActionArea) {
+                            proofActionArea.innerHTML = `
+                                <button type="button" onclick="openPaymentProofPreview('${room.id}')" class="px-2.5 py-1 rounded-xl bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 font-bold text-[11px] flex items-center gap-1.5 transition-colors shadow-2xs">
+                                    <i class="fa-solid fa-receipt text-blue-600"></i>
+                                    <span>Lihat Bukti Bayar</span>
+                                </button>
+                            `;
+                        }
+                    } else {
+                        proofRow.classList.add('hidden');
+                    }
+                }
                 if (dueDateRow) {
                     dueDateRow.classList.remove('hidden');
                     if (dueDate) dueDate.innerText = room.date || '-';
@@ -3695,6 +3807,8 @@
         }
 
         function closeSmartRoomModal() {
+            clearKtpFile('ctxQuick');
+            clearProofFile('ctxQuick');
             const modal = document.getElementById('smartRoomModal');
             const card = document.getElementById('smartRoomContainer');
             if (modal && card) {
@@ -3802,10 +3916,18 @@
                                     ${trx.id ? `<span class="font-mono text-slate-300">• ${trx.id}</span>` : ''}
                                 </p>
                             </div>
-                            <button type="button" onclick="openReceiptForItem('${room.id}', ${trxDataJson})" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors shrink-0" title="Cetak Kuitansi Struk">
-                                <i class="fa-solid fa-receipt text-[10px]"></i>
-                                <span>Kuitansi</span>
-                            </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                ${trx.proof ? `
+                                    <button type="button" onclick="openGenericImageModal({ src: '${trx.proof}', title: 'Bukti Pembayaran', badge: '${room.id}', subtitle: '${trx.desc}', filename: 'bukti-${room.id}-${trx.id}.jpg', icon: 'fa-solid fa-receipt', iconBg: 'bg-blue-600' })" class="px-2 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] flex items-center gap-1 transition-colors" title="Lihat Foto Bukti Pembayaran">
+                                        <i class="fa-solid fa-file-invoice text-[10px]"></i>
+                                        <span>Bukti</span>
+                                    </button>
+                                ` : ''}
+                                <button type="button" onclick="openReceiptForItem('${room.id}', ${trxDataJson})" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors" title="Cetak Kuitansi Struk">
+                                    <i class="fa-solid fa-receipt text-[10px]"></i>
+                                    <span>Kuitansi</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -3909,8 +4031,8 @@
             }, 300);
         }
 
-        // ── KTP PHOTO ATTACHMENT & LIGHTBOX HELPERS ───────────────────────────
-        function compressImage(file, maxWidth = 1000, quality = 0.75) {
+        // ── DOCUMENT & IMAGE PREVIEW / ATTACHMENT HELPERS ──────────────────────
+        function compressImage(file, maxWidth = 1000, quality = 0.72) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -3938,37 +4060,39 @@
             });
         }
 
-        async function handleKtpFileSelect(event, context = 'checkIn') {
-            const file = event.target.files?.[0];
-            if (!file) return;
-
-            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
-
-            try {
-                if (labelEl) labelEl.innerText = 'Mengompres...';
-                const compressedBase64 = await compressImage(file);
-                if (hiddenBase64) hiddenBase64.value = compressedBase64;
-                if (labelEl) labelEl.innerText = 'Foto Terpilih (' + file.name.slice(0, 14) + '...)';
-                if (clearBtn) clearBtn.classList.remove('hidden');
-                showToast('Foto KTP berhasil disiapkan!', 'success');
-            } catch (err) {
-                console.error(err);
-                showToast('Gagal memproses foto', 'error');
+        function openGenericImageModal({ src, title = 'Arsip Dokumen', badge = '', subtitle = '', filename = 'dokumen.jpg', icon = 'fa-solid fa-image', iconBg = 'bg-emerald-600' }) {
+            if (!src) {
+                showToast('Foto dokumen belum tersedia', 'warning');
+                return;
             }
-        }
+            const modal = document.getElementById('ktpPreviewModal');
+            const img = document.getElementById('ktpPreviewImage');
+            const titleEl = document.getElementById('ktpPreviewTitle');
+            const idEl = document.getElementById('ktpPreviewRoomId');
+            const nameEl = document.getElementById('ktpPreviewCustomerName');
+            const dlBtn = document.getElementById('ktpPreviewDownloadBtn');
+            const iconEl = document.getElementById('ktpPreviewIcon');
+            const iconContainer = document.getElementById('ktpPreviewIconContainer');
 
-        function clearKtpFile(context = 'checkIn') {
-            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInKtpInput' : context === 'ctxQuick' ? 'ctxQuickKtpInput' : 'editKtpInput');
-            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
+            if (titleEl) titleEl.innerText = title;
+            if (idEl) {
+                if (badge) {
+                    idEl.innerText = badge;
+                    idEl.classList.remove('hidden');
+                } else {
+                    idEl.classList.add('hidden');
+                }
+            }
+            if (nameEl) nameEl.innerText = subtitle;
+            if (img) img.src = src;
+            if (dlBtn) {
+                dlBtn.href = src;
+                dlBtn.download = filename;
+            }
+            if (iconEl) iconEl.className = icon;
+            if (iconContainer) iconContainer.className = `w-8 h-8 rounded-xl ${iconBg} text-white flex items-center justify-center text-sm shadow-2xs`;
 
-            if (fileInput) fileInput.value = '';
-            if (hiddenBase64) hiddenBase64.value = '';
-            if (labelEl) labelEl.innerText = context === 'checkIn' ? 'Upload Foto KTP' : context === 'ctxQuick' ? 'Upload Foto KTP' : 'Upload / Ganti Foto KTP';
-            if (clearBtn) clearBtn.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function openKtpPreviewModal(roomId) {
@@ -3978,24 +4102,222 @@
                 showToast('KTP belum diunggah untuk kamar ini', 'warning');
                 return;
             }
+            openGenericImageModal({
+                src: room.ktp_photo,
+                title: 'Arsip KTP Penghuni',
+                badge: room.id,
+                subtitle: `${room.customer || 'Penghuni'} (${room.phone || '-'})`,
+                filename: `ktp-${room.id}.jpg`,
+                icon: 'fa-solid fa-id-card',
+                iconBg: 'bg-emerald-600'
+            });
+        }
 
-            const modal = document.getElementById('ktpPreviewModal');
-            const img = document.getElementById('ktpPreviewImage');
-            const idEl = document.getElementById('ktpPreviewRoomId');
-            const nameEl = document.getElementById('ktpPreviewCustomerName');
-            const dlBtn = document.getElementById('ktpPreviewDownloadBtn');
+        function openPaymentProofPreview(roomId) {
+            const targetId = roomId || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room || !room.payment_proof) {
+                showToast('Bukti pembayaran belum diunggah untuk kamar ini', 'warning');
+                return;
+            }
+            openGenericImageModal({
+                src: room.payment_proof,
+                title: 'Bukti Pembayaran Check-In',
+                badge: room.id,
+                subtitle: `${room.customer || 'Penyewa'} • Periode ${room.date || 'Sewa'}`,
+                filename: `bukti-bayar-${room.id}.jpg`,
+                icon: 'fa-solid fa-receipt',
+                iconBg: 'bg-blue-600'
+            });
+        }
 
-            if (idEl) idEl.innerText = room.id;
-            if (nameEl) nameEl.innerText = room.customer || 'Penghuni';
-            if (img) img.src = room.ktp_photo;
-            if (dlBtn) dlBtn.href = room.ktp_photo;
+        function openExpensePhotoPreview(expId) {
+            const exp = appExpenses.find(x => x.id === expId);
+            if (!exp || !exp.receipt_photo) {
+                showToast('Bukti struk pengeluaran tidak ditemukan', 'warning');
+                return;
+            }
+            openGenericImageModal({
+                src: exp.receipt_photo,
+                title: 'Bukti Pengeluaran Struk',
+                badge: exp.category,
+                subtitle: `${exp.title} • Rp ${Number(exp.amount).toLocaleString('id-ID')} (${exp.expense_date})`,
+                filename: `pengeluaran-${exp.id}.jpg`,
+                icon: 'fa-solid fa-receipt',
+                iconBg: 'bg-rose-600'
+            });
+        }
 
-            if (modal) modal.classList.remove('hidden');
+        function previewKtpSelected(context = 'checkIn') {
+            const base64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64')?.value;
+            if (!base64) {
+                showToast('Pilih atau foto KTP terlebih dahulu', 'info');
+                return;
+            }
+            openGenericImageModal({
+                src: base64,
+                title: 'Pratinjau Foto KTP',
+                badge: 'Form Check-In',
+                subtitle: 'Foto identitas siap disimpan',
+                filename: 'pratinjau-ktp.jpg',
+                icon: 'fa-solid fa-id-card',
+                iconBg: 'bg-emerald-600'
+            });
+        }
+
+        function previewProofSelected(context = 'checkIn') {
+            const base64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64')?.value;
+            if (!base64) {
+                showToast('Pilih atau foto bukti pembayaran terlebih dahulu', 'info');
+                return;
+            }
+            openGenericImageModal({
+                src: base64,
+                title: 'Pratinjau Bukti Bayar',
+                badge: 'Bukti Bayar',
+                subtitle: 'Bukti transfer/struk siap disimpan',
+                filename: 'pratinjau-bukti-bayar.jpg',
+                icon: 'fa-solid fa-receipt',
+                iconBg: 'bg-blue-600'
+            });
+        }
+
+        function previewExpensePhotoSelected() {
+            const base64 = document.getElementById('expensePhotoBase64')?.value;
+            if (!base64) {
+                showToast('Pilih atau foto nota pengeluaran terlebih dahulu', 'info');
+                return;
+            }
+            openGenericImageModal({
+                src: base64,
+                title: 'Pratinjau Bukti Pengeluaran',
+                badge: 'Nota/Struk',
+                subtitle: 'Bukti struk pengeluaran siap disimpan',
+                filename: 'pratinjau-nota.jpg',
+                icon: 'fa-solid fa-receipt',
+                iconBg: 'bg-rose-600'
+            });
         }
 
         function closeKtpPreviewModal() {
             const modal = document.getElementById('ktpPreviewModal');
             if (modal) modal.classList.add('hidden');
+        }
+
+        // ── KTP ATTACHMENT HANDLERS ──────────────────────────────────────────
+        async function handleKtpFileSelect(event, context = 'checkIn') {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
+            const indicator = document.getElementById(context === 'checkIn' ? 'checkInKtpIndicator' : context === 'ctxQuick' ? 'ctxQuickKtpIndicator' : 'editKtpIndicator');
+
+            try {
+                if (labelEl) labelEl.innerText = 'Mengompres...';
+                const compressedBase64 = await compressImage(file);
+                if (hiddenBase64) hiddenBase64.value = compressedBase64;
+                if (labelEl) labelEl.innerText = 'Foto KTP (' + file.name.slice(0, 14) + '...)';
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (indicator) indicator.classList.remove('hidden');
+                showToast('Foto KTP berhasil disiapkan!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memproses foto KTP', 'error');
+            }
+        }
+
+        function clearKtpFile(context = 'checkIn') {
+            const camInput = document.getElementById(context === 'checkIn' ? 'checkInKtpCamera' : context === 'ctxQuick' ? 'ctxQuickKtpCamera' : 'editKtpCamera');
+            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInKtpInput' : context === 'ctxQuick' ? 'ctxQuickKtpInput' : 'editKtpInput');
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
+            const indicator = document.getElementById(context === 'checkIn' ? 'checkInKtpIndicator' : context === 'ctxQuick' ? 'ctxQuickKtpIndicator' : 'editKtpIndicator');
+
+            if (camInput) camInput.value = '';
+            if (fileInput) fileInput.value = '';
+            if (hiddenBase64) hiddenBase64.value = '';
+            if (labelEl) labelEl.innerText = 'Foto KTP Terpilih';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (indicator) indicator.classList.add('hidden');
+        }
+
+        // ── PAYMENT PROOF ATTACHMENT HANDLERS ────────────────────────────────
+        async function handleProofFileSelect(event, context = 'checkIn') {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInProofLabel' : 'ctxQuickProofLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInProofClearBtn' : 'ctxQuickProofClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64');
+            const indicator = document.getElementById(context === 'checkIn' ? 'checkInProofIndicator' : 'ctxQuickProofIndicator');
+
+            try {
+                if (labelEl) labelEl.innerText = 'Mengompres...';
+                const compressedBase64 = await compressImage(file);
+                if (hiddenBase64) hiddenBase64.value = compressedBase64;
+                if (labelEl) labelEl.innerText = 'Bukti Bayar (' + file.name.slice(0, 14) + '...)';
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (indicator) indicator.classList.remove('hidden');
+                showToast('Bukti pembayaran berhasil disiapkan!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memproses bukti bayar', 'error');
+            }
+        }
+
+        function clearProofFile(context = 'checkIn') {
+            const camInput = document.getElementById(context === 'checkIn' ? 'checkInProofCamera' : 'ctxQuickProofCamera');
+            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInProofInput' : 'ctxQuickProofInput');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInProofClearBtn' : 'ctxQuickProofClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64');
+            const indicator = document.getElementById(context === 'checkIn' ? 'checkInProofIndicator' : 'ctxQuickProofIndicator');
+
+            if (camInput) camInput.value = '';
+            if (fileInput) fileInput.value = '';
+            if (hiddenBase64) hiddenBase64.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (indicator) indicator.classList.add('hidden');
+        }
+
+        // ── EXPENSE PHOTO ATTACHMENT HANDLERS ────────────────────────────────
+        async function handleExpensePhotoSelect(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const labelEl = document.getElementById('expensePhotoName');
+            const clearBtn = document.getElementById('expensePhotoClearBtn');
+            const hiddenBase64 = document.getElementById('expensePhotoBase64');
+            const indicator = document.getElementById('expensePhotoIndicator');
+
+            try {
+                if (labelEl) labelEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-rose-500"></i> Mengompres...';
+                const compressedBase64 = await compressImage(file);
+                if (hiddenBase64) hiddenBase64.value = compressedBase64;
+                if (labelEl) labelEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> <span class="truncate">Struk (${file.name.slice(0, 14)}...)</span>`;
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                if (indicator) indicator.classList.remove('hidden');
+                showToast('Foto bukti pengeluaran berhasil disiapkan!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memproses foto struk pengeluaran', 'error');
+            }
+        }
+
+        function clearExpensePhoto() {
+            const camInput = document.getElementById('expensePhotoCamera');
+            const fileInput = document.getElementById('expensePhotoFile');
+            const clearBtn = document.getElementById('expensePhotoClearBtn');
+            const hiddenBase64 = document.getElementById('expensePhotoBase64');
+            const indicator = document.getElementById('expensePhotoIndicator');
+
+            if (camInput) camInput.value = '';
+            if (fileInput) fileInput.value = '';
+            if (hiddenBase64) hiddenBase64.value = '';
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (indicator) indicator.classList.add('hidden');
         }
 
         // ── DURATION & TERM CALCULATION HELPERS ──────────────────────────────
@@ -4354,17 +4676,60 @@
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1 text-[11px]">Lampiran Foto KTP <span class="font-normal text-slate-400">(Opsional)</span></label>
                                 <div class="flex items-center gap-1.5">
-                                    <label class="flex-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 text-center cursor-pointer transition-colors flex items-center justify-center gap-1.5 bg-slate-50 hover:bg-emerald-50/50 text-slate-600">
-                                        <i class="fa-solid fa-camera text-slate-400 text-xs"></i>
-                                        <span id="ctxQuickKtpLabel" class="text-[11px] font-semibold truncate">Upload Foto KTP</span>
+                                    <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2 py-1.5 text-center transition-colors bg-slate-50 hover:bg-emerald-50/50 text-slate-700 font-semibold text-[11px]" title="Jepret foto KTP langsung dengan kamera">
+                                        <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
+                                        <span>Foto</span>
+                                        <input type="file" id="ctxQuickKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
+                                    </label>
+                                    <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl px-2 py-1.5 text-center transition-colors bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-[11px]" title="Pilih foto KTP dari berkas atau galeri">
+                                        <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
+                                        <span>Unggah</span>
                                         <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
                                     </label>
                                     <button type="button" id="ctxQuickKtpClearBtn" onclick="clearKtpFile('ctxQuick')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
                                         <i class="fa-solid fa-trash-can text-xs"></i>
                                     </button>
                                 </div>
+                                <div id="ctxQuickKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
+                                    <span id="ctxQuickKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                        <span>Foto KTP Terpilih</span>
+                                    </span>
+                                    <button type="button" onclick="previewKtpSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                </div>
                                 <input type="hidden" id="ctxQuickKtpBase64">
                             </div>
+                        </div>
+
+                        <!-- Row 5b: Bukti Pembayaran / Transfer (Quick Check-in) -->
+                        <div class="pt-1 border-t border-slate-100">
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2 py-1.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto bukti bayar langsung dengan kamera">
+                                    <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
+                                    <span>Foto</span>
+                                    <input type="file" id="ctxQuickProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
+                                </label>
+                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl px-2 py-1.5 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto bukti bayar dari berkas atau galeri">
+                                    <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
+                                    <span>Unggah</span>
+                                    <input type="file" id="ctxQuickProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
+                                </label>
+                                <button type="button" id="ctxQuickProofClearBtn" onclick="clearProofFile('ctxQuick')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus bukti pembayaran">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                            <div id="ctxQuickProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
+                                <span id="ctxQuickProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                    <span>Bukti Bayar Terpilih</span>
+                                </span>
+                                <button type="button" onclick="previewProofSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                            </div>
+                            <input type="hidden" id="ctxQuickProofBase64">
                         </div>
 
                         <!-- Row 5b: Rincian & Jumlah Yang Harus Dibayar -->
@@ -4670,6 +5035,7 @@
             const rentTerm = document.getElementById('ctxQuickRentTerm')?.value || '1_bulan';
             const dailyDays = Math.max(1, Number(document.getElementById('ctxQuickDailyDays')?.value) || 1);
             const ktpPhoto = document.getElementById('ctxQuickKtpBase64')?.value || '';
+            const paymentProof = document.getElementById('ctxQuickProofBase64')?.value || '';
             const detailInput = document.getElementById('ctxQuickDetail')?.value.trim();
             const quickDeposit = Number(document.getElementById('ctxQuickDeposit')?.value) || 0;
 
@@ -4719,7 +5085,8 @@
                     type: 'dp',
                     desc: 'Uang Muka / Booking (Quick Check-In)',
                     amount: Number(dpAmount),
-                    method: 'Tunai / Transfer'
+                    method: 'Tunai / Transfer',
+                    proof: paymentProof
                 };
                 room.payment_history.push(primaryReceiptTrx);
             } else {
@@ -4730,7 +5097,8 @@
                     type: 'sewa',
                     desc: `Pembayaran Sewa (${getTermBadgeText(rentTerm, dailyDays)})`,
                     amount: totalTermRent,
-                    method: 'Tunai / Transfer'
+                    method: 'Tunai / Transfer',
+                    proof: paymentProof
                 };
                 room.payment_history.push(primaryReceiptTrx);
             }
@@ -4759,6 +5127,7 @@
                 deposit_amount: quickDeposit,
                 deposit_status: quickDeposit > 0 ? 'Tersimpan' : 'Tidak Ada',
                 ktp_photo: ktpPhoto,
+                payment_proof: paymentProof,
                 payment_history: room.payment_history
             };
 
@@ -5154,7 +5523,17 @@
                         </span>
                     </td>
                     <td class="px-4 py-3 font-bold text-slate-900">${exp.title}</td>
-                    <td class="px-4 py-3 text-slate-400">${exp.notes || '-'}</td>
+                    <td class="px-4 py-3 text-slate-500">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span>${exp.notes || '-'}</span>
+                            ${exp.receipt_photo ? `
+                                <button type="button" onclick="openExpensePhotoPreview('${exp.id}')" title="Lihat Foto Struk / Nota" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[10px] border border-rose-200 transition-colors shadow-2xs">
+                                    <i class="fa-solid fa-receipt text-[10px]"></i>
+                                    <span>Bukti</span>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
                     <td class="px-4 py-3 text-right font-mono font-bold text-rose-600 tabular-nums">
                         Rp ${Number(exp.amount).toLocaleString('id-ID')}
                     </td>
@@ -5177,7 +5556,14 @@
                         </div>
                         <h4 class="font-extrabold text-xs text-slate-900">${exp.title}</h4>
                         <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 text-xs">
-                            <span class="font-mono font-bold text-rose-600 tabular-nums">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-rose-600 tabular-nums">Rp ${Number(exp.amount).toLocaleString('id-ID')}</span>
+                                ${exp.receipt_photo ? `
+                                    <button type="button" onclick="openExpensePhotoPreview('${exp.id}')" class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 font-bold text-[10px] border border-rose-200 flex items-center gap-1">
+                                        <i class="fa-solid fa-receipt text-[9px]"></i> Bukti
+                                    </button>
+                                ` : ''}
+                            </div>
                             <button onclick="deleteExpense('${exp.id}')" class="p-1 rounded-lg text-slate-400 hover:text-rose-600">
                                 <i class="fa-solid fa-trash-can text-xs"></i>
                             </button>
@@ -5323,10 +5709,12 @@
             document.getElementById('expenseTitle').value = '';
             document.getElementById('expenseAmount').value = '';
             document.getElementById('expenseNotes').value = '';
+            clearExpensePhoto();
             document.getElementById('expenseModal').classList.remove('hidden');
         }
 
         function closeExpenseModal() {
+            clearExpensePhoto();
             document.getElementById('expenseModal').classList.add('hidden');
         }
 
@@ -5336,13 +5724,15 @@
             btn.disabled = true;
             btn.innerText = 'Menyimpan...';
 
+            const receiptPhoto = document.getElementById('expensePhotoBase64')?.value || '';
             const newExp = {
                 id: 'EXP-' + Date.now().toString().slice(-8),
                 title: document.getElementById('expenseTitle').value.trim(),
                 category: document.getElementById('expenseCategory').value,
                 amount: Number(document.getElementById('expenseAmount').value),
                 expense_date: document.getElementById('expenseDate').value,
-                notes: document.getElementById('expenseNotes').value.trim()
+                notes: document.getElementById('expenseNotes').value.trim(),
+                receipt_photo: receiptPhoto
             };
 
             if (supabaseClient) {
@@ -5721,6 +6111,7 @@
                 if (dailyCont) dailyCont.classList.add('hidden');
                 if (depInput) depInput.value = '';
                 clearKtpFile('checkIn');
+                clearProofFile('checkIn');
 
                 // Reset plan radio to 'lunas'
                 const planRadios = document.querySelectorAll('input[name="checkInPayPlan"]');
@@ -5755,6 +6146,8 @@
         }
 
         function closeCheckInModal() {
+            clearKtpFile('checkIn');
+            clearProofFile('checkIn');
             const modal = document.getElementById('checkInModal');
             if (modal) modal.classList.add('hidden');
         }
@@ -5845,6 +6238,7 @@
             const dailyDays = Number(document.getElementById('checkInDailyDays')?.value) || 1;
             const depositAmount = Number(document.getElementById('checkInDeposit')?.value) || 0;
             const ktpPhoto = document.getElementById('checkInKtpBase64')?.value || '';
+            const paymentProof = document.getElementById('checkInProofBase64')?.value || '';
             const payPlan = document.querySelector('input[name="checkInPayPlan"]:checked')?.value || 'lunas';
             const detailInput = document.getElementById('checkInDetail')?.value.trim();
 
@@ -5893,7 +6287,8 @@
                     type: 'dp',
                     desc: 'Uang Muka / DP Booking Kamar',
                     amount: Number(dpVal),
-                    method: 'Tunai / Transfer'
+                    method: 'Tunai / Transfer',
+                    proof: paymentProof
                 };
                 room.payment_history.push(primaryReceiptTrx);
             } else {
@@ -5904,7 +6299,8 @@
                     type: 'sewa',
                     desc: `Pembayaran Sewa (${getTermBadgeText(rentTerm, dailyDays)})`,
                     amount: totalTermRent,
-                    method: 'Tunai / Transfer'
+                    method: 'Tunai / Transfer',
+                    proof: paymentProof
                 };
                 room.payment_history.push(primaryReceiptTrx);
             }
@@ -5934,6 +6330,7 @@
                 deposit_amount: depositAmount,
                 deposit_status: depositAmount > 0 ? 'Tersimpan' : 'Tidak Ada',
                 ktp_photo: ktpPhoto,
+                payment_proof: paymentProof,
                 payment_history: room.payment_history
             };
 
