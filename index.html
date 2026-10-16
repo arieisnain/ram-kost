@@ -171,13 +171,13 @@
             <!-- Modal Header: Room Number, Location, Status Badge, Close Button -->
             <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
                 <div class="flex items-center gap-2">
-                    <span id="ctxRoomId" class="px-2.5 py-1 rounded-xl bg-slate-900 text-white font-mono font-extrabold text-xs">KMR-101</span>
-                    <span id="ctxRoomRack" class="text-xs font-semibold text-slate-500">Lantai 1</span>
+                    <span id="ctxRoomId" class="px-2.5 py-1 rounded-xl bg-slate-900 text-white font-mono font-extrabold text-xs">-</span>
+                    <span id="ctxRoomRack" class="text-xs font-semibold text-slate-500">-</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span id="ctxStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span id="ctxStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span id="ctxStatusText">Lunas</span>
+                    <span id="ctxStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                        <span id="ctxStatusDot" class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                        <span id="ctxStatusText">Memuat...</span>
                     </span>
                     <button onclick="closeSmartRoomModal()" aria-label="Tutup" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
                         <i class="fa-solid fa-xmark text-sm"></i>
@@ -204,13 +204,13 @@
                 <!-- SUB-TAB 1: OVERVIEW & ACTIONS -->
                 <div id="ctxSubTabOverview" class="space-y-4">
                     <!-- Hero Ribbon: Condition Title, Icon & Helper Guidance -->
-                    <div id="ctxHeroRibbon" class="p-2.5 sm:p-3.5 rounded-2xl border flex items-center gap-2.5 sm:gap-3.5 bg-blue-50/70 border-blue-200">
-                        <div id="ctxHeroIconBox" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0 shadow-2xs">
-                            <i id="ctxHeroIcon" class="fa-solid fa-door-open"></i>
+                    <div id="ctxHeroRibbon" class="p-2.5 sm:p-3.5 rounded-2xl border flex items-center gap-2.5 sm:gap-3.5 bg-slate-50 border-slate-200">
+                        <div id="ctxHeroIconBox" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-slate-700 text-white flex items-center justify-center text-sm sm:text-base shrink-0 shadow-2xs">
+                            <i id="ctxHeroIcon" class="fa-solid fa-bed"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 id="ctxHeroTitle" class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">Kamar Siap Huni</h4>
-                            <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed hidden sm:block">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
+                            <h4 id="ctxHeroTitle" class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">Detail Kamar</h4>
+                            <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed hidden sm:block">Memuat status dan rincian transaksi kamar...</p>
                         </div>
                     </div>
 
@@ -218,26 +218,26 @@
                     <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-2 text-xs">
                         <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Tipe &amp; Fasilitas</span>
-                            <span id="ctxRoomService" class="font-bold text-slate-900 text-right truncate max-w-[240px]">Kamar Deluxe AC + KM Dalam</span>
+                            <span id="ctxRoomService" class="font-bold text-slate-900 text-right truncate max-w-[240px]">-</span>
                         </div>
                         <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Tarif Sewa</span>
-                            <span id="ctxRoomAmount" class="font-extrabold text-slate-900 font-mono text-sm tabular-nums">Rp 1.500.000</span>
+                            <span id="ctxRoomAmount" class="font-extrabold text-slate-900 font-mono text-sm tabular-nums">Rp 0</span>
                         </div>
                         <div id="ctxTenantRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Penghuni</span>
                             <div class="text-right">
-                                <span id="ctxTenantName" class="font-extrabold text-slate-900 block truncate max-w-[200px]">Agus Setiawan</span>
-                                <span id="ctxTenantPhone" class="text-[11px] text-slate-500 font-mono">081299881122</span>
+                                <span id="ctxTenantName" class="font-extrabold text-slate-900 block truncate max-w-[200px]">-</span>
+                                <span id="ctxTenantPhone" class="text-[11px] text-slate-500 font-mono">-</span>
                             </div>
                         </div>
                         <div id="ctxRentTermRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Durasi Sewa</span>
-                            <span id="ctxRentTermText" class="font-bold text-slate-800">Bulanan (1 Bulan)</span>
+                            <span id="ctxRentTermText" class="font-bold text-slate-800">-</span>
                         </div>
                         <div id="ctxDepositRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Deposit</span>
-                            <span id="ctxDepositText" class="font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">Rp 500.000 (Tersimpan)</span>
+                            <span id="ctxDepositText" class="font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">-</span>
                         </div>
                         <div id="ctxKtpRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
                             <span class="text-slate-500 font-medium">Foto KTP</span>
@@ -253,7 +253,7 @@
                         </div>
                         <div id="ctxDueDateRow" class="flex items-center justify-between">
                             <span class="text-slate-500 font-medium">Jatuh Tempo</span>
-                            <span id="ctxDueDate" class="font-bold text-slate-800">Jatuh Tempo: 01 Nov 2026</span>
+                            <span id="ctxDueDate" class="font-bold text-slate-800">-</span>
                         </div>
                     </div>
 
