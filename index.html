@@ -204,13 +204,13 @@
                 <!-- SUB-TAB 1: OVERVIEW & ACTIONS -->
                 <div id="ctxSubTabOverview" class="space-y-4">
                     <!-- Hero Ribbon: Condition Title, Icon & Helper Guidance -->
-                    <div id="ctxHeroRibbon" class="p-4 rounded-2xl border flex items-start gap-3.5 bg-blue-50/70 border-blue-200">
-                        <div id="ctxHeroIconBox" class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0 shadow-2xs">
+                    <div id="ctxHeroRibbon" class="p-2.5 sm:p-3.5 rounded-2xl border flex items-center gap-2.5 sm:gap-3.5 bg-blue-50/70 border-blue-200">
+                        <div id="ctxHeroIconBox" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0 shadow-2xs">
                             <i id="ctxHeroIcon" class="fa-solid fa-door-open"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 id="ctxHeroTitle" class="text-sm font-extrabold text-slate-900">Kamar Siap Huni</h4>
-                            <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
+                            <h4 id="ctxHeroTitle" class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">Kamar Siap Huni</h4>
+                            <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed hidden sm:block">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
                         </div>
                     </div>
 
@@ -412,10 +412,10 @@
                         <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
                     </button>
 
-                    <!-- Add New / Transaction Button -->
-                    <button onclick="openQuickAddChoiceModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
+                    <!-- Add New / Transaction Button (Desktop/Tablet only, mobile has bottom dock + button) -->
+                    <button onclick="openQuickAddChoiceModal()" class="hidden md:flex px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 items-center gap-1.5 transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>
-                        <span class="hidden xs:inline sm:inline">+ Tambah</span>
+                        <span>+ Tambah</span>
                     </button>
                 </div>
             </header>
@@ -441,13 +441,13 @@
             <main class="p-3 sm:p-5 lg:p-6 space-y-3.5 sm:space-y-4 flex-1 max-w-7xl w-full mx-auto">
 
                 <!-- ── 1. COMPACT FINANCIAL RIBBON (MOBILE ONLY) ─────────────────── -->
-                <div class="md:hidden bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                <div class="md:hidden bg-white p-3 rounded-2xl border border-slate-200/90 shadow-2xs">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                         <div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi Laba Bersih</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Laba Bersih</span>
                             <div class="flex items-baseline gap-2 mt-0.5">
-                                <h3 id="mobileNetProfit" class="text-lg font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
-                                <span id="mobileProfitMargin" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-md font-mono">+0% Margin</span>
+                                <h3 id="mobileNetProfit" class="text-base font-extrabold text-slate-900 tracking-tight font-mono tabular-nums">Rp 0</h3>
+                                <span id="mobileProfitMargin" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded-md font-mono">+0% Margin</span>
                             </div>
                         </div>
                         <button onclick="toggleMobileMetrics()" id="mobileMetricsToggleBtn" class="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-600 text-[11px] font-bold hover:bg-slate-200 transition-colors flex items-center gap-1">
@@ -457,17 +457,17 @@
                     </div>
 
                     <!-- Mini Strip (Okupansi & Omset) -->
-                    <div class="grid grid-cols-3 gap-2 pt-2.5 text-center text-xs">
+                    <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs">
                         <div>
-                            <span class="text-[10px] text-slate-400 block">Okupansi</span>
+                            <span class="text-[9px] text-slate-400 block">Okupansi</span>
                             <span id="mobileOccupancy" class="font-bold text-slate-800 text-xs font-mono">0 / 0</span>
                         </div>
                         <div class="border-x border-slate-100">
-                            <span class="text-[10px] text-slate-400 block">Pemasukan</span>
+                            <span class="text-[9px] text-slate-400 block">Pemasukan</span>
                             <span id="mobileRevenue" class="font-bold text-emerald-600 text-xs font-mono tabular-nums">Rp 0</span>
                         </div>
                         <div>
-                            <span class="text-[10px] text-slate-400 block">Pengeluaran</span>
+                            <span class="text-[9px] text-slate-400 block">Pengeluaran</span>
                             <span id="mobileExpense" class="font-bold text-rose-600 text-xs font-mono tabular-nums">Rp 0</span>
                         </div>
                     </div>
@@ -606,19 +606,19 @@
                             Terisi (<span id="countFilterTerisi">0</span>)
                         </button>
                         <button onclick="setFilter('Tersedia', this)" data-filter="Tersedia" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
-                            Siap Huni (<span id="countFilterTersedia">0</span>)
+                            Kosong (<span id="countFilterTersedia">0</span>)
                         </button>
                         <button onclick="setFilter('Segera Tempo', this)" data-filter="Segera Tempo" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
-                            Segera Tempo (<span id="countFilterDue">0</span>)
+                            Tempo (<span id="countFilterDue">0</span>)
                         </button>
                         <button onclick="setFilter('Menunggak', this)" data-filter="Menunggak" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
-                            Menunggak (<span id="countFilterLate">0</span>)
+                            Nunggak (<span id="countFilterLate">0</span>)
                         </button>
                         <button onclick="setFilter('Booking', this)" data-filter="Booking" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Booking (<span id="countFilterBooking">0</span>)
                         </button>
                         <button onclick="setFilter('Perbaikan', this)" data-filter="Perbaikan" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
-                            Perbaikan (<span id="countFilterRepair">0</span>)
+                            Servis (<span id="countFilterRepair">0</span>)
                         </button>
                     </div>
 
@@ -3792,17 +3792,21 @@
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
                                     ` : cond === 'perbaikan' ? `
                                         <h4 class="text-xs sm:text-sm font-extrabold text-amber-700 flex items-center gap-1.5">
-                                            <i class="fa-solid fa-wrench text-xs"></i> Dalam Perbaikan / Servis
+                                            <i class="fa-solid fa-wrench text-xs"></i> Dalam Perbaikan
                                         </h4>
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.detail || 'Fasilitas dalam pemeliharaan'}</p>
                                     ` : `
                                         <div class="flex items-center justify-between gap-2">
-                                            <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
-                                                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
-                                                ${item.ktp_photo ? `<span title="KTP Tersimpan" class="text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1 py-0.2 rounded text-[9px] font-bold inline-flex items-center"><i class="fa-solid fa-id-card mr-0.5 text-emerald-600"></i>KTP</span>` : ''}
-                                                ${item.deposit_amount && item.deposit_amount > 0 ? `<span class="text-amber-800 bg-amber-50 border border-amber-200/80 px-1 py-0.2 rounded text-[9px] font-bold font-mono">Dep: ${(item.deposit_amount/1000).toLocaleString('id-ID')}k</span>` : ''}
+                                            <div class="flex items-center gap-1.5 min-w-0">
+                                                <h4 class="text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                                ${item.ktp_photo ? `<span title="KTP Terverifikasi" class="text-emerald-600 text-xs shrink-0"><i class="fa-solid fa-id-card"></i></span>` : ''}
+                                                ${item.deposit_amount && item.deposit_amount > 0 ? `<span class="text-amber-800 bg-amber-50 border border-amber-200/80 px-1.5 py-0.2 rounded text-[9px] font-bold font-mono shrink-0">Dep ${(item.deposit_amount >= 1000 ? (item.deposit_amount/1000) + 'k' : item.deposit_amount)}</span>` : ''}
                                             </div>
-                                            ${item.phone ? `<span class="text-[10px] text-slate-400 font-mono shrink-0 flex items-center gap-1"><i class="fa-brands fa-whatsapp text-emerald-600"></i>${item.phone}</span>` : ''}
+                                            ${item.phone ? `
+                                                <button type="button" onclick="event.stopPropagation(); sendBillingReminderWA('${item.id}', 'polite')" class="text-emerald-600 hover:text-emerald-700 p-1 shrink-0" title="Chat WhatsApp">
+                                                    <i class="fa-brands fa-whatsapp text-base"></i>
+                                                </button>
+                                            ` : ''}
                                         </div>
                                         <div class="flex items-center gap-1.5 mt-0.5">
                                             <p class="text-[11px] text-slate-400 truncate">${item.service}</p>
@@ -5273,42 +5277,44 @@
             } else if (cond === 'lunas') {
                 return `
                     <div class="space-y-2 text-xs font-bold">
-                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 flex items-center gap-3 transition-colors text-left shadow-sm">
-                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-base shrink-0">
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-slate-900 text-white hover:bg-slate-800 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-sm">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-receipt text-emerald-400"></i>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Buka Kuitansi Resmi &amp; Nota Digital</div>
-                                <span class="text-[11px] text-slate-300 font-normal">Cetak nota thermal 58/80mm atau bagikan struk via WhatsApp</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Buka Kuitansi Resmi &amp; Nota Digital</div>
+                                <span class="text-[11px] text-slate-300 font-normal hidden sm:block">Cetak nota thermal 58/80mm atau bagikan struk via WhatsApp</span>
                             </div>
-                            <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                            <i class="fa-solid fa-chevron-right text-xs text-slate-400 shrink-0"></i>
                         </button>
 
-                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-900 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0">
+                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-emerald-50 text-emerald-900 hover:bg-emerald-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Chat WhatsApp Penghuni</div>
-                                <span class="text-[10px] text-emerald-700 font-normal">Kirim pesan sapaan, info fasilitas, atau konfirmasi sewa</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Chat WhatsApp Penghuni</div>
+                                <span class="text-[10px] text-emerald-700 font-normal hidden sm:block">Kirim pesan sapaan, info fasilitas, atau konfirmasi sewa</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-400 shrink-0"></i>
                         </button>
 
-                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-blue-50 text-blue-900 hover:bg-blue-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0">
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-blue-50 text-blue-900 hover:bg-blue-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-calendar-plus"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Perpanjang Sewa 1 Bulan Lebih Awal</div>
-                                <span class="text-[10px] text-blue-700 font-normal">Gunakan jika penghuni telah membayar sewa bulan depan di muka</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Perpanjang Sewa 1 Bulan Lebih Awal</div>
+                                <span class="text-[10px] text-blue-700 font-normal hidden sm:block">Gunakan jika penghuni telah membayar sewa bulan depan di muka</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-blue-400 shrink-0"></i>
                         </button>
                     </div>
 
                     <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
                         <button onclick="checkoutFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-arrow-right-from-bracket text-base w-5 text-center"></i>
-                            <span>Kosongkan Kamar (Check-Out Penghuni)</span>
+                            <span>Kosongkan Kamar (Check-Out)</span>
                         </button>
                         <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
@@ -5319,25 +5325,26 @@
             } else if (cond === 'jatuh_tempo') {
                 return `
                     <div class="space-y-2 text-xs font-bold">
-                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
-                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                        <button onclick="sendBillingReminderWA('${room.id}', 'polite')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 flex items-center justify-center text-base sm:text-lg shrink-0">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Kirim Pengingat Tagihan via WhatsApp (Sopan)</div>
-                                <span class="text-[11px] text-emerald-100 font-normal">Template sopan otomatis memuat nomor rekening transfer &amp; tanggal jatuh tempo</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Kirim Pengingat Tagihan WhatsApp</div>
+                                <span class="text-[11px] text-emerald-100 font-normal hidden sm:block">Template sopan otomatis memuat nomor rekening &amp; tanggal jatuh tempo</span>
                             </div>
-                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200"></i>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200 shrink-0"></i>
                         </button>
 
-                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shrink-0">
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Terima Pembayaran &amp; Perpanjang (+1 Bulan)</div>
-                                <span class="text-[10px] text-amber-700 font-normal">Otomatis set status Lunas, majukan tanggal tempo, &amp; terbitkan kuitansi</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Terima Pembayaran &amp; Perpanjang</div>
+                                <span class="text-[10px] text-amber-700 font-normal hidden sm:block">Otomatis set status Lunas, majukan tanggal tempo, &amp; terbitkan kuitansi</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-amber-500 shrink-0"></i>
                         </button>
 
                         <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 rounded-xl bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
@@ -5360,25 +5367,26 @@
             } else if (cond === 'menunggak') {
                 return `
                     <div class="space-y-2 text-xs font-bold">
-                        <button onclick="sendBillingReminderWA('${room.id}', 'firm')" class="w-full p-3 rounded-2xl bg-rose-600 text-white hover:bg-rose-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-rose-600/20">
-                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                        <button onclick="sendBillingReminderWA('${room.id}', 'firm')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-rose-600 text-white hover:bg-rose-500 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-md shadow-rose-600/20">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 flex items-center justify-center text-base sm:text-lg shrink-0">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Kirim Tagihan Tegas via WhatsApp</div>
-                                <span class="text-[11px] text-rose-100 font-normal">Format pesan resmi menyoroti jumlah hari telat &amp; rekening pemilik kost</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Kirim Tagihan Tegas via WhatsApp</div>
+                                <span class="text-[11px] text-rose-100 font-normal hidden sm:block">Format pesan resmi menyoroti jumlah hari telat &amp; rekening pemilik kost</span>
                             </div>
-                            <i class="fa-solid fa-chevron-right text-xs text-rose-200"></i>
+                            <i class="fa-solid fa-chevron-right text-xs text-rose-200 shrink-0"></i>
                         </button>
 
-                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0">
+                        <button onclick="markAsPaidQuick('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Terima Pelunasan Tunggakan &amp; Perpanjang</div>
-                                <span class="text-[10px] text-emerald-700 font-normal">Reset status menunggak ke Lunas, perpanjang sewa, &amp; buat kuitansi</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Terima Pelunasan Tunggakan</div>
+                                <span class="text-[10px] text-emerald-700 font-normal hidden sm:block">Reset status menunggak ke Lunas, perpanjang sewa, &amp; buat kuitansi</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-500 shrink-0"></i>
                         </button>
                     </div>
 
@@ -5389,7 +5397,7 @@
                         </button>
                         <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-receipt text-slate-500 w-5 text-center"></i>
-                            <span>Cetak Tagihan Tunggakan / Surat Peringatan</span>
+                            <span>Cetak Tagihan / Surat Peringatan</span>
                         </button>
                         <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
@@ -5400,37 +5408,38 @@
             } else if (cond === 'booking') {
                 return `
                     <div class="space-y-2 text-xs font-bold">
-                        <button onclick="activateBookingFromContext('${room.id}')" class="w-full p-3 rounded-2xl bg-purple-600 text-white hover:bg-purple-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-purple-600/20">
-                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                        <button onclick="activateBookingFromContext('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-purple-600 text-white hover:bg-purple-500 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-md shadow-purple-600/20">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 flex items-center justify-center text-base sm:text-lg shrink-0">
                                 <i class="fa-solid fa-key"></i>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Check-In Resmi &amp; Lunasi Sisa Tagihan</div>
-                                <span class="text-[11px] text-purple-100 font-normal">Aktifkan status sewa menjadi Lunas, mulai masa huni 1 bulan &amp; serahkan kunci</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Check-In Resmi &amp; Lunasi Sisa</div>
+                                <span class="text-[11px] text-purple-100 font-normal hidden sm:block">Aktifkan status sewa menjadi Lunas, mulai masa huni 1 bulan &amp; serahkan kunci</span>
                             </div>
-                            <i class="fa-solid fa-chevron-right text-xs text-purple-200"></i>
+                            <i class="fa-solid fa-chevron-right text-xs text-purple-200 shrink-0"></i>
                         </button>
 
-                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-3 rounded-2xl bg-purple-50 text-purple-900 border border-purple-200 hover:bg-purple-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-purple-200 text-purple-800 flex items-center justify-center text-base shrink-0">
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-purple-50 text-purple-900 border border-purple-200 hover:bg-purple-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-200 text-purple-800 flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Cetak Bukti Penerimaan DP / Booking</div>
-                                <span class="text-[10px] text-purple-700 font-normal">Kuitansi tanda jadi resmi untuk calon penghuni</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Cetak Bukti Penerimaan DP / Booking</div>
+                                <span class="text-[10px] text-purple-700 font-normal hidden sm:block">Kuitansi tanda jadi resmi untuk calon penghuni</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-purple-400 shrink-0"></i>
                         </button>
 
                         <button onclick="sendBillingReminderWA('${room.id}', 'booking')" class="w-full p-2.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-brands fa-whatsapp text-emerald-600 w-5 text-center text-base"></i>
-                            <span>Konfirmasi Jadwal Kedatangan via WhatsApp</span>
+                            <span>Konfirmasi Kedatangan via WA</span>
                         </button>
                     </div>
 
                     <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
                         <button onclick="cancelBookingFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-ban w-5 text-center"></i>
-                            <span>Batalkan Booking (Kembalikan ke Siap Huni)</span>
+                            <span>Batalkan Booking (Kembalikan ke Kosong)</span>
                         </button>
                         <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
@@ -5441,25 +5450,26 @@
             } else if (cond === 'perbaikan') {
                 return `
                     <div class="space-y-2 text-xs font-bold">
-                        <button onclick="finishMaintenanceQuick('${room.id}')" class="w-full p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
-                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                        <button onclick="finishMaintenanceQuick('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-emerald-600 text-white hover:bg-emerald-500 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-md shadow-emerald-600/20">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 flex items-center justify-center text-base sm:text-lg shrink-0">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm">Perbaikan Selesai (Ubah ke Siap Huni)</div>
-                                <span class="text-[11px] text-emerald-100 font-normal">Kamar siap dipasarkan dan disewakan kepada penyewa baru</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Perbaikan Selesai (Siap Huni)</div>
+                                <span class="text-[11px] text-emerald-100 font-normal hidden sm:block">Kamar siap dipasarkan dan disewakan kepada penyewa baru</span>
                             </div>
-                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200"></i>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-200 shrink-0"></i>
                         </button>
 
-                        <button onclick="openExpenseForRoom('${room.id}')" class="w-full p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-3 transition-colors text-left">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base shrink-0">
+                        <button onclick="openExpenseForRoom('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
                                 <i class="fa-solid fa-wallet"></i>
                             </div>
-                            <div class="flex-1">
-                                <div>Catat Biaya Servis / Tukang ke Pengeluaran Kas</div>
-                                <span class="text-[10px] text-amber-700 font-normal">Otomatis catat nota material atau ongkos tukang ke buku kas</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">Catat Biaya Servis ke Pengeluaran</div>
+                                <span class="text-[10px] text-amber-700 font-normal hidden sm:block">Otomatis catat nota material atau ongkos tukang ke buku kas</span>
                             </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-amber-500 shrink-0"></i>
                         </button>
                     </div>
 
