@@ -1310,9 +1310,18 @@
                     <!-- Deposit & KTP Attachment -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Uang Jaminan / Deposit (Rp)</label>
-                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Opsional)" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
-                            <p class="text-[10px] text-slate-400 mt-0.5">Jaminan kerusakan/kunci, dikembalikan saat checkout.</p>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block font-bold text-slate-700">Uang Jaminan / Deposit <span class="font-normal text-slate-400 text-[11px]">(Opsional)</span></label>
+                                <span class="text-[10px] text-slate-400">Bisa diisi Rp 0</span>
+                            </div>
+                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
+                            <div class="flex items-center gap-1.5 mt-1.5">
+                                <button type="button" onclick="setCheckInDeposit(0)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-semibold text-slate-600 transition-colors">Rp 0</button>
+                                <button type="button" onclick="setCheckInDeposit(250000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">250rb</button>
+                                <button type="button" onclick="setCheckInDeposit(500000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">500rb</button>
+                                <button type="button" onclick="setCheckInDeposit(1000000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1">Uang jaminan kerusakan/kunci, dikembalikan saat penyewa checkout.</p>
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas (Opsional)</label>
@@ -3877,6 +3886,30 @@
             }
         }
 
+        function updateCheckInDueDatePreview() {
+            const startVal = document.getElementById('checkInStartDate')?.value;
+            const termVal = document.getElementById('checkInRentTerm')?.value || '1_bulan';
+            const daysVal = Number(document.getElementById('checkInDailyDays')?.value) || 1;
+            const dueText = document.getElementById('checkInDueDateText');
+            if (dueText) {
+                dueText.innerText = calculateDueDateFromTerm(startVal, termVal, daysVal);
+            }
+        }
+
+        function setCheckInDeposit(val) {
+            const input = document.getElementById('checkInDeposit');
+            if (input) {
+                input.value = val === 0 ? '' : val;
+            }
+        }
+
+        function setCtxQuickDeposit(val) {
+            const input = document.getElementById('ctxQuickDeposit');
+            if (input) {
+                input.value = val === 0 ? '' : val;
+            }
+        }
+
         // Build HTML for condition-tailored actions
         function buildContextActionsHtml(cond, room) {
             const todayIso = new Date().toISOString().split('T')[0];
@@ -3888,7 +3921,10 @@
                             <h5 class="font-extrabold text-slate-900 text-xs flex items-center gap-1.5 text-emerald-700">
                                 <i class="fa-solid fa-user-plus"></i> Check-In Penghuni Baru
                             </h5>
-                            <span class="text-[10px] text-slate-400 font-medium">Form Cepat 1-Klik</span>
+                            <button type="button" onclick="closeSmartRoomModal(); openCheckInModal('${room.id}');" class="text-[10px] text-emerald-700 hover:text-emerald-800 font-bold hover:underline flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200/80 transition-colors">
+                                <span>Form Lengkap</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </button>
                         </div>
                         
                         <div>
@@ -3904,6 +3940,20 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Tgl Mulai Masuk</label>
                                 <input type="date" id="ctxQuickDate" value="${todayIso}" class="w-full border border-slate-200 rounded-xl px-2 py-2 text-xs outline-none focus:border-emerald-500 bg-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-[11px] font-bold text-slate-700">Uang Jaminan / Deposit <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                <span class="text-[9px] text-slate-400">Bisa diisi Rp 0</span>
+                            </div>
+                            <input type="number" id="ctxQuickDeposit" placeholder="0 (Tanpa Deposit)" min="0" step="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500">
+                            <div class="flex items-center gap-1.5 mt-1">
+                                <button type="button" onclick="setCtxQuickDeposit(0)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-semibold text-slate-600 transition-colors">Rp 0</button>
+                                <button type="button" onclick="setCtxQuickDeposit(250000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">250rb</button>
+                                <button type="button" onclick="setCtxQuickDeposit(500000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">500rb</button>
+                                <button type="button" onclick="setCtxQuickDeposit(1000000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
                             </div>
                         </div>
 
@@ -4230,6 +4280,18 @@
                 });
             }
 
+            const quickDeposit = Number(document.getElementById('ctxQuickDeposit')?.value) || 0;
+            if (quickDeposit > 0) {
+                room.payment_history.push({
+                    id: 'TRX-' + (Date.now() + 1).toString().slice(-8),
+                    date: moveInDateInput || new Date().toISOString().slice(0, 10),
+                    type: 'deposit',
+                    desc: 'Uang Jaminan / Deposit Kamar & Fasilitas',
+                    amount: quickDeposit,
+                    method: 'Tunai / Transfer'
+                });
+            }
+
             const updatePayload = {
                 customer: customerName,
                 phone: phone,
@@ -4237,6 +4299,8 @@
                 work_status: workStatus,
                 date: nextDueDate,
                 detail: detailNote,
+                deposit_amount: quickDeposit,
+                deposit_status: quickDeposit > 0 ? 'Tersimpan' : 'Tidak Ada',
                 payment_history: room.payment_history
             };
 
@@ -5059,7 +5123,13 @@
 
         // ── WORKFLOW 1: CHECK-IN PENGHUNI BARU (KAMAR KOSONG / SIAP HUNI) ──────
         function openCheckInModal(preselectedId = null) {
-            const emptyRooms = appData.filter(r => getRoomCondition(r) === 'kosong');
+            let emptyRooms = appData.filter(r => getRoomCondition(r) === 'kosong');
+            if (preselectedId && !emptyRooms.some(r => r.id === preselectedId)) {
+                const targetRoom = appData.find(r => r.id === preselectedId);
+                if (targetRoom) {
+                    emptyRooms = [targetRoom, ...emptyRooms];
+                }
+            }
             const alertEl = document.getElementById('checkInNoRoomAlert');
             const fieldsEl = document.getElementById('checkInFormFields');
             const submitBtn = document.getElementById('checkInSubmitBtn');
