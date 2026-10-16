@@ -1213,31 +1213,33 @@
 
                 <!-- Main Form Body -->
                 <div id="checkInFormFields" class="space-y-3">
-                    <!-- Row 1: Room Selector -->
+                    <!-- Row 1: Room Selector (Hanya Kamar Kosong Tanpa Dropdown) -->
                     <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="block font-bold text-slate-700 text-[11px]">Pilih Kamar *</label>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block font-bold text-slate-700 text-[11px]">Pilih Kamar Kosong *</label>
                             <span id="checkInAvailableCount" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                                 0 Kamar Tersedia
                             </span>
                         </div>
 
-                        <!-- Visual Quick Room Chips -->
-                        <div id="checkInQuickRoomChips" class="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none">
-                            <!-- Populated dynamically via JS -->
+                        <!-- Hidden input to store chosen room ID for form submission & scripts -->
+                        <input type="hidden" id="checkInRoomSelect" name="roomId" required value="">
+
+                        <!-- Interactive Empty Room Chips Only -->
+                        <div id="checkInQuickRoomChips" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-slate-50/70 rounded-xl border border-slate-200/80 scrollbar-thin">
+                            <!-- Populated dynamically via JS with empty rooms only -->
                         </div>
 
-                        <select id="checkInRoomSelect" onchange="onCheckInRoomSelected(this.value)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-bold text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-2xs">
-                            <!-- Populated dynamically via JS -->
-                        </select>
-
                         <!-- Selected Room Clean Info -->
-                        <div id="checkInRoomPreview" class="flex items-center justify-between text-[11px] text-slate-500 mt-1 px-1">
-                            <span class="truncate">
-                                <span id="checkInPreviewId" class="font-bold text-slate-800 font-mono">KMR</span> • 
-                                <span id="checkInPreviewService">Tipe Kamar</span> 
-                                (<span id="checkInPreviewRack">Lantai 1</span>)
-                            </span>
+                        <div id="checkInRoomPreview" class="flex items-center justify-between text-[11px] text-slate-600 bg-emerald-50/50 border border-emerald-200/60 rounded-xl px-3 py-1.5 mt-1.5">
+                            <div class="flex items-center gap-1.5 truncate">
+                                <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-200">Kamar Terpilih</span>
+                                <span id="checkInPreviewId" class="font-bold text-slate-900 font-mono">KMR</span>
+                                <span class="text-slate-300">•</span>
+                                <span id="checkInPreviewService" class="text-slate-700 font-medium">Tipe Kamar</span>
+                                <span class="text-slate-300">•</span>
+                                <span id="checkInPreviewRack" class="text-slate-500 text-[10px]">Lantai 1</span>
+                            </div>
                             <span id="checkInPreviewAmount" class="font-bold text-emerald-700 font-mono shrink-0 ml-2">Rp 0</span>
                         </div>
                     </div>
@@ -5127,76 +5129,64 @@
                     submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 }
             } else {
-                if (alertEl) {
-                    if (emptyRooms.length === 0) {
+                if (emptyRooms.length === 0) {
+                    if (alertEl) {
                         alertEl.classList.remove('hidden');
                         alertEl.innerHTML = `
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info text-amber-600 text-sm shrink-0"></i>
-                                <span class="leading-snug">Seluruh kamar saat ini terisi. Anda dapat memilih kamar di bawah untuk mendaftarkan penghuni baru / menggantikan penghuni lama.</span>
+                            <div class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm mt-0.5 shrink-0"></i>
+                                <div>
+                                    <div class="font-bold text-xs text-amber-900">Semua Kamar Saat Ini Penuh!</div>
+                                    <div class="text-[11px] text-amber-800 mt-0.5">Tidak ada unit kamar kosong yang siap huni untuk check-in penghuni baru saat ini.</div>
+                                </div>
+                            </div>
+                            <div class="pt-2 flex justify-end gap-2">
+                                <button type="button" onclick="closeCheckInModal(); openAddRoomModal();" class="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-2xs">
+                                    + Tambah Kamar Baru
+                                </button>
                             </div>
                         `;
-                    } else {
-                        alertEl.classList.add('hidden');
                     }
-                }
+                    if (fieldsEl) fieldsEl.classList.add('hidden');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                    if (countBadge) {
+                        countBadge.innerText = '0 Kamar Kosong';
+                        countBadge.className = 'text-[10px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200';
+                    }
+                } else {
+                    if (alertEl) alertEl.classList.add('hidden');
+                    if (fieldsEl) fieldsEl.classList.remove('hidden');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
 
-                if (fieldsEl) fieldsEl.classList.remove('hidden');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
+                    if (countBadge) {
+                        countBadge.innerText = `${emptyRooms.length} Kamar Kosong Siap Huni`;
+                        countBadge.className = 'text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200';
+                    }
 
-                if (countBadge) {
-                    countBadge.innerText = emptyRooms.length > 0 
-                        ? `${emptyRooms.length} Kamar Kosong` 
-                        : `${appData.length} Total Kamar`;
-                    countBadge.className = emptyRooms.length > 0
-                        ? 'text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200'
-                        : 'text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200';
-                }
-
-                // Populate visual quick room chips
-                const chipsContainer = document.getElementById('checkInQuickRoomChips');
-                if (chipsContainer) {
-                    chipsContainer.innerHTML = appData.map(r => {
-                        const isKosong = getRoomCondition(r) === 'kosong';
-                        return `
-                            <button type="button" onclick="selectCheckInRoom('${r.id}')" data-room-id="${r.id}" class="check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer ${isKosong ? 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}">
-                                <span class="w-1.5 h-1.5 rounded-full ${isKosong ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+                    // Populate interactive empty room chips (ONLY empty rooms!)
+                    const chipsContainer = document.getElementById('checkInQuickRoomChips');
+                    if (chipsContainer) {
+                        chipsContainer.innerHTML = emptyRooms.map(r => `
+                            <button type="button" onclick="selectCheckInRoom('${r.id}')" data-room-id="${r.id}" class="check-in-chip px-3 py-1.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer border-emerald-200 bg-white text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 shadow-2xs">
+                                <span class="chip-icon flex items-center justify-center w-3.5 h-3.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span></span>
                                 <span>${r.id}</span>
-                                <span class="text-[9px] font-normal ${isKosong ? 'text-emerald-700 font-semibold' : 'text-slate-400'}">${isKosong ? 'Kosong' : 'Terisi'}</span>
+                                <span class="chip-rack text-[10px] font-sans font-normal text-slate-500">(${r.rack || 'Lt. 1'})</span>
                             </button>
-                        `;
-                    }).join('');
-                }
-
-                // Populate room selector with clean, friendly options (NO NOISY REPETITIVE TEXT!)
-                if (roomSelect) {
-                    let selectHtml = '';
-                    if (emptyRooms.length > 0) {
-                        selectHtml += `<optgroup label="🟢 Kamar Siap Huni (Kosong)">`;
-                        selectHtml += emptyRooms.map(r => `
-                            <option value="${r.id}">Kamar ${r.id} — Siap Huni (${r.rack || 'Lt. 1'})</option>
                         `).join('');
-                        selectHtml += `</optgroup>`;
                     }
-                    if (otherRooms.length > 0) {
-                        selectHtml += `<optgroup label="${emptyRooms.length > 0 ? '⚪ Kamar Terisi (Ganti Penghuni)' : 'Daftar Kamar Kost'}">`;
-                        selectHtml += otherRooms.map(r => `
-                            <option value="${r.id}">Kamar ${r.id} — ${r.customer || 'Terisi'} (${r.rack || 'Lt. 1'})</option>
-                        `).join('');
-                        selectHtml += `</optgroup>`;
-                    }
-                    roomSelect.innerHTML = selectHtml;
 
-                    // Pre-select priority
-                    let selectedId = emptyRooms.length > 0 ? emptyRooms[0].id : (appData[0]?.id || '');
-                    if (preselectedId && appData.some(r => r.id === preselectedId)) {
+                    // Select default empty room
+                    let selectedId = emptyRooms[0].id;
+                    if (preselectedId && emptyRooms.some(r => r.id === preselectedId)) {
                         selectedId = preselectedId;
                     }
-                    roomSelect.value = selectedId;
-                    onCheckInRoomSelected(selectedId);
+                    selectCheckInRoom(selectedId);
                 }
 
                 // Reset tenant inputs
@@ -5249,26 +5239,36 @@
         }
 
         function selectCheckInRoom(roomId) {
-            const roomSelect = document.getElementById('checkInRoomSelect');
-            if (roomSelect) {
-                roomSelect.value = roomId;
-                onCheckInRoomSelected(roomId);
+            const roomInput = document.getElementById('checkInRoomSelect');
+            if (roomInput) {
+                roomInput.value = roomId;
             }
+            onCheckInRoomSelected(roomId);
         }
 
         function onCheckInRoomSelected(roomId) {
             const room = appData.find(r => r.id === roomId);
             if (!room) return;
 
+            const roomInput = document.getElementById('checkInRoomSelect');
+            if (roomInput) {
+                roomInput.value = roomId;
+            }
+
             // Highlight active room chip
             const chips = document.querySelectorAll('.check-in-chip');
             chips.forEach(chip => {
-                if (chip.getAttribute('data-room-id') === roomId) {
-                    chip.className = 'check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer border-emerald-600 bg-emerald-600 text-white shadow-xs';
+                const isSelected = chip.getAttribute('data-room-id') === roomId;
+                const iconSpan = chip.querySelector('.chip-icon');
+                const rackSpan = chip.querySelector('.chip-rack');
+                if (isSelected) {
+                    chip.className = 'check-in-chip px-3 py-1.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer border-emerald-600 bg-emerald-600 text-white shadow-xs';
+                    if (iconSpan) iconSpan.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i>';
+                    if (rackSpan) rackSpan.className = 'chip-rack text-[10px] font-sans font-normal text-emerald-100';
                 } else {
-                    const targetR = appData.find(x => x.id === chip.getAttribute('data-room-id'));
-                    const isKos = targetR && getRoomCondition(targetR) === 'kosong';
-                    chip.className = `check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer ${isKos ? 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`;
+                    chip.className = 'check-in-chip px-3 py-1.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer border-emerald-200 bg-white text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 shadow-2xs';
+                    if (iconSpan) iconSpan.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>';
+                    if (rackSpan) rackSpan.className = 'chip-rack text-[10px] font-sans font-normal text-slate-500';
                 }
             });
 
