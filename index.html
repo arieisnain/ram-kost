@@ -1360,27 +1360,26 @@
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
-                            <div class="flex items-center gap-1.5">
-                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto KTP langsung dengan kamera">
+                            <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                                <span class="flex items-center gap-1.5">
                                     <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
-                                    <span>Foto</span>
-                                    <input type="file" id="checkInKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
-                                </label>
-                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto KTP dari berkas atau galeri">
-                                    <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
-                                    <span>Unggah</span>
-                                    <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
-                                </label>
-                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto KTP">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                </button>
-                            </div>
+                                    <span>Ambil Foto / Pilih Berkas KTP</span>
+                                </span>
+                                <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
+                                <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
+                                <input type="file" id="checkInKtpCamera" class="hidden">
+                            </label>
                             <div id="checkInKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                 <span id="checkInKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                     <i class="fa-solid fa-circle-check text-emerald-600"></i>
                                     <span>Foto KTP Terpilih</span>
                                 </span>
-                                <button type="button" onclick="previewKtpSelected('checkIn')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="previewKtpSelected('checkIn')" class="text-emerald-700 underline font-bold">Lihat</button>
+                                    <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus foto KTP">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
                             </div>
                             <input type="hidden" id="checkInKtpBase64">
                         </div>
@@ -1392,27 +1391,26 @@
                             <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
                             <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto bukti bayar langsung dengan kamera">
-                                <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
-                                <span>Foto</span>
-                                <input type="file" id="checkInProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
-                            </label>
-                            <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-1.5 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto bukti bayar dari berkas atau galeri">
-                                <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
-                                <span>Unggah</span>
-                                <input type="file" id="checkInProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
-                            </label>
-                            <button type="button" id="checkInProofClearBtn" onclick="clearProofFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus bukti pembayaran">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
+                        <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                            <span class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-receipt text-emerald-600 text-xs"></i>
+                                <span>Ambil Foto / Pilih Berkas Bukti</span>
+                            </span>
+                            <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
+                            <input type="file" id="checkInProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
+                            <input type="file" id="checkInProofCamera" class="hidden">
+                        </label>
                         <div id="checkInProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                             <span id="checkInProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                 <i class="fa-solid fa-circle-check text-emerald-600"></i>
                                 <span>Bukti Bayar Terpilih</span>
                             </span>
-                            <button type="button" onclick="previewProofSelected('checkIn')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="previewProofSelected('checkIn')" class="text-emerald-700 underline font-bold">Lihat</button>
+                                <button type="button" id="checkInProofClearBtn" onclick="clearProofFile('checkIn')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus bukti bayar">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                         <input type="hidden" id="checkInProofBase64">
                     </div>
@@ -1750,28 +1748,27 @@
 
                 <!-- KTP Photo Attachment -->
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas Penyewa</label>
-                    <div class="flex items-center gap-2">
-                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-xs" title="Jepret foto KTP langsung dengan kamera">
+                    <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas Penyewa <span class="font-normal text-slate-400">(Opsional)</span></label>
+                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                        <span class="flex items-center gap-2">
                             <i class="fa-solid fa-camera text-emerald-600"></i>
-                            <span>Foto</span>
-                            <input type="file" id="editKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
-                        </label>
-                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-2 px-3 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-xs" title="Pilih foto KTP dari berkas atau galeri">
-                            <i class="fa-solid fa-folder-open text-slate-500"></i>
-                            <span>Unggah</span>
-                            <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
-                        </label>
-                        <button type="button" id="editKtpClearBtn" onclick="clearKtpFile('edit')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto KTP">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
-                    </div>
+                            <span>Ambil Foto / Pilih Berkas KTP</span>
+                        </span>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
+                        <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
+                        <input type="file" id="editKtpCamera" class="hidden">
+                    </label>
                     <div id="editKtpIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
                         <span id="editKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-emerald-600"></i>
                             <span>Foto KTP Terpilih</span>
                         </span>
-                        <button type="button" onclick="previewKtpSelected('edit')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="previewKtpSelected('edit')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                            <button type="button" id="editKtpClearBtn" onclick="clearKtpFile('edit')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus foto KTP">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                     <input type="hidden" id="editKtpBase64">
                 </div>
@@ -1847,29 +1844,28 @@
                         <label class="block font-bold text-slate-700 text-xs">Foto / Bukti Struk <span class="font-normal text-slate-400">(Opsional)</span></label>
                         <span class="text-[10px] text-slate-400">Nota / Kwitansi / Struk</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-rose-500 rounded-xl py-2 px-2 bg-slate-50 hover:bg-rose-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto nota langsung dengan kamera">
-                            <i class="fa-solid fa-camera text-rose-600 text-xs"></i>
-                            <span>Foto</span>
-                            <input type="file" id="expensePhotoCamera" accept="image/*" capture="environment" onchange="handleExpensePhotoSelect(event)" class="hidden">
-                        </label>
-                        <label class="cursor-pointer flex-1 flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl py-2 px-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto dari berkas atau galeri">
-                            <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
-                            <span>Unggah</span>
-                            <input type="file" id="expensePhotoFile" accept="image/*" onchange="handleExpensePhotoSelect(event)" class="hidden">
-                        </label>
-                        <button type="button" id="expensePhotoClearBtn" onclick="clearExpensePhoto()" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus foto struk">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
-                    </div>
+                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-rose-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-rose-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto struk langsung atau pilih dari galeri">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-rose-600 text-sm"></i>
+                            <span>Ambil Foto / Pilih Berkas Struk</span>
+                        </span>
+                        <span class="text-[10px] font-bold text-rose-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
+                        <input type="file" id="expensePhotoFile" accept="image/*" onchange="handleExpensePhotoSelect(event)" class="hidden">
+                        <input type="file" id="expensePhotoCamera" class="hidden">
+                    </label>
                     <div id="expensePhotoIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
                         <span id="expensePhotoName" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-emerald-600"></i>
                             <span>Foto struk terpilih</span>
                         </span>
-                        <button type="button" onclick="previewExpensePhotoSelected()" class="text-emerald-700 underline font-bold text-[10px] hover:text-emerald-900 shrink-0">
-                            Lihat Foto
-                        </button>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="previewExpensePhotoSelected()" class="text-emerald-700 underline font-bold text-[10px] hover:text-emerald-900 shrink-0">
+                                Lihat
+                            </button>
+                            <button type="button" id="expensePhotoClearBtn" onclick="clearExpensePhoto()" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus foto struk">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                     <input type="hidden" id="expensePhotoBase64">
                 </div>
@@ -2288,6 +2284,35 @@
                     <input type="text" id="manualPaymentDesc" required placeholder="Contoh: Pelunasan sewa periode Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-emerald-500">
                 </div>
 
+                <!-- Bukti Pembayaran Manual (Opsional) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
+                    </div>
+                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-emerald-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto atau pilih dari galeri">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
+                            <span class="font-bold text-[11px] text-slate-700">Ambil Foto / Pilih Berkas Bukti</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
+                        <input type="file" id="manualPaymentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'manualPay')" class="hidden">
+                    </label>
+                    <div id="manualPaymentProofIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
+                        <span id="manualPaymentProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Bukti Terpilih</span>
+                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="previewProofSelected('manualPay')" class="text-emerald-700 underline font-bold text-[11px]">Lihat</button>
+                            <button type="button" id="manualPaymentProofClearBtn" onclick="clearProofFile('manualPay')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus bukti bayar">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="manualPaymentProofBase64">
+                </div>
+
                 <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[11px] text-emerald-800 flex items-center gap-2">
                     <i class="fa-solid fa-receipt text-emerald-600"></i>
                     <span>Setelah disimpan, nota kuitansi dapat langsung dilihat dan dicetak.</span>
@@ -2300,6 +2325,118 @@
                     <button type="submit" id="manualPaymentSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
                         <i class="fa-solid fa-check"></i>
                         <span>Simpan Transaksi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 9: PERPANJANGAN SEWA KAMAR (#renewRentModal)                -->
+    <!-- ================================================================== -->
+    <div id="renewRentModal" onclick="if(event.target === this) closeRenewRentModal()" class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50/80 to-indigo-50/60">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-plus text-blue-600"></i> Perpanjangan Sewa Kamar
+                    </h3>
+                    <p id="renewRentSubtitle" class="text-[11px] text-slate-500">Kamar KMR-101 • Agus Setiawan</p>
+                </div>
+                <button type="button" onclick="closeRenewRentModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleRenewRentSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+                <input type="hidden" id="renewRentRoomId">
+
+                <!-- Periode Perpanjangan Card -->
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Jatuh Tempo Saat Ini</div>
+                        <div id="renewRentCurrentDue" class="font-bold text-slate-700 text-xs mt-0.5">-</div>
+                    </div>
+                    <div class="text-slate-300">
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] text-blue-600 font-bold uppercase tracking-wider flex items-center justify-end gap-1">
+                            <span>Jatuh Tempo Baru</span>
+                            <span id="renewRentTermBadge" class="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded font-semibold">1 Bulan</span>
+                        </div>
+                        <div id="renewRentNextDue" class="font-extrabold text-blue-700 text-xs mt-0.5">-</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nominal Sewa (Rp) *</label>
+                        <input type="number" id="renewRentAmount" required min="1000" step="1000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Metode Bayar *</label>
+                        <select id="renewRentMethod" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-blue-500">
+                            <option value="Transfer BCA">Transfer BCA</option>
+                            <option value="Transfer Mandiri">Transfer Mandiri</option>
+                            <option value="Transfer BNI">Transfer BNI</option>
+                            <option value="Transfer BRI">Transfer BRI</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Tanggal Transaksi / Bayar *</label>
+                    <input type="date" id="renewRentDate" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Single Unified Upload for Payment Proof -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
+                    </div>
+                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-blue-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-blue-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-blue-600 text-xs"></i>
+                            <span class="font-bold text-[11px] text-slate-700">Ambil Foto / Pilih Berkas Bukti</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-blue-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
+                        <input type="file" id="renewRentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'renewRent')" class="hidden">
+                    </label>
+                    <div id="renewRentProofIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-between text-[11px]">
+                        <span id="renewRentProofLabel" class="font-bold text-blue-800 truncate flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-blue-600"></i>
+                            <span>Bukti Bayar Terpilih</span>
+                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="previewProofSelected('renewRent')" class="text-blue-700 underline font-bold text-[11px]">Lihat</button>
+                            <button type="button" id="renewRentProofClearBtn" onclick="clearProofFile('renewRent')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus bukti bayar">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="renewRentProofBase64">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catatan Keterangan</label>
+                    <input type="text" id="renewRentNotes" placeholder="Contoh: Perpanjangan sewa periode berikutnya" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-blue-500">
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/70 text-[11px] text-blue-900 flex items-center gap-2">
+                    <i class="fa-solid fa-info-circle text-blue-600"></i>
+                    <span>Status kamar akan otomatis diperbarui menjadi Lunas & kuitansi siap dicetak/dikirim.</span>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeRenewRentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="renewRentSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Simpan &amp; Perpanjang</span>
                     </button>
                 </div>
             </form>
@@ -2579,6 +2716,11 @@
                 const receiptModal = document.getElementById('receiptModal');
                 if (receiptModal && !receiptModal.classList.contains('hidden')) {
                     closeReceiptModal();
+                    return;
+                }
+                const renewModal = document.getElementById('renewRentModal');
+                if (renewModal && !renewModal.classList.contains('hidden')) {
+                    closeRenewRentModal();
                     return;
                 }
                 const manualPay = document.getElementById('manualPaymentModal');
@@ -3955,10 +4097,12 @@
             if (descInput) descInput.value = `Pembayaran Sewa Kamar ${room.id}`;
             if (typeSelect) typeSelect.value = 'sewa';
 
+            clearProofFile('manualPay');
             if (modal) modal.classList.remove('hidden');
         }
 
         function closeManualPaymentModal() {
+            clearProofFile('manualPay');
             const modal = document.getElementById('manualPaymentModal');
             if (modal) modal.classList.add('hidden');
         }
@@ -3980,6 +4124,7 @@
             const amount = Number(document.getElementById('manualPaymentAmount')?.value) || 0;
             const date = document.getElementById('manualPaymentDate')?.value || new Date().toISOString().slice(0, 10);
             const desc = document.getElementById('manualPaymentDesc')?.value.trim() || 'Pembayaran Kamar';
+            const proofBase64 = document.getElementById('manualPaymentProofBase64')?.value || null;
 
             if (!room.payment_history) room.payment_history = [];
             const newTrx = {
@@ -3988,13 +4133,18 @@
                 type: type,
                 desc: desc,
                 amount: amount,
-                method: method
+                method: method,
+                proof: proofBase64
             };
 
             // If deposit was recorded, update deposit_amount
             if (type === 'deposit') {
                 room.deposit_amount = (Number(room.deposit_amount) || 0) + amount;
                 room.deposit_status = 'Tersimpan';
+            }
+
+            if (proofBase64) {
+                room.payment_proof = proofBase64;
             }
 
             room.payment_history.push(newTrx);
@@ -4004,7 +4154,8 @@
                     await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
                         payment_history: room.payment_history,
                         deposit_amount: room.deposit_amount,
-                        deposit_status: room.deposit_status
+                        deposit_status: room.deposit_status,
+                        payment_proof: room.payment_proof
                     }).eq('id', room.id);
                 } catch (err) {
                     console.warn('Gagal sync cloud riwayat');
@@ -4166,7 +4317,17 @@
         }
 
         function previewProofSelected(context = 'checkIn') {
-            const base64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64')?.value;
+            let base64 = '';
+            if (context === 'checkIn') {
+                base64 = document.getElementById('checkInProofBase64')?.value;
+            } else if (context === 'ctxQuick') {
+                base64 = document.getElementById('ctxQuickProofBase64')?.value;
+            } else if (context === 'manualPay') {
+                base64 = document.getElementById('manualPaymentProofBase64')?.value;
+            } else if (context === 'renewRent') {
+                base64 = document.getElementById('renewRentProofBase64')?.value;
+            }
+
             if (!base64) {
                 showToast('Pilih atau foto bukti pembayaran terlebih dahulu', 'info');
                 return;
@@ -4174,7 +4335,7 @@
             openGenericImageModal({
                 src: base64,
                 title: 'Pratinjau Bukti Bayar',
-                badge: 'Bukti Bayar',
+                badge: 'Bukti Bayar / Transfer',
                 subtitle: 'Bukti transfer/struk siap disimpan',
                 filename: 'pratinjau-bukti-bayar.jpg',
                 icon: 'fa-solid fa-receipt',
@@ -4249,10 +4410,28 @@
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInProofLabel' : 'ctxQuickProofLabel');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInProofClearBtn' : 'ctxQuickProofClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64');
-            const indicator = document.getElementById(context === 'checkIn' ? 'checkInProofIndicator' : 'ctxQuickProofIndicator');
+            let labelEl, clearBtn, hiddenBase64, indicator;
+            if (context === 'checkIn') {
+                labelEl = document.getElementById('checkInProofLabel');
+                clearBtn = document.getElementById('checkInProofClearBtn');
+                hiddenBase64 = document.getElementById('checkInProofBase64');
+                indicator = document.getElementById('checkInProofIndicator');
+            } else if (context === 'ctxQuick') {
+                labelEl = document.getElementById('ctxQuickProofLabel');
+                clearBtn = document.getElementById('ctxQuickProofClearBtn');
+                hiddenBase64 = document.getElementById('ctxQuickProofBase64');
+                indicator = document.getElementById('ctxQuickProofIndicator');
+            } else if (context === 'manualPay') {
+                labelEl = document.getElementById('manualPaymentProofLabel');
+                clearBtn = document.getElementById('manualPaymentProofClearBtn');
+                hiddenBase64 = document.getElementById('manualPaymentProofBase64');
+                indicator = document.getElementById('manualPaymentProofIndicator');
+            } else if (context === 'renewRent') {
+                labelEl = document.getElementById('renewRentProofLabel');
+                clearBtn = document.getElementById('renewRentProofClearBtn');
+                hiddenBase64 = document.getElementById('renewRentProofBase64');
+                indicator = document.getElementById('renewRentProofIndicator');
+            }
 
             try {
                 if (labelEl) labelEl.innerText = 'Mengompres...';
@@ -4269,17 +4448,160 @@
         }
 
         function clearProofFile(context = 'checkIn') {
-            const camInput = document.getElementById(context === 'checkIn' ? 'checkInProofCamera' : 'ctxQuickProofCamera');
-            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInProofInput' : 'ctxQuickProofInput');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInProofClearBtn' : 'ctxQuickProofClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInProofBase64' : 'ctxQuickProofBase64');
-            const indicator = document.getElementById(context === 'checkIn' ? 'checkInProofIndicator' : 'ctxQuickProofIndicator');
+            let camInput, fileInput, clearBtn, hiddenBase64, indicator;
+            if (context === 'checkIn') {
+                camInput = document.getElementById('checkInProofCamera');
+                fileInput = document.getElementById('checkInProofInput');
+                clearBtn = document.getElementById('checkInProofClearBtn');
+                hiddenBase64 = document.getElementById('checkInProofBase64');
+                indicator = document.getElementById('checkInProofIndicator');
+            } else if (context === 'ctxQuick') {
+                camInput = document.getElementById('ctxQuickProofCamera');
+                fileInput = document.getElementById('ctxQuickProofInput');
+                clearBtn = document.getElementById('ctxQuickProofClearBtn');
+                hiddenBase64 = document.getElementById('ctxQuickProofBase64');
+                indicator = document.getElementById('ctxQuickProofIndicator');
+            } else if (context === 'manualPay') {
+                fileInput = document.getElementById('manualPaymentProofInput');
+                clearBtn = document.getElementById('manualPaymentProofClearBtn');
+                hiddenBase64 = document.getElementById('manualPaymentProofBase64');
+                indicator = document.getElementById('manualPaymentProofIndicator');
+            } else if (context === 'renewRent') {
+                fileInput = document.getElementById('renewRentProofInput');
+                clearBtn = document.getElementById('renewRentProofClearBtn');
+                hiddenBase64 = document.getElementById('renewRentProofBase64');
+                indicator = document.getElementById('renewRentProofIndicator');
+            }
 
             if (camInput) camInput.value = '';
             if (fileInput) fileInput.value = '';
             if (hiddenBase64) hiddenBase64.value = '';
             if (clearBtn) clearBtn.classList.add('hidden');
             if (indicator) indicator.classList.add('hidden');
+        }
+
+        // ── RENT RENEWAL MODAL CONTROLLER ─────────────────────────────────────
+        function openRenewRentModal(roomId = null) {
+            const targetId = roomId || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) {
+                showToast('Pilih kamar terlebih dahulu', 'warning');
+                return;
+            }
+
+            let nextDueDate = '';
+            const term = room.rent_term || '1_bulan';
+            const baseD = parseCustomDate(room.date) || new Date();
+
+            if (term === '3_bulan') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 3));
+            } else if (term === '6_bulan') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 6));
+            } else if (term === '1_tahun') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 12));
+            } else if (term === 'harian') {
+                const days = Math.max(1, parseInt(room.daily_days) || 1);
+                const d = new Date(baseD.getTime());
+                d.setDate(d.getDate() + days);
+                nextDueDate = formatDueDateIndo(d);
+            } else {
+                nextDueDate = advanceDueDateByOneMonth(room.date);
+            }
+            const termBadge = getTermBadgeText(term, room.daily_days);
+
+            const modal = document.getElementById('renewRentModal');
+            const rId = document.getElementById('renewRentRoomId');
+            const sub = document.getElementById('renewRentSubtitle');
+            const currDue = document.getElementById('renewRentCurrentDue');
+            const nxtDue = document.getElementById('renewRentNextDue');
+            const badgeEl = document.getElementById('renewRentTermBadge');
+            const amountEl = document.getElementById('renewRentAmount');
+            const dateEl = document.getElementById('renewRentDate');
+            const notesEl = document.getElementById('renewRentNotes');
+            const methodEl = document.getElementById('renewRentMethod');
+
+            if (rId) rId.value = room.id;
+            if (sub) sub.innerText = `Kamar ${room.id} • ${room.customer || 'Penghuni'}`;
+            if (currDue) currDue.innerText = room.date || 'Belum diatur';
+            if (nxtDue) nxtDue.innerText = nextDueDate;
+            if (badgeEl) badgeEl.innerText = termBadge;
+            if (amountEl) amountEl.value = room.amount || 1500000;
+            if (dateEl) dateEl.value = new Date().toISOString().slice(0, 10);
+            if (notesEl) notesEl.value = `Perpanjangan Sewa s/d ${nextDueDate} (${termBadge})`;
+            if (methodEl) methodEl.value = 'Transfer BCA';
+
+            clearProofFile('renewRent');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeRenewRentModal() {
+            clearProofFile('renewRent');
+            const modal = document.getElementById('renewRentModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleRenewRentSubmit(e) {
+            e.preventDefault();
+            const roomId = document.getElementById('renewRentRoomId')?.value;
+            const room = appData.find(x => x.id === roomId);
+            if (!room) return;
+
+            const btn = document.getElementById('renewRentSubmitBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Menyimpan...';
+            }
+
+            const nextDueDate = document.getElementById('renewRentNextDue')?.innerText || advanceDueDateByOneMonth(room.date);
+            const amount = Number(document.getElementById('renewRentAmount')?.value) || room.amount || 0;
+            const method = document.getElementById('renewRentMethod')?.value || 'Transfer BCA';
+            const date = document.getElementById('renewRentDate')?.value || new Date().toISOString().slice(0, 10);
+            const notes = document.getElementById('renewRentNotes')?.value.trim() || `Perpanjangan Sewa s/d ${nextDueDate}`;
+            const proofBase64 = document.getElementById('renewRentProofBase64')?.value || null;
+
+            room.pay_status = 'Lunas';
+            room.date = nextDueDate;
+            if (proofBase64) {
+                room.payment_proof = proofBase64;
+            }
+
+            if (!room.payment_history) room.payment_history = [];
+            const autoTrx = {
+                id: 'TRX-' + Date.now().toString().slice(-8),
+                date: date,
+                type: 'sewa',
+                desc: notes,
+                amount: amount,
+                method: method,
+                proof: proofBase64
+            };
+            room.payment_history.push(autoTrx);
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
+                        pay_status: 'Lunas',
+                        date: nextDueDate,
+                        payment_proof: room.payment_proof,
+                        payment_history: room.payment_history
+                    }).eq('id', room.id);
+                } catch (err) {
+                    console.warn('Gagal sync cloud perpanjangan sewa:', err);
+                }
+            }
+
+            saveRoomsLocal();
+            closeRenewRentModal();
+            closeSmartRoomModal();
+            renderAllViews();
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> <span>Simpan &amp; Perpanjang</span>';
+            }
+
+            showToast(`Sewa Kamar ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
+            openReceiptForItem(room.id, autoTrx);
         }
 
         // ── EXPENSE PHOTO ATTACHMENT HANDLERS ────────────────────────────────
@@ -4674,28 +4996,27 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1 text-[11px]">Lampiran Foto KTP <span class="font-normal text-slate-400">(Opsional)</span></label>
-                                <div class="flex items-center gap-1.5">
-                                    <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2 py-1.5 text-center transition-colors bg-slate-50 hover:bg-emerald-50/50 text-slate-700 font-semibold text-[11px]" title="Jepret foto KTP langsung dengan kamera">
+                                <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 transition-colors bg-slate-50 hover:bg-emerald-50/50 text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                                    <span class="flex items-center gap-1.5">
                                         <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
-                                        <span>Foto</span>
-                                        <input type="file" id="ctxQuickKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
-                                    </label>
-                                    <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl px-2 py-1.5 text-center transition-colors bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-[11px]" title="Pilih foto KTP dari berkas atau galeri">
-                                        <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
-                                        <span>Unggah</span>
-                                        <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
-                                    </label>
-                                    <button type="button" id="ctxQuickKtpClearBtn" onclick="clearKtpFile('ctxQuick')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
-                                        <i class="fa-solid fa-trash-can text-xs"></i>
-                                    </button>
-                                </div>
+                                        <span>Ambil Foto / Berkas KTP</span>
+                                    </span>
+                                    <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
+                                    <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
+                                    <input type="file" id="ctxQuickKtpCamera" class="hidden">
+                                </label>
                                 <div id="ctxQuickKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                     <span id="ctxQuickKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
                                         <span>Foto KTP Terpilih</span>
                                     </span>
-                                    <button type="button" onclick="previewKtpSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" onclick="previewKtpSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                        <button type="button" id="ctxQuickKtpClearBtn" onclick="clearKtpFile('ctxQuick')" class="text-slate-400 hover:text-rose-600" title="Hapus foto KTP">
+                                            <i class="fa-solid fa-trash-can text-xs"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="hidden" id="ctxQuickKtpBase64">
                             </div>
@@ -4707,27 +5028,26 @@
                                 <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
                                 <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2 py-1.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px]" title="Jepret foto bukti bayar langsung dengan kamera">
-                                    <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
-                                    <span>Foto</span>
-                                    <input type="file" id="ctxQuickProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
-                                </label>
-                                <label class="cursor-pointer flex-1 flex items-center justify-center gap-1 border border-dashed border-slate-300 hover:border-slate-400 rounded-xl px-2 py-1.5 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-700 font-semibold text-[11px]" title="Pilih foto bukti bayar dari berkas atau galeri">
-                                    <i class="fa-solid fa-folder-open text-slate-500 text-xs"></i>
-                                    <span>Unggah</span>
-                                    <input type="file" id="ctxQuickProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
-                                </label>
-                                <button type="button" id="ctxQuickProofClearBtn" onclick="clearProofFile('ctxQuick')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors" title="Hapus bukti pembayaran">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                </button>
-                            </div>
+                            <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                                <span class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-receipt text-emerald-600 text-xs"></i>
+                                    <span>Ambil Foto / Pilih Berkas Bukti</span>
+                                </span>
+                                <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
+                                <input type="file" id="ctxQuickProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
+                                <input type="file" id="ctxQuickProofCamera" class="hidden">
+                            </label>
                             <div id="ctxQuickProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                 <span id="ctxQuickProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                     <i class="fa-solid fa-circle-check text-emerald-600"></i>
                                     <span>Bukti Bayar Terpilih</span>
                                 </span>
-                                <button type="button" onclick="previewProofSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="previewProofSelected('ctxQuick')" class="text-emerald-700 underline font-bold shrink-0">Lihat</button>
+                                    <button type="button" id="ctxQuickProofClearBtn" onclick="clearProofFile('ctxQuick')" class="text-slate-400 hover:text-rose-600" title="Hapus bukti bayar">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
                             </div>
                             <input type="hidden" id="ctxQuickProofBase64">
                         </div>
@@ -5639,37 +5959,31 @@
         }
 
         // ── SMART RENT RENEWAL & ADVANCE DUE DATE (+TERM) ─────────────────────
-        async function markAsPaidQuick(id) {
-            const room = appData.find(x => x.id === id);
-            if (!room) return;
+        async function markAsPaidQuick(id, autoConfirm = false) {
+            if (autoConfirm) {
+                const room = appData.find(x => x.id === id);
+                if (!room) return;
 
-            let nextDueDate = '';
-            const term = room.rent_term || '1_bulan';
-            const baseD = parseCustomDate(room.date) || new Date();
+                let nextDueDate = '';
+                const term = room.rent_term || '1_bulan';
+                const baseD = parseCustomDate(room.date) || new Date();
 
-            if (term === '3_bulan') {
-                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 3));
-            } else if (term === '6_bulan') {
-                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 6));
-            } else if (term === '1_tahun') {
-                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 12));
-            } else if (term === 'harian') {
-                const days = Math.max(1, parseInt(room.daily_days) || 1);
-                const d = new Date(baseD.getTime());
-                d.setDate(d.getDate() + days);
-                nextDueDate = formatDueDateIndo(d);
-            } else {
-                nextDueDate = advanceDueDateByOneMonth(room.date);
-            }
+                if (term === '3_bulan') {
+                    nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 3));
+                } else if (term === '6_bulan') {
+                    nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 6));
+                } else if (term === '1_tahun') {
+                    nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 12));
+                } else if (term === 'harian') {
+                    const days = Math.max(1, parseInt(room.daily_days) || 1);
+                    const d = new Date(baseD.getTime());
+                    d.setDate(d.getDate() + days);
+                    nextDueDate = formatDueDateIndo(d);
+                } else {
+                    nextDueDate = advanceDueDateByOneMonth(room.date);
+                }
 
-            const termBadge = getTermBadgeText(term, room.daily_days);
-            const confirmed = await showCustomConfirm({
-                title: 'Perpanjang Sewa & Tandai Lunas?',
-                desc: `Tandai sewa kamar ${room.id} (${room.customer}) Lunas untuk durasi ${termBadge} dan majukan jatuh tempo ke "${nextDueDate}"?`,
-                confirmText: 'Lunas & Perpanjang'
-            });
-
-            if (confirmed) {
+                const termBadge = getTermBadgeText(term, room.daily_days);
                 room.pay_status = 'Lunas';
                 room.date = nextDueDate;
 
@@ -5701,7 +6015,10 @@
                 renderAllViews();
                 showToast(`Sewa ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
                 openReceiptForItem(id, autoTrx);
+                return;
             }
+
+            openRenewRentModal(id);
         }
 
         // Expense Modal Controls & Submit
