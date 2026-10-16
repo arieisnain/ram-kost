@@ -1221,22 +1221,24 @@
                                 0 Kamar Tersedia
                             </span>
                         </div>
+
+                        <!-- Visual Quick Room Chips -->
+                        <div id="checkInQuickRoomChips" class="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+
                         <select id="checkInRoomSelect" onchange="onCheckInRoomSelected(this.value)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-bold text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-2xs">
                             <!-- Populated dynamically via JS -->
                         </select>
-                    </div>
 
-                    <!-- Selected Room Info Snapshot (Sleek Compact Strip) -->
-                    <div id="checkInRoomPreview" class="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-[11px]">
-                        <div class="flex items-center gap-1.5 truncate">
-                            <span id="checkInPreviewId" class="font-bold font-mono text-slate-900 px-1.5 py-0.5 rounded bg-white border border-slate-200 text-[10px]">KMR</span>
-                            <span id="checkInPreviewService" class="font-semibold text-slate-700 truncate">Tipe Kamar</span>
-                            <span class="text-slate-300">•</span>
-                            <span id="checkInPreviewRack" class="text-slate-500 text-[10px]">Lantai 1</span>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[10px] text-slate-400 font-medium mr-1">Tarif:</span>
-                            <span id="checkInPreviewAmount" class="font-extrabold text-emerald-700 font-mono text-xs">Rp 0</span>
+                        <!-- Selected Room Clean Info -->
+                        <div id="checkInRoomPreview" class="flex items-center justify-between text-[11px] text-slate-500 mt-1 px-1">
+                            <span class="truncate">
+                                <span id="checkInPreviewId" class="font-bold text-slate-800 font-mono">KMR</span> • 
+                                <span id="checkInPreviewService">Tipe Kamar</span> 
+                                (<span id="checkInPreviewRack">Lantai 1</span>)
+                            </span>
+                            <span id="checkInPreviewAmount" class="font-bold text-emerald-700 font-mono shrink-0 ml-2">Rp 0</span>
                         </div>
                     </div>
 
@@ -5154,35 +5156,47 @@
                         : 'text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200';
                 }
 
-                // Populate room selector with categorized options
+                // Populate visual quick room chips
+                const chipsContainer = document.getElementById('checkInQuickRoomChips');
+                if (chipsContainer) {
+                    chipsContainer.innerHTML = appData.map(r => {
+                        const isKosong = getRoomCondition(r) === 'kosong';
+                        return `
+                            <button type="button" onclick="selectCheckInRoom('${r.id}')" data-room-id="${r.id}" class="check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer ${isKosong ? 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}">
+                                <span class="w-1.5 h-1.5 rounded-full ${isKosong ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+                                <span>${r.id}</span>
+                                <span class="text-[9px] font-normal ${isKosong ? 'text-emerald-700 font-semibold' : 'text-slate-400'}">${isKosong ? 'Kosong' : 'Terisi'}</span>
+                            </button>
+                        `;
+                    }).join('');
+                }
+
+                // Populate room selector with clean, friendly options (NO NOISY REPETITIVE TEXT!)
                 if (roomSelect) {
                     let selectHtml = '';
                     if (emptyRooms.length > 0) {
                         selectHtml += `<optgroup label="🟢 Kamar Siap Huni (Kosong)">`;
                         selectHtml += emptyRooms.map(r => `
-                            <option value="${r.id}">${r.id} • ${r.rack || 'Lt. 1'} • ${r.service} • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
+                            <option value="${r.id}">Kamar ${r.id} — Siap Huni (${r.rack || 'Lt. 1'})</option>
                         `).join('');
                         selectHtml += `</optgroup>`;
                     }
                     if (otherRooms.length > 0) {
-                        selectHtml += `<optgroup label="${emptyRooms.length > 0 ? '⚪ Kamar Lainnya (Ganti Penghuni)' : 'Pilih Kamar Unit'}">`;
+                        selectHtml += `<optgroup label="${emptyRooms.length > 0 ? '⚪ Kamar Terisi (Ganti Penghuni)' : 'Daftar Kamar Kost'}">`;
                         selectHtml += otherRooms.map(r => `
-                            <option value="${r.id}">${r.id} • ${r.rack || 'Lt. 1'} (Saat ini: ${r.customer || 'Terisi'}) • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
+                            <option value="${r.id}">Kamar ${r.id} — ${r.customer || 'Terisi'} (${r.rack || 'Lt. 1'})</option>
                         `).join('');
                         selectHtml += `</optgroup>`;
                     }
                     roomSelect.innerHTML = selectHtml;
 
                     // Pre-select priority
+                    let selectedId = emptyRooms.length > 0 ? emptyRooms[0].id : (appData[0]?.id || '');
                     if (preselectedId && appData.some(r => r.id === preselectedId)) {
-                        roomSelect.value = preselectedId;
-                    } else if (emptyRooms.length > 0) {
-                        roomSelect.value = emptyRooms[0].id;
-                    } else if (appData.length > 0) {
-                        roomSelect.value = appData[0].id;
+                        selectedId = preselectedId;
                     }
-
-                    onCheckInRoomSelected(roomSelect.value);
+                    roomSelect.value = selectedId;
+                    onCheckInRoomSelected(selectedId);
                 }
 
                 // Reset tenant inputs
@@ -5234,9 +5248,29 @@
             if (modal) modal.classList.add('hidden');
         }
 
+        function selectCheckInRoom(roomId) {
+            const roomSelect = document.getElementById('checkInRoomSelect');
+            if (roomSelect) {
+                roomSelect.value = roomId;
+                onCheckInRoomSelected(roomId);
+            }
+        }
+
         function onCheckInRoomSelected(roomId) {
             const room = appData.find(r => r.id === roomId);
             if (!room) return;
+
+            // Highlight active room chip
+            const chips = document.querySelectorAll('.check-in-chip');
+            chips.forEach(chip => {
+                if (chip.getAttribute('data-room-id') === roomId) {
+                    chip.className = 'check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer border-emerald-600 bg-emerald-600 text-white shadow-xs';
+                } else {
+                    const targetR = appData.find(x => x.id === chip.getAttribute('data-room-id'));
+                    const isKos = targetR && getRoomCondition(targetR) === 'kosong';
+                    chip.className = `check-in-chip px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-1.5 shrink-0 border cursor-pointer ${isKos ? 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`;
+                }
+            });
 
             const previewId = document.getElementById('checkInPreviewId');
             const previewService = document.getElementById('checkInPreviewService');
@@ -5247,7 +5281,7 @@
             if (previewId) previewId.innerText = room.id;
             if (previewService) previewService.innerText = room.service;
             if (previewRack) previewRack.innerText = room.rack || 'Lantai 1';
-            if (previewAmount) previewAmount.innerText = 'Rp ' + Number(room.amount).toLocaleString('id-ID');
+            if (previewAmount) previewAmount.innerText = 'Rp ' + Number(room.amount).toLocaleString('id-ID') + '/bln';
             if (amountInput) amountInput.value = room.amount;
 
             updateCheckInDueDatePreview();
