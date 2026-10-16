@@ -182,46 +182,97 @@
                 </div>
             </div>
 
+            <!-- Context Sub-Tabs Header: Ringkasan vs Riwayat Bayar -->
+            <div class="px-5 pt-2.5 border-b border-slate-100 flex items-center gap-1 bg-slate-50/70 shrink-0">
+                <button type="button" id="ctxSubTabBtnOverview" onclick="switchContextSubTab('overview')" class="px-3 py-2 border-b-2 font-bold text-xs flex items-center gap-1.5 transition-all border-emerald-600 text-emerald-800">
+                    <i class="fa-solid fa-circle-info text-xs"></i>
+                    <span>Ringkasan &amp; Tindakan</span>
+                </button>
+                <button type="button" id="ctxSubTabBtnHistory" onclick="switchContextSubTab('history')" class="px-3 py-2 border-b-2 font-semibold text-xs flex items-center gap-1.5 transition-all border-transparent text-slate-500 hover:text-slate-800">
+                    <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                    <span>Riwayat Bayar</span>
+                    <span id="ctxHistoryBadgeCount" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 text-slate-700 font-bold">0</span>
+                </button>
+            </div>
+
             <!-- Modal Scrollable Body -->
             <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
                 
-                <!-- Hero Ribbon: Condition Title, Icon & Helper Guidance -->
-                <div id="ctxHeroRibbon" class="p-4 rounded-2xl border flex items-start gap-3.5 bg-blue-50/70 border-blue-200">
-                    <div id="ctxHeroIconBox" class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0 shadow-2xs">
-                        <i id="ctxHeroIcon" class="fa-solid fa-door-open"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 id="ctxHeroTitle" class="text-sm font-extrabold text-slate-900">Kamar Siap Huni</h4>
-                        <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
-                    </div>
-                </div>
-
-                <!-- Room & Tenant Overview Card -->
-                <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-2 text-xs">
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
-                        <span class="text-slate-500 font-medium">Tipe &amp; Fasilitas</span>
-                        <span id="ctxRoomService" class="font-bold text-slate-900 text-right truncate max-w-[240px]">Kamar Deluxe AC + KM Dalam</span>
-                    </div>
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
-                        <span class="text-slate-500 font-medium">Tarif Sewa Bulanan</span>
-                        <span id="ctxRoomAmount" class="font-extrabold text-slate-900 font-mono text-sm tabular-nums">Rp 1.500.000</span>
-                    </div>
-                    <div id="ctxTenantRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
-                        <span class="text-slate-500 font-medium">Penghuni / Penyewa</span>
-                        <div class="text-right">
-                            <span id="ctxTenantName" class="font-extrabold text-slate-900 block truncate max-w-[200px]">Agus Setiawan</span>
-                            <span id="ctxTenantPhone" class="text-[11px] text-slate-500 font-mono">081299881122</span>
+                <!-- SUB-TAB 1: OVERVIEW & ACTIONS -->
+                <div id="ctxSubTabOverview" class="space-y-4">
+                    <!-- Hero Ribbon: Condition Title, Icon & Helper Guidance -->
+                    <div id="ctxHeroRibbon" class="p-4 rounded-2xl border flex items-start gap-3.5 bg-blue-50/70 border-blue-200">
+                        <div id="ctxHeroIconBox" class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0 shadow-2xs">
+                            <i id="ctxHeroIcon" class="fa-solid fa-door-open"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 id="ctxHeroTitle" class="text-sm font-extrabold text-slate-900">Kamar Siap Huni</h4>
+                            <p id="ctxHeroSubtitle" class="text-xs text-slate-600 mt-0.5 leading-relaxed">Kamar dalam kondisi bersih dan siap menerima penghuni baru.</p>
                         </div>
                     </div>
-                    <div id="ctxDueDateRow" class="flex items-center justify-between">
-                        <span class="text-slate-500 font-medium">Periode / Jatuh Tempo</span>
-                        <span id="ctxDueDate" class="font-bold text-slate-800">Jatuh Tempo: 01 Nov 2026</span>
+
+                    <!-- Room & Tenant Overview Card -->
+                    <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-2 text-xs">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Tipe &amp; Fasilitas</span>
+                            <span id="ctxRoomService" class="font-bold text-slate-900 text-right truncate max-w-[240px]">Kamar Deluxe AC + KM Dalam</span>
+                        </div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Tarif Sewa</span>
+                            <span id="ctxRoomAmount" class="font-extrabold text-slate-900 font-mono text-sm tabular-nums">Rp 1.500.000</span>
+                        </div>
+                        <div id="ctxTenantRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Penghuni / Penyewa</span>
+                            <div class="text-right">
+                                <span id="ctxTenantName" class="font-extrabold text-slate-900 block truncate max-w-[200px]">Agus Setiawan</span>
+                                <span id="ctxTenantPhone" class="text-[11px] text-slate-500 font-mono">081299881122</span>
+                            </div>
+                        </div>
+                        <div id="ctxRentTermRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Durasi Sewa</span>
+                            <span id="ctxRentTermText" class="font-bold text-slate-800">Bulanan (1 Bulan)</span>
+                        </div>
+                        <div id="ctxDepositRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Uang Jaminan (Deposit)</span>
+                            <span id="ctxDepositText" class="font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200">Rp 500.000 (Tersimpan)</span>
+                        </div>
+                        <div id="ctxKtpRow" class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                            <span class="text-slate-500 font-medium">Dokumen Identitas (KTP)</span>
+                            <span id="ctxKtpActionArea" class="flex items-center gap-1.5">
+                                <span class="text-slate-400 italic text-[11px]">Belum diunggah</span>
+                            </span>
+                        </div>
+                        <div id="ctxDueDateRow" class="flex items-center justify-between">
+                            <span class="text-slate-500 font-medium">Periode / Jatuh Tempo</span>
+                            <span id="ctxDueDate" class="font-bold text-slate-800">Jatuh Tempo: 01 Nov 2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Condition-Specific Actions Container -->
+                    <div id="ctxDynamicActions" class="space-y-3">
+                        <!-- Injected dynamically based on condition A vs B vs C vs D vs E vs F -->
                     </div>
                 </div>
 
-                <!-- Dynamic Condition-Specific Actions Container -->
-                <div id="ctxDynamicActions" class="space-y-3">
-                    <!-- Injected dynamically based on condition A vs B vs C vs D vs E vs F -->
+                <!-- SUB-TAB 2: PAYMENT HISTORY / LEDGER -->
+                <div id="ctxSubTabHistory" class="space-y-3.5 hidden">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-book-bookmark text-emerald-600"></i> Buku Riwayat Pembayaran
+                            </h4>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Catatan transaksi sewa, deposit &amp; operasional kamar ini</p>
+                        </div>
+                        <button type="button" onclick="openManualPaymentModal()" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] flex items-center gap-1 shadow-2xs transition-colors">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>Catat Bayar</span>
+                        </button>
+                    </div>
+
+                    <!-- Transaction List / Timeline -->
+                    <div id="ctxHistoryListContainer" class="space-y-2.5">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
 
             </div>
@@ -1230,8 +1281,52 @@
                             <input type="date" id="checkInStartDate" onchange="updateCheckInDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-white font-medium text-xs">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Tarif Sewa Disepakati (Rp/Bln) *</label>
+                            <label class="block font-bold text-slate-700 mb-1">Tarif Sewa (Rp) *</label>
                             <input type="number" id="checkInAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono font-bold text-xs">
+                        </div>
+                    </div>
+
+                    <!-- Rental Duration (Term) & Daily Counter -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Pilihan Durasi Sewa *</label>
+                            <select id="checkInRentTerm" onchange="onRentTermChange(this.value, 'checkIn')" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
+                                <option value="1_bulan" selected>Bulanan (1 Bulan Standar)</option>
+                                <option value="3_bulan">Kuartal (3 Bulan)</option>
+                                <option value="6_bulan">Semester (6 Bulan)</option>
+                                <option value="1_tahun">Tahunan (1 Tahun)</option>
+                                <option value="harian">Transit / Harian</option>
+                            </select>
+                        </div>
+                        <div id="checkInDailyContainer" class="hidden">
+                            <label class="block font-bold text-slate-700 mb-1">Jumlah Hari Sewa *</label>
+                            <div class="relative">
+                                <input type="number" id="checkInDailyDays" value="3" min="1" max="30" oninput="updateCheckInDueDatePreview()" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-emerald-500">
+                                <span class="absolute right-3 top-2 text-slate-400 text-xs font-semibold">Hari</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deposit & KTP Attachment -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Uang Jaminan / Deposit (Rp)</label>
+                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Opsional)" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
+                            <p class="text-[10px] text-slate-400 mt-0.5">Jaminan kerusakan/kunci, dikembalikan saat checkout.</p>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas (Opsional)</label>
+                            <div class="flex items-center gap-2">
+                                <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
+                                    <i class="fa-solid fa-id-card text-emerald-600 text-sm"></i>
+                                    <span id="checkInKtpLabel" class="text-xs font-semibold truncate">Upload Foto KTP</span>
+                                    <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
+                                </label>
+                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                            <input type="hidden" id="checkInKtpBase64">
                         </div>
                     </div>
 
@@ -1242,7 +1337,7 @@
                             <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-emerald-500 bg-emerald-50/60 text-emerald-800" id="checkInPlanLabelLunas">
                                 <input type="radio" name="checkInPayPlan" value="lunas" checked onchange="toggleCheckInDp(this.value)" class="sr-only">
                                 <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
-                                <span class="font-bold text-[11px]">Lunas 1 Bln</span>
+                                <span class="font-bold text-[11px]">Lunas</span>
                                 <span class="text-[9px] text-slate-500">Masa sewa aktif</span>
                             </label>
                             <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-slate-200 text-slate-700" id="checkInPlanLabelTempo">
@@ -1278,7 +1373,7 @@
                     <!-- Additional Details / Notes -->
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
-                        <input type="text" id="checkInDetail" placeholder="Contoh: Bawa motor Vario hitam / Deposit kunci Rp 50.000" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 text-xs">
+                        <input type="text" id="checkInDetail" placeholder="Contoh: Bawa motor Vario hitam / Deposit kunci" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 text-xs">
                     </div>
                 </div>
 
@@ -1452,6 +1547,57 @@
                         <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
                         <input type="text" id="editDetail" placeholder="KTP / Token Mandiri" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none">
                     </div>
+                </div>
+
+                <!-- Rent Duration Term & Daily Days -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Durasi / Periode Sewa</label>
+                        <select id="editRentTerm" onchange="onRentTermChange(this.value, 'edit')" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none">
+                            <option value="1_bulan">Bulanan (1 Bulan)</option>
+                            <option value="3_bulan">Kuartal (3 Bulan)</option>
+                            <option value="6_bulan">Semester (6 Bulan)</option>
+                            <option value="1_tahun">Tahunan (1 Tahun)</option>
+                            <option value="harian">Transit / Harian</option>
+                        </select>
+                    </div>
+                    <div id="editDailyContainer" class="hidden">
+                        <label class="block font-bold text-slate-700 mb-1">Jumlah Hari Transit</label>
+                        <input type="number" id="editDailyDays" value="3" min="1" max="30" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none">
+                    </div>
+                </div>
+
+                <!-- Security Deposit Management -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Uang Deposit (Rp)</label>
+                        <input type="number" id="editDepositAmount" min="0" step="50000" placeholder="0" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Status Deposit</label>
+                        <select id="editDepositStatus" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none">
+                            <option value="Tersimpan">Tersimpan</option>
+                            <option value="Dikembalikan">Dikembalikan</option>
+                            <option value="Dipotong">Dipotong</option>
+                            <option value="Tidak Ada">Tidak Ada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- KTP Photo Attachment -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas Penyewa</label>
+                    <div class="flex items-center gap-2">
+                        <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
+                            <i class="fa-solid fa-id-card text-emerald-600 text-sm"></i>
+                            <span id="editKtpLabel" class="text-xs font-semibold truncate">Upload / Ganti Foto KTP</span>
+                            <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
+                        </label>
+                        <button type="button" id="editKtpClearBtn" onclick="clearKtpFile('edit')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="editKtpBase64">
                 </div>
 
                 <div class="pt-2.5 flex items-center justify-between border-t border-slate-100">
@@ -1832,6 +1978,127 @@
     </div>
 
     <!-- ================================================================== -->
+    <!-- MODAL 7: LIGHTBOX PREVIEW FOTO KTP PENYEWA (#ktpPreviewModal)     -->
+    <!-- ================================================================== -->
+    <div id="ktpPreviewModal" onclick="if(event.target === this) closeKtpPreviewModal()" class="fixed inset-0 z-[80] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-2xs">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                            <span>Arsip KTP Penghuni</span>
+                            <span id="ktpPreviewRoomId" class="px-2 py-0.5 rounded-md bg-slate-900 text-white font-mono text-[10px]">KMR-101</span>
+                        </h3>
+                        <p id="ktpPreviewCustomerName" class="text-[11px] text-slate-500 font-semibold truncate max-w-[250px]">Agus Setiawan</p>
+                    </div>
+                </div>
+                <button onclick="closeKtpPreviewModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-4 sm:p-5 flex flex-col items-center justify-center bg-slate-900/5">
+                <div class="relative w-full max-h-[60vh] flex items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/90 shadow-inner">
+                    <img id="ktpPreviewImage" src="" alt="Foto KTP Penghuni" class="max-w-full max-h-[58vh] object-contain rounded-xl transition-transform hover:scale-105 duration-200">
+                </div>
+                <div class="w-full flex items-center justify-between pt-3 mt-3 border-t border-slate-200/80 text-xs">
+                    <span class="text-[11px] text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Dokumen terenkripsi lokal
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <a id="ktpPreviewDownloadBtn" href="" download="ktp-penghuni.jpg" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-2xs">
+                            <i class="fa-solid fa-download text-xs"></i> Unduh
+                        </a>
+                        <button type="button" onclick="closeKtpPreviewModal()" class="px-4 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 8: CATAT PEMBAYARAN MANUAL PER KAMAR (#manualPaymentModal)   -->
+    <!-- ================================================================== -->
+    <div id="manualPaymentModal" onclick="if(event.target === this) closeManualPaymentModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cash-register text-emerald-600"></i> Catat Pembayaran Kamar
+                    </h3>
+                    <p id="manualPaymentSubtitle" class="text-[11px] text-slate-500">Kamar KMR-101 • Agus Setiawan</p>
+                </div>
+                <button onclick="closeManualPaymentModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleManualPaymentSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+                <input type="hidden" id="manualPaymentRoomId">
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Jenis Transaksi *</label>
+                        <select id="manualPaymentType" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500">
+                            <option value="sewa">Sewa Kamar</option>
+                            <option value="deposit">Uang Jaminan / Deposit</option>
+                            <option value="dp">Uang Muka / Booking</option>
+                            <option value="listrik">Token Listrik / Air</option>
+                            <option value="denda">Denda Keterlambatan</option>
+                            <option value="lainnya">Lainnya / Tambahan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Metode Bayar *</label>
+                        <select id="manualPaymentMethod" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500">
+                            <option value="Transfer BCA">Transfer BCA</option>
+                            <option value="Transfer Mandiri">Transfer Mandiri</option>
+                            <option value="Transfer BNI">Transfer BNI</option>
+                            <option value="Transfer BRI">Transfer BRI</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nominal Pembayaran (Rp) *</label>
+                        <input type="number" id="manualPaymentAmount" required min="1000" step="1000" placeholder="Contoh: 1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Tanggal Bayar *</label>
+                        <input type="date" id="manualPaymentDate" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Keterangan / Catatan Transaksi *</label>
+                    <input type="text" id="manualPaymentDesc" required placeholder="Contoh: Pelunasan sewa periode Nov 2026" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[11px] text-emerald-800 flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-emerald-600"></i>
+                    <span>Setelah disimpan, nota kuitansi dapat langsung dilihat dan dicetak.</span>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeManualPaymentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="manualPaymentSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Simpan Transaksi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
     <!-- JAVASCRIPT LOGIC & RESILIENT STORAGE / CLOUD ENGINE                -->
     <!-- ================================================================== -->
     <script>
@@ -1865,13 +2132,129 @@
             defaultPaper: "58mm"
         };
 
+        const SAMPLE_KTP_SVG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380" viewBox="0 0 600 380"><rect width="600" height="380" rx="20" fill="%230284c7"/><rect x="20" y="20" width="560" height="340" rx="14" fill="%23f0f9ff"/><rect x="40" y="40" width="520" height="40" rx="8" fill="%230284c7"/><text x="300" y="66" fill="%23ffffff" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle">REPUBLIK INDONESIA - KARTU TANDA PENDUDUK</text><rect x="40" y="100" width="130" height="170" rx="10" fill="%23e2e8f0" stroke="%23cbd5e1" stroke-width="2"/><circle cx="105" cy="155" r="35" fill="%2394a3b8"/><path d="M60 250 C60 200, 150 200, 150 250 Z" fill="%2394a3b8"/><text x="190" y="125" fill="%230f172a" font-family="sans-serif" font-size="14" font-weight="bold">NIK: 3271021405920003</text><text x="190" y="155" fill="%23334155" font-family="sans-serif" font-size="13">Nama: AGUS SETIAWAN</text><text x="190" y="180" fill="%23334155" font-family="sans-serif" font-size="12">Tempat/Tgl Lahir: Bandung, 14 Mei 1992</text><text x="190" y="205" fill="%23334155" font-family="sans-serif" font-size="12">Jenis Kelamin: LAKI-LAKI</text><text x="190" y="230" fill="%23334155" font-family="sans-serif" font-size="12">Alamat: Jl. Sukajadi No. 45, Bandung</text><text x="190" y="255" fill="%23334155" font-family="sans-serif" font-size="12">Pekerjaan: Karyawan Swasta</text><text x="190" y="280" fill="%23059669" font-family="sans-serif" font-size="12" font-weight="bold">Status Dokumen: TERVERIFIKASI SIMKOST</text></svg>';
+
         const INITIAL_DATA = [
-            { id: "KMR-101", customer: "Agus Setiawan", phone: "081299881122", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 1 · Listrik Token Mandiri", rack: "Lantai 1", amount: 1500000, pay_status: "Lunas", work_status: "Terisi", date: "Jatuh Tempo: 01 Nov 2026" },
-            { id: "KMR-102", customer: "Fajar Nugroho", phone: "085277665544", service: "Kamar Executive Balkon", detail: "Lt. 1 · Smart TV & Water Heater", rack: "Lantai 1", amount: 2200000, pay_status: "Belum Lunas", work_status: "Terisi", date: "Jatuh Tempo: 18 Okt 2026" },
-            { id: "KMR-103", customer: "Belum Berpenghuni", phone: "", service: "Kamar Standar Non-AC", detail: "Lt. 1 · Kasur Springbed, Lemari 2 Pintu", rack: "Lantai 1", amount: 850000, pay_status: "Tersedia", work_status: "Tersedia", date: "Siap Huni" },
-            { id: "KMR-201", customer: "Indah Permatasari", phone: "081344556677", service: "Kamar Deluxe AC + KM Dalam", detail: "Lt. 2 · Parkir Mobil", rack: "Lantai 2", amount: 1600000, pay_status: "Lunas", work_status: "Terisi", date: "Jatuh Tempo: 05 Nov 2026" },
-            { id: "KMR-203", customer: "Dimas Anggara", phone: "087811223399", service: "Kamar Standar Non-AC", detail: "Lt. 2 · KM Luar Bersih", rack: "Lantai 2", amount: 850000, pay_status: "Menunggak", work_status: "Terisi", date: "Jatuh Tempo: 10 Okt 2026" },
-            { id: "KMR-205", customer: "Calon Penyewa (Rizky)", phone: "082199882233", service: "Kamar Standar Non-AC", detail: "Masuk 1 Nov 2026 · DP Rp 300rb", rack: "Lantai 2", amount: 850000, pay_status: "DP Terbayar", work_status: "Booking Baru", date: "Mulai: 01 Nov 2026" }
+            { 
+                id: "KMR-101", 
+                customer: "Agus Setiawan", 
+                phone: "081299881122", 
+                service: "Kamar Deluxe AC + KM Dalam", 
+                detail: "Lt. 1 · Listrik Token Mandiri", 
+                rack: "Lantai 1", 
+                amount: 1500000, 
+                pay_status: "Lunas", 
+                work_status: "Terisi", 
+                date: "Jatuh Tempo: 01 Nov 2026",
+                rent_term: "1_bulan",
+                daily_days: 1,
+                deposit_amount: 500000,
+                deposit_status: "Tersimpan",
+                ktp_photo: SAMPLE_KTP_SVG,
+                payment_history: [
+                    { id: "TRX-101-01", date: "2026-10-01", type: "sewa", desc: "Sewa Kamar 1 Bulan (Okt 2026)", amount: 1500000, method: "Transfer BCA" },
+                    { id: "TRX-101-DEP", date: "2026-10-01", type: "deposit", desc: "Uang Jaminan / Deposit Kunci", amount: 500000, method: "Transfer BCA" }
+                ]
+            },
+            { 
+                id: "KMR-102", 
+                customer: "Fajar Nugroho", 
+                phone: "085277665544", 
+                service: "Kamar Executive Balkon", 
+                detail: "Lt. 1 · Smart TV & Water Heater", 
+                rack: "Lantai 1", 
+                amount: 2200000, 
+                pay_status: "Belum Lunas", 
+                work_status: "Terisi", 
+                date: "Jatuh Tempo: 18 Okt 2026",
+                rent_term: "1_bulan",
+                daily_days: 1,
+                deposit_amount: 0,
+                deposit_status: "Tidak Ada",
+                ktp_photo: "",
+                payment_history: [
+                    { id: "TRX-102-01", date: "2026-09-18", type: "sewa", desc: "Sewa Kamar Bulan September 2026", amount: 2200000, method: "Tunai / Cash" }
+                ]
+            },
+            { 
+                id: "KMR-103", 
+                customer: "Belum Berpenghuni", 
+                phone: "", 
+                service: "Kamar Standar Non-AC", 
+                detail: "Lt. 1 · Kasur Springbed, Lemari 2 Pintu", 
+                rack: "Lantai 1", 
+                amount: 850000, 
+                pay_status: "Tersedia", 
+                work_status: "Tersedia", 
+                date: "Siap Huni",
+                rent_term: "1_bulan",
+                daily_days: 1,
+                deposit_amount: 0,
+                deposit_status: "Tidak Ada",
+                ktp_photo: "",
+                payment_history: []
+            },
+            { 
+                id: "KMR-201", 
+                customer: "Indah Permatasari", 
+                phone: "081344556677", 
+                service: "Kamar Deluxe AC + KM Dalam", 
+                detail: "Lt. 2 · Parkir Mobil", 
+                rack: "Lantai 2", 
+                amount: 1600000, 
+                pay_status: "Lunas", 
+                work_status: "Terisi", 
+                date: "Jatuh Tempo: 05 Nov 2026",
+                rent_term: "3_bulan",
+                daily_days: 1,
+                deposit_amount: 1000000,
+                deposit_status: "Tersimpan",
+                ktp_photo: "",
+                payment_history: [
+                    { id: "TRX-201-01", date: "2026-08-05", type: "sewa", desc: "Paket Sewa Kuartal 3 Bulan", amount: 4800000, method: "Transfer Mandiri" },
+                    { id: "TRX-201-DEP", date: "2026-08-05", type: "deposit", desc: "Uang Jaminan Kamar & Parkir", amount: 1000000, method: "Transfer Mandiri" }
+                ]
+            },
+            { 
+                id: "KMR-203", 
+                customer: "Dimas Anggara", 
+                phone: "087811223399", 
+                service: "Kamar Standar Non-AC", 
+                detail: "Lt. 2 · KM Luar Bersih", 
+                rack: "Lantai 2", 
+                amount: 850000, 
+                pay_status: "Menunggak", 
+                work_status: "Terisi", 
+                date: "Jatuh Tempo: 10 Okt 2026",
+                rent_term: "1_bulan",
+                daily_days: 1,
+                deposit_amount: 250000,
+                deposit_status: "Tersimpan",
+                ktp_photo: "",
+                payment_history: [
+                    { id: "TRX-203-01", date: "2026-09-10", type: "sewa", desc: "Sewa Kamar Periode Sep 2026", amount: 850000, method: "QRIS" }
+                ]
+            },
+            { 
+                id: "KMR-205", 
+                customer: "Calon Penyewa (Rizky)", 
+                phone: "082199882233", 
+                service: "Kamar Standar Non-AC", 
+                detail: "Masuk 1 Nov 2026 · DP Rp 300rb", 
+                rack: "Lantai 2", 
+                amount: 850000, 
+                pay_status: "DP Terbayar", 
+                work_status: "Booking Baru", 
+                date: "Mulai: 01 Nov 2026",
+                rent_term: "1_bulan",
+                daily_days: 1,
+                deposit_amount: 0,
+                deposit_status: "Tidak Ada",
+                ktp_photo: "",
+                payment_history: [
+                    { id: "TRX-205-01", date: "2026-10-15", type: "dp", desc: "Tanda Jadi / DP Reservasi Kamar", amount: 300000, method: "Transfer BCA" }
+                ]
+            }
         ];
 
         const INITIAL_EXPENSES = [
@@ -2134,7 +2517,13 @@
                             amount: Number(item.amount) || 0,
                             pay_status: item.payment_status || item.pay_status || 'Lunas',
                             work_status: item.work_status || (item.pay_status === 'Tersedia' ? 'Tersedia' : 'Terisi'),
-                            date: item.date || ((item.payment_status === 'Tersedia' || item.pay_status === 'Tersedia') ? 'Siap Huni' : 'Jatuh Tempo: 01 Nov 2026')
+                            date: item.date || ((item.payment_status === 'Tersedia' || item.pay_status === 'Tersedia') ? 'Siap Huni' : 'Jatuh Tempo: 01 Nov 2026'),
+                            deposit_amount: Number(item.deposit_amount) || 0,
+                            deposit_status: item.deposit_status || (item.deposit_amount > 0 ? 'Tersimpan' : 'Tidak Ada'),
+                            rent_term: item.rent_term || '1_bulan',
+                            daily_days: Number(item.daily_days) || 1,
+                            ktp_photo: item.ktp_photo || '',
+                            payment_history: Array.isArray(item.payment_history) ? item.payment_history : []
                         }));
                         saveRoomsLocal();
                         return;
@@ -2172,11 +2561,26 @@
         function loadRoomsLocal() {
             const stored = localStorage.getItem(APP_STORAGE_KEY);
             if (stored) {
-                try { appData = JSON.parse(stored); } catch (e) { appData = [...INITIAL_DATA]; }
+                try { 
+                    appData = JSON.parse(stored); 
+                } catch (e) { 
+                    appData = JSON.parse(JSON.stringify(INITIAL_DATA)); 
+                }
             } else {
-                appData = [...INITIAL_DATA];
+                appData = JSON.parse(JSON.stringify(INITIAL_DATA));
                 saveRoomsLocal();
             }
+
+            // Ensure schema integrity for new feature fields
+            appData = appData.map(item => ({
+                ...item,
+                deposit_amount: Number(item.deposit_amount) || 0,
+                deposit_status: item.deposit_status || (item.deposit_amount > 0 ? 'Tersimpan' : 'Tidak Ada'),
+                rent_term: item.rent_term || '1_bulan',
+                daily_days: Number(item.daily_days) || 1,
+                ktp_photo: item.ktp_photo || '',
+                payment_history: Array.isArray(item.payment_history) ? item.payment_history : []
+            }));
         }
 
         function loadExpensesLocal() {
@@ -2839,7 +3243,11 @@
                                 </div>
                                 <div class="text-[11px] text-slate-400 mt-0.5">${item.detail || 'Fasilitas dalam pemeliharaan'}</div>
                             ` : `
-                                <div class="font-bold text-slate-800">${item.customer}</div>
+                                <div class="font-bold text-slate-800 flex items-center gap-1.5 flex-wrap">
+                                    <span>${item.customer}</span>
+                                    ${item.ktp_photo ? `<span title="KTP Tersimpan" class="inline-flex items-center text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-id-card mr-1 text-emerald-600"></i>KTP</span>` : ''}
+                                    ${item.deposit_amount && item.deposit_amount > 0 ? `<span title="Uang Jaminan Tersimpan: Rp ${Number(item.deposit_amount).toLocaleString('id-ID')}" class="inline-flex items-center text-amber-800 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded text-[10px] font-bold font-mono">Dep: Rp ${(item.deposit_amount/1000).toLocaleString('id-ID')}k</span>` : ''}
+                                </div>
                                 <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
                                     <i class="fa-brands fa-whatsapp text-emerald-600"></i>
                                     <span>${item.phone || '-'}</span>
@@ -2847,7 +3255,10 @@
                             `}
                         </td>
                         <td class="px-5 py-3">
-                            <div class="font-semibold text-slate-700">${item.service}</div>
+                            <div class="font-semibold text-slate-700 flex items-center gap-1.5 flex-wrap">
+                                <span>${item.service}</span>
+                                ${item.rent_term && item.rent_term !== '1_bulan' ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">${getTermBadgeText(item.rent_term, item.daily_days)}</span>` : ''}
+                            </div>
                             <div class="text-[11px] text-slate-400">${item.detail || ''}</div>
                         </td>
                         <td class="px-5 py-3">
@@ -2916,10 +3327,17 @@
                                         <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.detail || 'Fasilitas dalam pemeliharaan'}</p>
                                     ` : `
                                         <div class="flex items-center justify-between gap-2">
-                                            <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                            <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
+                                                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
+                                                ${item.ktp_photo ? `<span title="KTP Tersimpan" class="text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1 py-0.2 rounded text-[9px] font-bold inline-flex items-center"><i class="fa-solid fa-id-card mr-0.5 text-emerald-600"></i>KTP</span>` : ''}
+                                                ${item.deposit_amount && item.deposit_amount > 0 ? `<span class="text-amber-800 bg-amber-50 border border-amber-200/80 px-1 py-0.2 rounded text-[9px] font-bold font-mono">Dep: ${(item.deposit_amount/1000).toLocaleString('id-ID')}k</span>` : ''}
+                                            </div>
                                             ${item.phone ? `<span class="text-[10px] text-slate-400 font-mono shrink-0 flex items-center gap-1"><i class="fa-brands fa-whatsapp text-emerald-600"></i>${item.phone}</span>` : ''}
                                         </div>
-                                        <p class="text-[11px] text-slate-400 truncate mt-0.5">${item.service}</p>
+                                        <div class="flex items-center gap-1.5 mt-0.5">
+                                            <p class="text-[11px] text-slate-400 truncate">${item.service}</p>
+                                            ${item.rent_term && item.rent_term !== '1_bulan' ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shrink-0">${getTermBadgeText(item.rent_term, item.daily_days)}</span>` : ''}
+                                        </div>
                                     `}
                                 </div>
                             </div>
@@ -2992,15 +3410,30 @@
             const tenantPhone = document.getElementById('ctxTenantPhone');
             const dueDateRow = document.getElementById('ctxDueDateRow');
             const dueDate = document.getElementById('ctxDueDate');
+            const termRow = document.getElementById('ctxRentTermRow');
+            const termText = document.getElementById('ctxRentTermText');
+            const depositRow = document.getElementById('ctxDepositRow');
+            const depositText = document.getElementById('ctxDepositText');
+            const ktpRow = document.getElementById('ctxKtpRow');
+            const ktpActionArea = document.getElementById('ctxKtpActionArea');
+            const historyBadge = document.getElementById('ctxHistoryBadgeCount');
 
             if (elService) elService.innerText = room.service + (room.detail ? ` (${room.detail})` : '');
             if (elAmount) elAmount.innerText = 'Rp ' + Number(room.amount).toLocaleString('id-ID');
 
+            if (historyBadge) historyBadge.innerText = (room.payment_history || []).length;
+
             if (cond === 'kosong') {
                 if (tenantRow) tenantRow.classList.add('hidden');
                 if (dueDateRow) dueDateRow.classList.add('hidden');
+                if (termRow) termRow.classList.add('hidden');
+                if (depositRow) depositRow.classList.add('hidden');
+                if (ktpRow) ktpRow.classList.add('hidden');
             } else if (cond === 'perbaikan') {
                 if (tenantRow) tenantRow.classList.add('hidden');
+                if (termRow) termRow.classList.add('hidden');
+                if (depositRow) depositRow.classList.add('hidden');
+                if (ktpRow) ktpRow.classList.add('hidden');
                 if (dueDateRow) {
                     dueDateRow.classList.remove('hidden');
                     if (dueDate) dueDate.innerText = 'Status Servis / Pemeliharaan Aktif';
@@ -3011,11 +3444,51 @@
                     if (tenantName) tenantName.innerText = room.customer || '-';
                     if (tenantPhone) tenantPhone.innerText = room.phone || 'Tanpa no. WhatsApp';
                 }
+                if (termRow) {
+                    termRow.classList.remove('hidden');
+                    if (termText) termText.innerText = getTermLabel(room.rent_term, room.daily_days);
+                }
+                if (depositRow) {
+                    depositRow.classList.remove('hidden');
+                    if (depositText) {
+                        const depAmt = Number(room.deposit_amount) || 0;
+                        if (depAmt > 0) {
+                            depositText.className = 'font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200';
+                            depositText.innerText = `Rp ${depAmt.toLocaleString('id-ID')} (${room.deposit_status || 'Tersimpan'})`;
+                        } else {
+                            depositText.className = 'font-medium text-slate-400';
+                            depositText.innerText = 'Tidak Ada';
+                        }
+                    }
+                }
+                if (ktpRow) {
+                    ktpRow.classList.remove('hidden');
+                    if (ktpActionArea) {
+                        if (room.ktp_photo) {
+                            ktpActionArea.innerHTML = `
+                                <button type="button" onclick="openKtpPreviewModal('${room.id}')" class="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-bold text-[11px] flex items-center gap-1.5 transition-colors shadow-2xs">
+                                    <i class="fa-solid fa-id-card text-emerald-600"></i>
+                                    <span>Lihat KTP</span>
+                                </button>
+                            `;
+                        } else {
+                            ktpActionArea.innerHTML = `
+                                <span class="text-slate-400 italic text-[11px]">Belum diunggah</span>
+                                <button type="button" onclick="openEditFromContext('${room.id}')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] ml-1">
+                                    <i class="fa-solid fa-upload"></i> Unggah
+                                </button>
+                            `;
+                        }
+                    }
+                }
                 if (dueDateRow) {
                     dueDateRow.classList.remove('hidden');
                     if (dueDate) dueDate.innerText = room.date || '-';
                 }
             }
+
+            // Always start on Overview tab
+            switchContextSubTab('overview');
 
             // Populate Dynamic Contextual Actions
             const actionsContainer = document.getElementById('ctxDynamicActions');
@@ -3052,6 +3525,355 @@
                     activeContextRoomId = null;
                     activeActionSheetRoomId = null;
                 }, 250);
+            }
+        }
+
+        // ── CONTEXT MODAL SUB-TAB SWITCHER (RINGKASAN VS RIWAYAT BAYAR) ───────
+        function switchContextSubTab(tab) {
+            const overviewTab = document.getElementById('ctxSubTabOverview');
+            const historyTab = document.getElementById('ctxSubTabHistory');
+            const btnOverview = document.getElementById('ctxSubTabBtnOverview');
+            const btnHistory = document.getElementById('ctxSubTabBtnHistory');
+
+            if (!overviewTab || !historyTab) return;
+
+            if (tab === 'history') {
+                overviewTab.classList.add('hidden');
+                historyTab.classList.remove('hidden');
+                if (btnOverview) {
+                    btnOverview.className = 'px-3 py-2 border-b-2 font-semibold text-xs flex items-center gap-1.5 transition-all border-transparent text-slate-500 hover:text-slate-800 cursor-pointer';
+                }
+                if (btnHistory) {
+                    btnHistory.className = 'px-3 py-2 border-b-2 font-bold text-xs flex items-center gap-1.5 transition-all border-emerald-600 text-emerald-800 cursor-pointer';
+                }
+                const room = appData.find(x => x.id === activeContextRoomId);
+                if (room) renderContextHistoryList(room);
+            } else {
+                overviewTab.classList.remove('hidden');
+                historyTab.classList.add('hidden');
+                if (btnOverview) {
+                    btnOverview.className = 'px-3 py-2 border-b-2 font-bold text-xs flex items-center gap-1.5 transition-all border-emerald-600 text-emerald-800 cursor-pointer';
+                }
+                if (btnHistory) {
+                    btnHistory.className = 'px-3 py-2 border-b-2 font-semibold text-xs flex items-center gap-1.5 transition-all border-transparent text-slate-500 hover:text-slate-800 cursor-pointer';
+                }
+            }
+        }
+
+        // ── PAYMENT HISTORY LEDGER RENDERER ───────────────────────────────────
+        function renderContextHistoryList(room) {
+            const container = document.getElementById('ctxHistoryListContainer');
+            if (!container) return;
+
+            const list = room.payment_history || [];
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 px-4 bg-slate-50 rounded-2xl border border-slate-200/80 text-slate-400">
+                        <i class="fa-solid fa-receipt text-2xl text-slate-300 mb-2"></i>
+                        <h5 class="font-bold text-xs text-slate-700">Belum Ada Riwayat Transaksi</h5>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Catatan sewa, deposit, atau operasional kamar ini akan tercatat di sini.</p>
+                        <button type="button" onclick="openManualPaymentModal()" class="mt-3 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] inline-flex items-center gap-1.5 shadow-2xs">
+                            <i class="fa-solid fa-plus"></i> Catat Pembayaran Manual
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render transactions sorted newest first
+            const sorted = [...list].reverse();
+            container.innerHTML = sorted.map(trx => {
+                let badgeClass = 'bg-slate-100 text-slate-700';
+                let icon = 'fa-solid fa-receipt';
+                if (trx.type === 'deposit') {
+                    badgeClass = 'bg-teal-50 text-teal-800 border border-teal-200';
+                    icon = 'fa-solid fa-shield-halved';
+                } else if (trx.type === 'dp') {
+                    badgeClass = 'bg-purple-50 text-purple-800 border border-purple-200';
+                    icon = 'fa-solid fa-bookmark';
+                } else if (trx.type === 'listrik') {
+                    badgeClass = 'bg-amber-50 text-amber-800 border border-amber-200';
+                    icon = 'fa-solid fa-bolt';
+                } else if (trx.type === 'sewa') {
+                    badgeClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200';
+                    icon = 'fa-solid fa-circle-check';
+                }
+
+                const trxDataJson = JSON.stringify(trx).replace(/"/g, '&quot;');
+
+                return `
+                    <div class="p-3 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all space-y-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 ${badgeClass}">
+                                    <i class="${icon} text-[9px]"></i>
+                                    <span>${(trx.type || 'Sewa').toUpperCase()}</span>
+                                </span>
+                                <span class="text-[11px] font-semibold text-slate-500">${trx.date || '-'}</span>
+                            </div>
+                            <span class="font-mono font-extrabold text-xs text-emerald-700 tabular-nums">
+                                ${trx.amount < 0 ? '-' : ''}Rp ${Math.abs(Number(trx.amount) || 0).toLocaleString('id-ID')}
+                            </span>
+                        </div>
+                        <div class="flex items-start justify-between gap-2 pt-0.5">
+                            <div class="min-w-0 flex-1">
+                                <h5 class="font-bold text-xs text-slate-900 truncate">${trx.desc || 'Pembayaran'}</h5>
+                                <p class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                                    <span>Metode: <strong>${trx.method || 'Tunai'}</strong></span>
+                                    ${trx.id ? `<span class="font-mono text-slate-300">• ${trx.id}</span>` : ''}
+                                </p>
+                            </div>
+                            <button type="button" onclick="openReceiptForItem('${room.id}', ${trxDataJson})" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors shrink-0" title="Cetak Kuitansi Struk">
+                                <i class="fa-solid fa-receipt text-[10px]"></i>
+                                <span>Kuitansi</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── MANUAL PAYMENT MODAL CONTROLLER ───────────────────────────────────
+        function openManualPaymentModal(roomId = null) {
+            const targetId = roomId || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) return;
+
+            const modal = document.getElementById('manualPaymentModal');
+            const sub = document.getElementById('manualPaymentSubtitle');
+            const rId = document.getElementById('manualPaymentRoomId');
+            const amountInput = document.getElementById('manualPaymentAmount');
+            const dateInput = document.getElementById('manualPaymentDate');
+            const descInput = document.getElementById('manualPaymentDesc');
+            const typeSelect = document.getElementById('manualPaymentType');
+
+            if (sub) sub.innerText = `Kamar ${room.id} • ${room.customer || 'Penghuni'}`;
+            if (rId) rId.value = room.id;
+            if (amountInput) amountInput.value = room.amount || 1500000;
+            if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+            if (descInput) descInput.value = `Pembayaran Sewa Kamar ${room.id}`;
+            if (typeSelect) typeSelect.value = 'sewa';
+
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeManualPaymentModal() {
+            const modal = document.getElementById('manualPaymentModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleManualPaymentSubmit(e) {
+            e.preventDefault();
+            const roomId = document.getElementById('manualPaymentRoomId')?.value;
+            const room = appData.find(x => x.id === roomId);
+            if (!room) return;
+
+            const btn = document.getElementById('manualPaymentSubmitBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Menyimpan...';
+            }
+
+            const type = document.getElementById('manualPaymentType')?.value || 'sewa';
+            const method = document.getElementById('manualPaymentMethod')?.value || 'Tunai / Cash';
+            const amount = Number(document.getElementById('manualPaymentAmount')?.value) || 0;
+            const date = document.getElementById('manualPaymentDate')?.value || new Date().toISOString().slice(0, 10);
+            const desc = document.getElementById('manualPaymentDesc')?.value.trim() || 'Pembayaran Kamar';
+
+            if (!room.payment_history) room.payment_history = [];
+            const newTrx = {
+                id: 'TRX-' + Date.now().toString().slice(-8),
+                date: date,
+                type: type,
+                desc: desc,
+                amount: amount,
+                method: method
+            };
+
+            // If deposit was recorded, update deposit_amount
+            if (type === 'deposit') {
+                room.deposit_amount = (Number(room.deposit_amount) || 0) + amount;
+                room.deposit_status = 'Tersimpan';
+            }
+
+            room.payment_history.push(newTrx);
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
+                        payment_history: room.payment_history,
+                        deposit_amount: room.deposit_amount,
+                        deposit_status: room.deposit_status
+                    }).eq('id', room.id);
+                } catch (err) {
+                    console.warn('Gagal sync cloud riwayat');
+                }
+            }
+
+            saveRoomsLocal();
+            closeManualPaymentModal();
+
+            // Refresh history view & badges
+            const countBadge = document.getElementById('ctxHistoryBadgeCount');
+            if (countBadge) countBadge.innerText = room.payment_history.length;
+            renderContextHistoryList(room);
+            renderAllViews();
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Simpan Transaksi</span>';
+            }
+
+            showToast(`Pembayaran Rp ${amount.toLocaleString('id-ID')} berhasil dicatat!`, 'success');
+            setTimeout(() => {
+                openReceiptForItem(room.id, newTrx);
+            }, 300);
+        }
+
+        // ── KTP PHOTO ATTACHMENT & LIGHTBOX HELPERS ───────────────────────────
+        function compressImage(file, maxWidth = 1000, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        resolve(dataUrl);
+                    };
+                    img.onerror = () => resolve(e.target.result);
+                };
+                reader.onerror = reject;
+            });
+        }
+
+        async function handleKtpFileSelect(event, context = 'checkIn') {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : 'editKtpBase64');
+
+            try {
+                if (labelEl) labelEl.innerText = 'Mengompres...';
+                const compressedBase64 = await compressImage(file);
+                if (hiddenBase64) hiddenBase64.value = compressedBase64;
+                if (labelEl) labelEl.innerText = 'Foto Terpilih (' + file.name.slice(0, 14) + '...)';
+                if (clearBtn) clearBtn.classList.remove('hidden');
+                showToast('Foto KTP berhasil disiapkan!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memproses foto', 'error');
+            }
+        }
+
+        function clearKtpFile(context = 'checkIn') {
+            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInKtpInput' : 'editKtpInput');
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : 'editKtpBase64');
+
+            if (fileInput) fileInput.value = '';
+            if (hiddenBase64) hiddenBase64.value = '';
+            if (labelEl) labelEl.innerText = context === 'checkIn' ? 'Upload Foto KTP' : 'Upload / Ganti Foto KTP';
+            if (clearBtn) clearBtn.classList.add('hidden');
+        }
+
+        function openKtpPreviewModal(roomId) {
+            const targetId = roomId || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room || !room.ktp_photo) {
+                showToast('KTP belum diunggah untuk kamar ini', 'warning');
+                return;
+            }
+
+            const modal = document.getElementById('ktpPreviewModal');
+            const img = document.getElementById('ktpPreviewImage');
+            const idEl = document.getElementById('ktpPreviewRoomId');
+            const nameEl = document.getElementById('ktpPreviewCustomerName');
+            const dlBtn = document.getElementById('ktpPreviewDownloadBtn');
+
+            if (idEl) idEl.innerText = room.id;
+            if (nameEl) nameEl.innerText = room.customer || 'Penghuni';
+            if (img) img.src = room.ktp_photo;
+            if (dlBtn) dlBtn.href = room.ktp_photo;
+
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeKtpPreviewModal() {
+            const modal = document.getElementById('ktpPreviewModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // ── DURATION & TERM CALCULATION HELPERS ──────────────────────────────
+        function getTermBadgeText(term, dailyDays = 1) {
+            if (term === 'harian') return `Harian (${dailyDays || 1} Hari)`;
+            if (term === '3_bulan') return '3 Bulan';
+            if (term === '6_bulan') return '6 Bulan';
+            if (term === '1_tahun') return '1 Tahun';
+            return '1 Bulan';
+        }
+
+        function getTermLabel(term, dailyDays = 1) {
+            if (term === 'harian') return `Transit / Harian (${dailyDays || 1} Hari)`;
+            if (term === '3_bulan') return 'Kuartal (3 Bulan)';
+            if (term === '6_bulan') return 'Semester (6 Bulan)';
+            if (term === '1_tahun') return 'Tahunan (1 Tahun / 12 Bln)';
+            return 'Bulanan (1 Bulan Standar)';
+        }
+
+        function addMonthsSafe(inputDate, monthsToAdd) {
+            let d = (inputDate instanceof Date) ? new Date(inputDate.getTime()) : new Date();
+            const origDay = d.getDate();
+            d.setDate(1);
+            d.setMonth(d.getMonth() + monthsToAdd);
+            const maxDays = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            d.setDate(Math.min(origDay, maxDays));
+            return d;
+        }
+
+        function calculateDueDateFromTerm(startDateStr, term, dailyCount = 1) {
+            const baseDate = startDateStr ? new Date(startDateStr + 'T00:00:00') : new Date();
+            if (isNaN(baseDate.getTime())) return '-';
+
+            let resultDate = new Date(baseDate.getTime());
+            if (term === 'harian') {
+                const days = Math.max(1, parseInt(dailyCount) || 1);
+                resultDate.setDate(resultDate.getDate() + days);
+            } else if (term === '3_bulan') {
+                resultDate = addMonthsSafe(baseDate, 3);
+            } else if (term === '6_bulan') {
+                resultDate = addMonthsSafe(baseDate, 6);
+            } else if (term === '1_tahun') {
+                resultDate = addMonthsSafe(baseDate, 12);
+            } else {
+                resultDate = addOneMonthSafe(baseDate);
+            }
+            return formatDueDateIndo(resultDate);
+        }
+
+        function onRentTermChange(term, context = 'checkIn') {
+            const dailyContainer = document.getElementById(context === 'checkIn' ? 'checkInDailyContainer' : 'editDailyContainer');
+            if (dailyContainer) {
+                if (term === 'harian') dailyContainer.classList.remove('hidden');
+                else dailyContainer.classList.add('hidden');
+            }
+            if (context === 'checkIn') {
+                updateCheckInDueDatePreview();
             }
         }
 
@@ -3378,6 +4200,8 @@
             let workStatus = 'Terisi';
             let detailNote = room.detail || '';
 
+            if (!room.payment_history) room.payment_history = [];
+
             if (payChoice === 'tempo') {
                 payStatus = 'Belum Lunas';
                 workStatus = 'Terisi';
@@ -3386,6 +4210,24 @@
                 payStatus = 'DP Terbayar';
                 workStatus = 'Booking Baru';
                 detailNote = `DP Rp ${Number(dpAmount).toLocaleString('id-ID')} • Rencana Masuk ${moveInDateInput || '-'}`;
+                room.payment_history.push({
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: moveInDateInput || new Date().toISOString().slice(0, 10),
+                    type: 'dp',
+                    desc: 'Uang Muka / Booking (Quick Check-In)',
+                    amount: Number(dpAmount),
+                    method: 'Tunai / Transfer'
+                });
+            } else {
+                // Lunas
+                room.payment_history.push({
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: moveInDateInput || new Date().toISOString().slice(0, 10),
+                    type: 'sewa',
+                    desc: 'Sewa Bulan Pertama (Quick Check-In)',
+                    amount: room.amount,
+                    method: 'Tunai / Transfer'
+                });
             }
 
             const updatePayload = {
@@ -3394,7 +4236,8 @@
                 pay_status: payStatus,
                 work_status: workStatus,
                 date: nextDueDate,
-                detail: detailNote
+                detail: detailNote,
+                payment_history: room.payment_history
             };
 
             if (supabaseClient) {
@@ -3429,12 +4272,25 @@
 
             if (confirmed) {
                 const nextDueDate = formatDueDateIndo(addOneMonthSafe(new Date()));
+                if (!room.payment_history) room.payment_history = [];
+
+                // Calculate remaining rent after DP
+                const sisaSewa = Math.max(0, (Number(room.amount) || 1500000) - 300000);
+                room.payment_history.push({
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: new Date().toISOString().slice(0, 10),
+                    type: 'sewa',
+                    desc: 'Pelunasan Sisa Sewa Booking Masuk',
+                    amount: sisaSewa > 0 ? sisaSewa : room.amount,
+                    method: 'Transfer / Tunai'
+                });
 
                 const updatePayload = {
                     pay_status: 'Lunas',
                     work_status: 'Terisi',
                     date: nextDueDate,
-                    detail: 'Pelunasan booking selesai • Kamar aktif'
+                    detail: 'Pelunasan booking selesai • Kamar aktif',
+                    payment_history: room.payment_history
                 };
 
                 if (supabaseClient) {
@@ -3707,10 +4563,17 @@
                                         <div>
                                             <div class="flex items-center justify-between mb-1">
                                                 <span class="font-mono font-extrabold text-xs text-slate-900">${r.id}</span>
-                                                <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}" title="${meta.label}"></span>
+                                                <div class="flex items-center gap-1">
+                                                    ${r.ktp_photo ? `<i class="fa-solid fa-id-card text-[9px] text-emerald-600" title="KTP Terlampir"></i>` : ''}
+                                                    ${r.deposit_amount && r.deposit_amount > 0 ? `<span class="px-1 py-0.2 rounded bg-amber-100 text-amber-800 text-[8px] font-mono font-bold" title="Deposit: Rp ${Number(r.deposit_amount).toLocaleString('id-ID')}">D</span>` : ''}
+                                                    <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}" title="${meta.label}"></span>
+                                                </div>
                                             </div>
                                             <h5 class="font-bold text-slate-800 text-[11px] truncate">${cond === 'kosong' ? 'Siap Huni' : cond === 'perbaikan' ? 'Perbaikan' : r.customer}</h5>
-                                            <p class="text-[9px] text-slate-400 truncate">${r.service}</p>
+                                            <div class="flex items-center justify-between gap-1 mt-0.5">
+                                                <p class="text-[9px] text-slate-400 truncate">${r.service}</p>
+                                                ${r.rent_term && r.rent_term !== '1_bulan' ? `<span class="px-1 py-0.2 rounded text-[8px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shrink-0">${getTermBadgeText(r.rent_term, r.daily_days)}</span>` : ''}
+                                            </div>
                                         </div>
 
                                         <div class="pt-1.5 mt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
@@ -3859,27 +4722,58 @@
             window.open(waUrl, '_blank');
         }
 
-        // ── SMART RENT RENEWAL & ADVANCE DUE DATE (+1 MONTH) ───────────────────
+        // ── SMART RENT RENEWAL & ADVANCE DUE DATE (+TERM) ─────────────────────
         async function markAsPaidQuick(id) {
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
-            const nextDueDate = advanceDueDateByOneMonth(room.date);
+            let nextDueDate = '';
+            const term = room.rent_term || '1_bulan';
+            const baseD = parseCustomDate(room.date) || new Date();
+
+            if (term === '3_bulan') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 3));
+            } else if (term === '6_bulan') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 6));
+            } else if (term === '1_tahun') {
+                nextDueDate = formatDueDateIndo(addMonthsSafe(baseD, 12));
+            } else if (term === 'harian') {
+                const days = Math.max(1, parseInt(room.daily_days) || 1);
+                const d = new Date(baseD.getTime());
+                d.setDate(d.getDate() + days);
+                nextDueDate = formatDueDateIndo(d);
+            } else {
+                nextDueDate = advanceDueDateByOneMonth(room.date);
+            }
+
+            const termBadge = getTermBadgeText(term, room.daily_days);
             const confirmed = await showCustomConfirm({
                 title: 'Perpanjang Sewa & Tandai Lunas?',
-                desc: `Tandai sewa kamar ${room.id} (${room.customer}) Lunas dan majukan jatuh tempo ke "${nextDueDate}"?`,
+                desc: `Tandai sewa kamar ${room.id} (${room.customer}) Lunas untuk durasi ${termBadge} dan majukan jatuh tempo ke "${nextDueDate}"?`,
                 confirmText: 'Lunas & Perpanjang'
             });
 
             if (confirmed) {
                 room.pay_status = 'Lunas';
                 room.date = nextDueDate;
+
+                if (!room.payment_history) room.payment_history = [];
+                const autoTrx = {
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: new Date().toISOString().slice(0, 10),
+                    type: 'sewa',
+                    desc: `Perpanjangan Sewa s/d ${nextDueDate} (${termBadge})`,
+                    amount: room.amount,
+                    method: 'Transfer / Tunai'
+                };
+                room.payment_history.push(autoTrx);
                 
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
                             pay_status: 'Lunas',
-                            date: nextDueDate
+                            date: nextDueDate,
+                            payment_history: room.payment_history
                         }).eq('id', id);
                     } catch (err) {
                         console.warn('Gagal update cloud, simpan lokal');
@@ -3890,7 +4784,7 @@
                 closeSmartRoomModal();
                 renderAllViews();
                 showToast(`Sewa ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
-                openReceiptForItem(id);
+                openReceiptForItem(id, autoTrx);
             }
         }
 
@@ -3977,6 +4871,35 @@
             document.getElementById('editDueDate').value = room.date || '';
             document.getElementById('editDetail').value = room.detail || '';
 
+            // Rent Term & Daily Days
+            const rentTerm = room.rent_term || '1_bulan';
+            const termSelect = document.getElementById('editRentTerm');
+            const dailyCont = document.getElementById('editDailyContainer');
+            const dailyDays = document.getElementById('editDailyDays');
+            if (termSelect) termSelect.value = rentTerm;
+            if (dailyDays) dailyDays.value = room.daily_days || 3;
+            if (dailyCont) {
+                if (rentTerm === 'harian') dailyCont.classList.remove('hidden');
+                else dailyCont.classList.add('hidden');
+            }
+
+            // Security Deposit
+            const depAmt = document.getElementById('editDepositAmount');
+            const depStat = document.getElementById('editDepositStatus');
+            if (depAmt) depAmt.value = room.deposit_amount || 0;
+            if (depStat) depStat.value = room.deposit_status || (room.deposit_amount > 0 ? 'Tersimpan' : 'Tidak Ada');
+
+            // KTP Photo Attachment
+            const ktpBase64 = document.getElementById('editKtpBase64');
+            const ktpLabel = document.getElementById('editKtpLabel');
+            const ktpClear = document.getElementById('editKtpClearBtn');
+            if (ktpBase64) ktpBase64.value = room.ktp_photo || '';
+            if (ktpLabel) ktpLabel.innerText = room.ktp_photo ? 'Foto KTP Tersimpan (Ganti)' : 'Upload / Ganti Foto KTP';
+            if (ktpClear) {
+                if (room.ktp_photo) ktpClear.classList.remove('hidden');
+                else ktpClear.classList.add('hidden');
+            }
+
             document.getElementById('editRoomModal').classList.remove('hidden');
         }
 
@@ -3994,6 +4917,12 @@
             btn.disabled = true;
             btn.innerText = 'Menyimpan...';
 
+            const rentTerm = document.getElementById('editRentTerm')?.value || '1_bulan';
+            const dailyDays = Number(document.getElementById('editDailyDays')?.value) || 1;
+            const depositAmount = Number(document.getElementById('editDepositAmount')?.value) || 0;
+            const depositStatus = document.getElementById('editDepositStatus')?.value || (depositAmount > 0 ? 'Tersimpan' : 'Tidak Ada');
+            const ktpPhoto = document.getElementById('editKtpBase64')?.value || room.ktp_photo || '';
+
             const updatedData = {
                 rack: document.getElementById('editRack').value,
                 service: document.getElementById('editService').value.trim(),
@@ -4003,7 +4932,12 @@
                 pay_status: document.getElementById('editPayStatus').value,
                 date: document.getElementById('editDueDate').value.trim(),
                 detail: document.getElementById('editDetail').value.trim(),
-                work_status: document.getElementById('editPayStatus').value === 'Tersedia' ? 'Tersedia' : 'Terisi'
+                work_status: document.getElementById('editPayStatus').value === 'Tersedia' ? 'Tersedia' : 'Terisi',
+                rent_term: rentTerm,
+                daily_days: dailyDays,
+                deposit_amount: depositAmount,
+                deposit_status: depositStatus,
+                ktp_photo: ktpPhoto
             };
 
             if (supabaseClient) {
@@ -4025,7 +4959,7 @@
 
         // Check-Out / Kosongkan Kamar
         async function checkoutCurrentRoom() {
-            const id = document.getElementById('editRoomOriginalId').value;
+            const id = document.getElementById('editRoomOriginalId')?.value || activeContextRoomId;
             const room = appData.find(x => x.id === id);
             if (!room) return;
 
@@ -4037,12 +4971,49 @@
             });
 
             if (confirmed) {
+                if (!room.payment_history) room.payment_history = [];
+
+                // Deposit Resolution Handling
+                if (room.deposit_amount > 0) {
+                    const returnFull = await showCustomConfirm({
+                        title: `Penyelesaian Deposit Kamar ${room.id}`,
+                        desc: `Penyewa memiliki uang jaminan deposit Rp ${Number(room.deposit_amount).toLocaleString('id-ID')}. Kembalikan PENUH ke penyewa? (Pilih 'Kembalikan Penuh' untuk pengembalian 100%, atau Batal jika dipotong ganti rugi/denda).`,
+                        confirmText: 'Kembalikan Penuh',
+                        isDanger: false
+                    });
+
+                    if (returnFull) {
+                        room.payment_history.push({
+                            id: 'TRX-' + Date.now().toString().slice(-8),
+                            date: new Date().toISOString().slice(0, 10),
+                            type: 'deposit',
+                            desc: 'Pengembalian Uang Jaminan / Deposit (Check-Out)',
+                            amount: -room.deposit_amount,
+                            method: 'Pengembalian Kas/Transfer'
+                        });
+                        room.deposit_status = 'Dikembalikan';
+                    } else {
+                        room.payment_history.push({
+                            id: 'TRX-' + Date.now().toString().slice(-8),
+                            date: new Date().toISOString().slice(0, 10),
+                            type: 'deposit',
+                            desc: 'Deposit Dipotong Ganti Rugi / Denda Kamar',
+                            amount: room.deposit_amount,
+                            method: 'Potong Jaminan'
+                        });
+                        room.deposit_status = 'Dipotong';
+                    }
+                }
+
                 const updated = {
                     customer: 'Belum Berpenghuni',
                     phone: '',
                     pay_status: 'Tersedia',
                     work_status: 'Tersedia',
-                    date: 'Siap Huni'
+                    date: 'Siap Huni',
+                    deposit_amount: 0,
+                    ktp_photo: '',
+                    payment_history: room.payment_history
                 };
 
                 if (supabaseClient) {
@@ -4056,6 +5027,7 @@
                 Object.assign(room, updated);
                 saveRoomsLocal();
                 closeEditModal();
+                closeSmartRoomModal();
                 renderAllViews();
                 showToast(`Kamar ${room.id} berhasil dikosongkan & siap huni kembali!`, 'info');
             }
@@ -4143,6 +5115,17 @@
                     startInput.value = todayStr;
                 }
 
+                // Reset rent term & deposit & KTP
+                const termSelect = document.getElementById('checkInRentTerm');
+                const dailyCont = document.getElementById('checkInDailyContainer');
+                const dailyDays = document.getElementById('checkInDailyDays');
+                const depInput = document.getElementById('checkInDeposit');
+                if (termSelect) termSelect.value = '1_bulan';
+                if (dailyDays) dailyDays.value = 3;
+                if (dailyCont) dailyCont.classList.add('hidden');
+                if (depInput) depInput.value = '';
+                clearKtpFile('checkIn');
+
                 // Reset plan radio to 'lunas'
                 const planRadios = document.querySelectorAll('input[name="checkInPayPlan"]');
                 planRadios.forEach(r => {
@@ -4202,18 +5185,6 @@
             if (dpLabel) dpLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'dp' ? 'border-purple-500 bg-purple-50/60 text-purple-800' : resetClass}`;
         }
 
-        function updateCheckInDueDatePreview() {
-            const startVal = document.getElementById('checkInStartDate')?.value;
-            const dueText = document.getElementById('checkInDueDateText');
-            if (!dueText) return;
-
-            const baseDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
-            const dueD = addOneMonthSafe(baseDate);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const pad = n => String(n).padStart(2, '0');
-            dueText.innerText = `${pad(dueD.getDate())} ${months[dueD.getMonth()]} ${dueD.getFullYear()}`;
-        }
-
         async function handleCheckInSubmit(e) {
             e.preventDefault();
             const roomId = document.getElementById('checkInRoomSelect')?.value;
@@ -4227,6 +5198,10 @@
             const customerPhone = document.getElementById('checkInPhone')?.value.trim();
             const startVal = document.getElementById('checkInStartDate')?.value;
             const rentAmount = Number(document.getElementById('checkInAmount')?.value) || room.amount;
+            const rentTerm = document.getElementById('checkInRentTerm')?.value || '1_bulan';
+            const dailyDays = Number(document.getElementById('checkInDailyDays')?.value) || 1;
+            const depositAmount = Number(document.getElementById('checkInDeposit')?.value) || 0;
+            const ktpPhoto = document.getElementById('checkInKtpBase64')?.value || '';
             const payPlan = document.querySelector('input[name="checkInPayPlan"]:checked')?.value || 'lunas';
             const detailInput = document.getElementById('checkInDetail')?.value.trim();
 
@@ -4242,13 +5217,16 @@
                 submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
             }
 
-            // Calculate due date (+1 month safely from start date)
-            const baseDate = startVal ? new Date(startVal + 'T00:00:00') : new Date();
-            const calculatedDue = formatDueDateIndo(addOneMonthSafe(baseDate));
+            // Calculate due date based on chosen rent term
+            const calculatedDue = calculateDueDateFromTerm(startVal, rentTerm, dailyDays);
 
             let payStatus = 'Lunas';
             let workStatus = 'Terisi';
             let detailNote = detailInput || room.detail || 'Siap Huni';
+
+            if (!room.payment_history) room.payment_history = [];
+
+            let primaryReceiptTrx = null;
 
             if (payPlan === 'tempo') {
                 payStatus = 'Belum Lunas';
@@ -4258,6 +5236,39 @@
                 payStatus = 'DP Terbayar';
                 workStatus = 'Booking Baru';
                 detailNote = `DP Rp ${Number(dpVal).toLocaleString('id-ID')} • Rencana Masuk: ${startVal || '-'}` + (detailInput ? ` • ${detailInput}` : '');
+                
+                primaryReceiptTrx = {
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: startVal || new Date().toISOString().slice(0, 10),
+                    type: 'dp',
+                    desc: 'Uang Muka / DP Booking Kamar',
+                    amount: Number(dpVal),
+                    method: 'Tunai / Transfer'
+                };
+                room.payment_history.push(primaryReceiptTrx);
+            } else {
+                // Lunas
+                primaryReceiptTrx = {
+                    id: 'TRX-' + Date.now().toString().slice(-8),
+                    date: startVal || new Date().toISOString().slice(0, 10),
+                    type: 'sewa',
+                    desc: `Pembayaran Sewa (${getTermBadgeText(rentTerm, dailyDays)})`,
+                    amount: rentAmount,
+                    method: 'Tunai / Transfer'
+                };
+                room.payment_history.push(primaryReceiptTrx);
+            }
+
+            // If deposit was paid, also record deposit transaction
+            if (depositAmount > 0) {
+                room.payment_history.push({
+                    id: 'TRX-' + (Date.now() + 1).toString().slice(-8),
+                    date: startVal || new Date().toISOString().slice(0, 10),
+                    type: 'deposit',
+                    desc: 'Uang Jaminan / Deposit Kamar & Fasilitas',
+                    amount: depositAmount,
+                    method: 'Tunai / Transfer'
+                });
             }
 
             const updatePayload = {
@@ -4267,7 +5278,13 @@
                 pay_status: payStatus,
                 work_status: workStatus,
                 date: calculatedDue,
-                detail: detailNote
+                detail: detailNote,
+                rent_term: rentTerm,
+                daily_days: dailyDays,
+                deposit_amount: depositAmount,
+                deposit_status: depositAmount > 0 ? 'Tersimpan' : 'Tidak Ada',
+                ktp_photo: ktpPhoto,
+                payment_history: room.payment_history
             };
 
             if (supabaseClient) {
@@ -4294,7 +5311,7 @@
             // Open digital receipt if payment was received
             if (payPlan === 'lunas' || payPlan === 'dp') {
                 setTimeout(() => {
-                    openReceiptForItem(room.id);
+                    openReceiptForItem(room.id, primaryReceiptTrx);
                 }, 300);
             }
         }
@@ -4446,9 +5463,9 @@
             }
         }
 
-        function openReceiptForItem(id) {
+        function openReceiptForItem(id, customTrx = null) {
             const item = appData.find(x => x.id === id) || {
-                id: 'KMR-' + Math.floor(100 + Math.random() * 900),
+                id: (id || ('KMR-' + Math.floor(100 + Math.random() * 900))),
                 customer: 'Penyewa Umum',
                 phone: '08123456789',
                 service: 'Sewa Kamar Bulanan',
@@ -4460,28 +5477,50 @@
             document.getElementById('editIdInput').value = item.id;
             document.getElementById('receiptCustomerText').innerText = item.customer;
             document.getElementById('editCustomerInput').value = item.customer;
-            document.getElementById('receiptDateText').innerText = new Date().toLocaleDateString('id-ID');
 
-            const isBooking = getRoomCondition(item) === 'booking' || (item.pay_status || '').toLowerCase().includes('dp');
-            let receiptPrice = item.amount;
-            let receiptDesc = item.service;
-            if (isBooking) {
-                receiptDesc = `Tanda Jadi / DP Reservasi ${item.service}`;
-                receiptPrice = 300000;
-                const dpMatch = (item.detail || '').match(/dp\s+(?:rp\.?\s*)?([\d\.]+)/i);
-                if (dpMatch) {
-                    const parsed = parseInt(dpMatch[1].replace(/[^0-9]/g, ''), 10);
-                    if (parsed > 0) receiptPrice = parsed;
+            let trxDateStr = new Date().toLocaleDateString('id-ID');
+            if (customTrx && customTrx.date) {
+                try {
+                    trxDateStr = new Date(customTrx.date).toLocaleDateString('id-ID');
+                } catch (e) {
+                    trxDateStr = customTrx.date;
                 }
             }
+            document.getElementById('receiptDateText').innerText = trxDateStr;
 
-            receiptRows = [
-                { desc: receiptDesc, qty: 1, price: receiptPrice }
-            ];
+            let receiptRowsInit = [];
+            let defaultCash = item.amount;
+
+            if (customTrx && (customTrx.desc || customTrx.amount !== undefined)) {
+                const trAmount = Math.abs(Number(customTrx.amount) || 0);
+                receiptRowsInit = [
+                    { desc: customTrx.desc || item.service, qty: 1, price: trAmount }
+                ];
+                defaultCash = trAmount;
+            } else {
+                const isBooking = getRoomCondition(item) === 'booking' || (item.pay_status || '').toLowerCase().includes('dp');
+                let receiptPrice = item.amount;
+                let receiptDesc = item.service;
+                if (isBooking) {
+                    receiptDesc = `Tanda Jadi / DP Reservasi ${item.service}`;
+                    receiptPrice = 300000;
+                    const dpMatch = (item.detail || '').match(/dp\s+(?:rp\.?\s*)?([\d\.]+)/i);
+                    if (dpMatch) {
+                        const parsed = parseInt(dpMatch[1].replace(/[^0-9]/g, ''), 10);
+                        if (parsed > 0) receiptPrice = parsed;
+                    }
+                }
+                receiptRowsInit = [
+                    { desc: receiptDesc, qty: 1, price: receiptPrice }
+                ];
+                defaultCash = receiptPrice;
+            }
+
+            receiptRows = receiptRowsInit;
 
             document.getElementById('editDiscountInput').value = 0;
             document.getElementById('editTaxCheckbox').checked = false;
-            document.getElementById('editCashInput').value = receiptPrice;
+            document.getElementById('editCashInput').value = defaultCash;
 
             // Reset utility calculator
             const uBody = document.getElementById('utilityCalcBody');
