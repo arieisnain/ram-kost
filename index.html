@@ -2476,6 +2476,67 @@
                 const cm = document.getElementById('confirmModal');
                 if (cm && !cm.classList.contains('hidden')) {
                     closeConfirmModal(false);
+                    return;
+                }
+                const ktpModal = document.getElementById('ktpPreviewModal');
+                if (ktpModal && !ktpModal.classList.contains('hidden')) {
+                    closeKtpPreviewModal();
+                    return;
+                }
+                const receiptModal = document.getElementById('receiptModal');
+                if (receiptModal && !receiptModal.classList.contains('hidden')) {
+                    closeReceiptModal();
+                    return;
+                }
+                const manualPay = document.getElementById('manualPaymentModal');
+                if (manualPay && !manualPay.classList.contains('hidden')) {
+                    closeManualPaymentModal();
+                    return;
+                }
+                const checkInModal = document.getElementById('checkInModal');
+                if (checkInModal && !checkInModal.classList.contains('hidden')) {
+                    closeCheckInModal();
+                    return;
+                }
+                const addRoomModal = document.getElementById('addRoomModal');
+                if (addRoomModal && !addRoomModal.classList.contains('hidden')) {
+                    closeAddRoomModal();
+                    return;
+                }
+                const editModal = document.getElementById('editRoomModal');
+                if (editModal && !editModal.classList.contains('hidden')) {
+                    closeEditModal();
+                    return;
+                }
+                const expenseModal = document.getElementById('expenseModal');
+                if (expenseModal && !expenseModal.classList.contains('hidden')) {
+                    closeExpenseModal();
+                    return;
+                }
+                const reportModal = document.getElementById('monthlyReportModal');
+                if (reportModal && !reportModal.classList.contains('hidden')) {
+                    closeMonthlyReportModal();
+                    return;
+                }
+                const settingsModal = document.getElementById('settingsModal');
+                if (settingsModal && !settingsModal.classList.contains('hidden')) {
+                    closeSettingsModal();
+                    return;
+                }
+                const quickAddModal = document.getElementById('quickAddChoiceModal');
+                if (quickAddModal && !quickAddModal.classList.contains('hidden')) {
+                    closeQuickAddChoiceModal();
+                    return;
+                }
+                const smartModal = document.getElementById('smartRoomModal');
+                if (smartModal && !smartModal.classList.contains('hidden')) {
+                    closeSmartRoomModal();
+                    return;
+                }
+                const demoModal = document.getElementById('demoInfoModal');
+                if (demoModal && !demoModal.classList.contains('hidden')) {
+                    closeDemoInfoModal();
+                    return;
                 }
             }
         });
