@@ -3602,6 +3602,9 @@
             const actionsContainer = document.getElementById('ctxDynamicActions');
             if (actionsContainer) {
                 actionsContainer.innerHTML = buildContextActionsHtml(cond, room);
+                if (cond === 'kosong') {
+                    updateCtxQuickDueDatePreview();
+                }
             }
 
             // Show Modal
@@ -3871,9 +3874,9 @@
             const file = event.target.files?.[0];
             if (!file) return;
 
-            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : 'editKtpLabel');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : 'editKtpClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : 'editKtpBase64');
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
 
             try {
                 if (labelEl) labelEl.innerText = 'Mengompres...';
@@ -3889,14 +3892,14 @@
         }
 
         function clearKtpFile(context = 'checkIn') {
-            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInKtpInput' : 'editKtpInput');
-            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : 'editKtpLabel');
-            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : 'editKtpClearBtn');
-            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : 'editKtpBase64');
+            const fileInput = document.getElementById(context === 'checkIn' ? 'checkInKtpInput' : context === 'ctxQuick' ? 'ctxQuickKtpInput' : 'editKtpInput');
+            const labelEl = document.getElementById(context === 'checkIn' ? 'checkInKtpLabel' : context === 'ctxQuick' ? 'ctxQuickKtpLabel' : 'editKtpLabel');
+            const clearBtn = document.getElementById(context === 'checkIn' ? 'checkInKtpClearBtn' : context === 'ctxQuick' ? 'ctxQuickKtpClearBtn' : 'editKtpClearBtn');
+            const hiddenBase64 = document.getElementById(context === 'checkIn' ? 'checkInKtpBase64' : context === 'ctxQuick' ? 'ctxQuickKtpBase64' : 'editKtpBase64');
 
             if (fileInput) fileInput.value = '';
             if (hiddenBase64) hiddenBase64.value = '';
-            if (labelEl) labelEl.innerText = context === 'checkIn' ? 'Upload Foto KTP' : 'Upload / Ganti Foto KTP';
+            if (labelEl) labelEl.innerText = context === 'checkIn' ? 'Upload Foto KTP' : context === 'ctxQuick' ? 'Upload Foto KTP' : 'Upload / Ganti Foto KTP';
             if (clearBtn) clearBtn.classList.add('hidden');
         }
 
@@ -3975,13 +3978,15 @@
         }
 
         function onRentTermChange(term, context = 'checkIn') {
-            const dailyContainer = document.getElementById(context === 'checkIn' ? 'checkInDailyContainer' : 'editDailyContainer');
+            const dailyContainer = document.getElementById(context === 'checkIn' ? 'checkInDailyContainer' : context === 'ctxQuick' ? 'ctxQuickDailyContainer' : 'editDailyContainer');
             if (dailyContainer) {
                 if (term === 'harian') dailyContainer.classList.remove('hidden');
                 else dailyContainer.classList.add('hidden');
             }
             if (context === 'checkIn') {
                 updateCheckInDueDatePreview();
+            } else if (context === 'ctxQuick') {
+                updateCtxQuickDueDatePreview();
             }
         }
 
@@ -4075,6 +4080,85 @@
             if (input) {
                 input.value = val === 0 ? '' : val;
             }
+            updateCtxQuickBillSummary();
+        }
+
+        function updateCtxQuickDueDatePreview() {
+            const startVal = document.getElementById('ctxQuickDate')?.value;
+            const termVal = document.getElementById('ctxQuickRentTerm')?.value || '1_bulan';
+            const daysVal = Number(document.getElementById('ctxQuickDailyDays')?.value) || 1;
+            const dueText = document.getElementById('ctxQuickDueDateText');
+            if (dueText) {
+                dueText.innerText = calculateDueDateFromTerm(startVal, termVal, daysVal);
+            }
+            updateCtxQuickBillSummary();
+        }
+
+        function updateCtxQuickBillSummary() {
+            const room = appData.find(x => x.id === activeContextRoomId);
+            const monthlyRate = room ? Number(room.amount) : (Number(document.getElementById('ctxQuickAmount')?.value) || 0);
+            const rentTerm = document.getElementById('ctxQuickRentTerm')?.value || '1_bulan';
+            const dailyDays = Math.max(1, Number(document.getElementById('ctxQuickDailyDays')?.value) || 1);
+            const deposit = Number(document.getElementById('ctxQuickDeposit')?.value) || 0;
+            const payPlan = document.querySelector('input[name="ctxPayChoice"]:checked')?.value || 'lunas';
+            const dpAmount = Number(document.getElementById('ctxQuickDpAmount')?.value) || 0;
+            const dueText = document.getElementById('ctxQuickDueDateText')?.innerText || '-';
+
+            let totalRent = monthlyRate;
+            let durationLabel = '1 Bulan';
+            let termBadgeText = '1 Bulan';
+
+            if (rentTerm === '1_bulan') {
+                totalRent = monthlyRate;
+                durationLabel = '1 Bulan';
+                termBadgeText = '1 Bulan';
+            } else if (rentTerm === '3_bulan') {
+                totalRent = monthlyRate * 3;
+                durationLabel = '3 Bulan (Kuartal)';
+                termBadgeText = '3 Bulan';
+            } else if (rentTerm === '6_bulan') {
+                totalRent = monthlyRate * 6;
+                durationLabel = '6 Bulan (Semester)';
+                termBadgeText = '6 Bulan';
+            } else if (rentTerm === '1_tahun') {
+                totalRent = monthlyRate * 12;
+                durationLabel = '1 Tahun (12 Bln)';
+                termBadgeText = '1 Tahun';
+            } else if (rentTerm === 'harian') {
+                const dailyRate = Math.round(monthlyRate / 30);
+                totalRent = dailyRate * dailyDays;
+                durationLabel = `${dailyDays} Hari (Transit)`;
+                termBadgeText = `${dailyDays} Hari`;
+            }
+
+            const badgeEl = document.getElementById('ctxQuickSummaryTermBadge');
+            const durationLabelEl = document.getElementById('ctxQuickSummaryDurationLabel');
+            const rentTotalEl = document.getElementById('ctxQuickSummaryRentTotal');
+            const depositTotalEl = document.getElementById('ctxQuickSummaryDepositTotal');
+            const totalPayableEl = document.getElementById('ctxQuickSummaryTotalPayable');
+            const noteEl = document.getElementById('ctxQuickSummaryPayNote');
+
+            if (badgeEl) badgeEl.innerText = termBadgeText;
+            if (durationLabelEl) durationLabelEl.innerText = durationLabel;
+            if (rentTotalEl) rentTotalEl.innerText = 'Rp ' + totalRent.toLocaleString('id-ID');
+            if (depositTotalEl) depositTotalEl.innerText = 'Rp ' + deposit.toLocaleString('id-ID');
+
+            if (payPlan === 'lunas') {
+                const payableNow = totalRent + deposit;
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp ' + payableNow.toLocaleString('id-ID');
+                if (noteEl) noteEl.innerText = deposit > 0 
+                    ? 'Sewa ' + termBadgeText + ' + Uang Jaminan (Lunas)' 
+                    : 'Pembayaran Sewa Penuh (Lunas Masuk)';
+            } else if (payPlan === 'tempo') {
+                const totalBill = totalRent + deposit;
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp 0 (Ditagih Nanti)';
+                if (noteEl) noteEl.innerText = `Tagihan Rp ${totalBill.toLocaleString('id-ID')} dibayar saat tempo (${dueText})`;
+            } else if (payPlan === 'dp') {
+                const payableNow = dpAmount + deposit;
+                const remainingSewa = Math.max(0, totalRent - dpAmount);
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp ' + payableNow.toLocaleString('id-ID');
+                if (noteEl) noteEl.innerText = `DP Rp ${dpAmount.toLocaleString('id-ID')} (Sisa tagihan: Rp ${remainingSewa.toLocaleString('id-ID')})`;
+            }
         }
 
         // Build HTML for condition-tailored actions
@@ -4083,75 +4167,180 @@
 
             if (cond === 'kosong') {
                 return `
-                    <div class="p-4 rounded-2xl bg-white border border-emerald-200 shadow-2xs space-y-3">
-                        <div class="flex items-center justify-between">
+                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white border border-emerald-200 shadow-2xs space-y-3">
+                        <!-- Header: Room info badge, without redundant room selection or Form Lengkap button -->
+                        <div class="flex items-center justify-between pb-2 border-b border-emerald-100">
                             <h5 class="font-extrabold text-slate-900 text-xs flex items-center gap-1.5 text-emerald-700">
-                                <i class="fa-solid fa-user-plus"></i> Check-In Penghuni Baru
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Check-In Penghuni Baru</span>
                             </h5>
-                            <button type="button" onclick="closeSmartRoomModal(); openCheckInModal('${room.id}');" class="text-[10px] text-emerald-700 hover:text-emerald-800 font-bold hover:underline flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200/80 transition-colors">
-                                <span>Form Lengkap</span>
-                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-                            </button>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Penghuni Baru *</label>
-                            <input type="text" id="ctxQuickName" placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 text-white font-mono text-xs font-bold shadow-2xs">
+                                <i class="fa-solid fa-door-open text-emerald-400 text-[10px]"></i>
+                                <span>${room.id}</span>
+                                <span class="text-[10px] text-slate-300 font-sans font-normal">• ${room.rack || 'Lantai 1'}</span>
+                            </span>
                         </div>
 
+                        <!-- Row 1: Tenant Information -->
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Lengkap Penghuni *</label>
+                            <input type="text" id="ctxQuickName" placeholder="Contoh: Budi Santoso" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all bg-white">
+                        </div>
+
+                        <!-- Row 2: WhatsApp & Start Date -->
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">No. WhatsApp</label>
-                                <input type="text" id="ctxQuickPhone" placeholder="08xxxxxxxxxx" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500">
+                                <input type="text" id="ctxQuickPhone" placeholder="08xxxxxxxxxx" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500 bg-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tgl Mulai Masuk</label>
-                                <input type="date" id="ctxQuickDate" value="${todayIso}" class="w-full border border-slate-200 rounded-xl px-2 py-2 text-xs outline-none focus:border-emerald-500 bg-white">
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tgl Mulai Masuk *</label>
+                                <input type="date" id="ctxQuickDate" value="${todayIso}" onchange="updateCtxQuickDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-2.5 py-2 text-xs outline-none focus:border-emerald-500 bg-white font-medium">
                             </div>
                         </div>
 
+                        <!-- Row 3: Rent Rate (locked) & Duration -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block font-bold text-slate-700 text-[11px]">Tarif Pokok / Bln *</label>
+                                    <span class="text-[9px] text-slate-400 font-medium flex items-center gap-0.5" title="Tarif sewa sudah ditetapkan di master kamar">
+                                        <i class="fa-solid fa-lock text-[8px]"></i> Tetap
+                                    </span>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute left-2.5 top-2 text-[11px] font-bold text-slate-400 font-mono">Rp</span>
+                                    <input type="number" id="ctxQuickAmount" value="${room.amount}" readonly class="w-full border border-slate-200 rounded-xl pl-8 pr-2.5 py-2 bg-slate-100 font-mono font-bold text-xs text-slate-700 cursor-not-allowed outline-none select-none" title="Tarif sewa sudah ditetapkan dan tidak dapat diubah di form check-in">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1 text-[11px]">Durasi Sewa *</label>
+                                <select id="ctxQuickRentTerm" onchange="onRentTermChange(this.value, 'ctxQuick')" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500">
+                                    <option value="1_bulan" selected>1 Bulan (Standar)</option>
+                                    <option value="3_bulan">3 Bulan (Kuartal)</option>
+                                    <option value="6_bulan">6 Bulan (Semester)</option>
+                                    <option value="1_tahun">1 Tahun (Tahunan)</option>
+                                    <option value="harian">Transit / Harian</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3b: Daily Days Counter (if harian selected) -->
+                        <div id="ctxQuickDailyContainer" class="hidden">
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Jumlah Hari Sewa *</label>
+                            <div class="relative max-w-xs">
+                                <input type="number" id="ctxQuickDailyDays" value="3" min="1" max="30" oninput="updateCtxQuickDueDatePreview()" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 font-mono font-bold text-xs outline-none focus:border-emerald-500">
+                                <span class="absolute right-3 top-1.5 text-slate-400 text-xs font-semibold">Hari</span>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Skema Pembayaran -->
                         <div>
                             <div class="flex items-center justify-between mb-1">
-                                <label class="block text-[11px] font-bold text-slate-700">Uang Jaminan / Deposit <span class="font-normal text-slate-400">(Opsional)</span></label>
-                                <span class="text-[9px] text-slate-400">Bisa diisi Rp 0</span>
+                                <label class="block font-bold text-slate-700 text-[11px]">Skema Pembayaran *</label>
+                                <div class="text-[10px] text-slate-500 flex items-center gap-1 font-medium">
+                                    <span>Jatuh tempo:</span>
+                                    <span id="ctxQuickDueDateText" class="font-bold text-slate-800 font-mono">-</span>
+                                </div>
                             </div>
-                            <input type="number" id="ctxQuickDeposit" placeholder="0 (Tanpa Deposit)" min="0" step="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono outline-none focus:border-emerald-500">
-                            <div class="flex items-center gap-1.5 mt-1">
-                                <button type="button" onclick="setCtxQuickDeposit(0)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-semibold text-slate-600 transition-colors">Rp 0</button>
-                                <button type="button" onclick="setCtxQuickDeposit(250000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">250rb</button>
-                                <button type="button" onclick="setCtxQuickDeposit(500000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">500rb</button>
-                                <button type="button" onclick="setCtxQuickDeposit(1000000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1.5">Pilihan Pembayaran Awal</label>
-                            <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
-                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-emerald-500 bg-emerald-50/40 text-emerald-800 font-bold">
+                            <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
+                                <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-emerald-500 bg-emerald-50/70 text-emerald-800 font-bold" id="ctxQuickPlanLabelLunas">
                                     <input type="radio" name="ctxPayChoice" value="lunas" checked onchange="toggleQuickDpInput()" class="sr-only">
-                                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                                    <span>Lunas 1 Bln</span>
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                                    <span>Lunas</span>
                                 </label>
-                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-slate-200 text-slate-700 font-semibold">
+                                <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 bg-white font-medium" id="ctxQuickPlanLabelTempo">
                                     <input type="radio" name="ctxPayChoice" value="tempo" onchange="toggleQuickDpInput()" class="sr-only">
-                                    <i class="fa-solid fa-clock text-amber-500"></i>
-                                    <span>Bayar Nanti</span>
+                                    <i class="fa-solid fa-clock text-amber-500 text-xs"></i>
+                                    <span>Tempo / Nanti</span>
                                 </label>
-                                <label class="cursor-pointer border rounded-xl p-2 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 border-slate-200 text-slate-700 font-semibold">
+                                <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 bg-white font-medium" id="ctxQuickPlanLabelDp">
                                     <input type="radio" name="ctxPayChoice" value="dp" onchange="toggleQuickDpInput()" class="sr-only">
-                                    <i class="fa-solid fa-bookmark text-purple-500"></i>
-                                    <span>Booking / DP</span>
+                                    <i class="fa-solid fa-bookmark text-purple-500 text-xs"></i>
+                                    <span>DP / Booking</span>
                                 </label>
                             </div>
                         </div>
 
-                        <div id="ctxQuickDpContainer" class="hidden">
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nominal DP Masuk (Rp)</label>
-                            <input type="number" id="ctxQuickDpAmount" value="300000" min="50000" class="w-full border border-purple-200 rounded-xl px-3 py-2 text-xs font-mono font-bold outline-none focus:border-purple-500 bg-purple-50/30">
+                        <!-- Row 4b: DP Section -->
+                        <div id="ctxQuickDpContainer" class="hidden p-2.5 rounded-xl bg-purple-50/60 border border-purple-200 space-y-1">
+                            <label class="block font-bold text-purple-900 text-[11px]">Nominal DP Masuk (Rp) *</label>
+                            <input type="number" id="ctxQuickDpAmount" value="300000" min="50000" oninput="updateCtxQuickBillSummary()" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-1.5 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
                         </div>
 
-                        <button onclick="submitQuickCheckIn()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 transition-all">
-                            <i class="fa-solid fa-user-plus"></i> Konfirmasi Check-In Sekarang
+                        <!-- Row 5: Deposit & KTP -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block font-bold text-slate-700 text-[11px]">Uang Jaminan / Deposit <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                    <span class="text-[9px] text-slate-400">Bisa Rp 0</span>
+                                </div>
+                                <input type="number" id="ctxQuickDeposit" min="0" step="50000" oninput="updateCtxQuickBillSummary()" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 font-mono text-xs bg-white">
+                                <div class="flex items-center gap-1 mt-1">
+                                    <button type="button" onclick="setCtxQuickDeposit(0)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[9px] font-semibold text-slate-600 transition-colors">Rp 0</button>
+                                    <button type="button" onclick="setCtxQuickDeposit(250000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">250k</button>
+                                    <button type="button" onclick="setCtxQuickDeposit(500000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">500k</button>
+                                    <button type="button" onclick="setCtxQuickDeposit(1000000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1 text-[11px]">Lampiran Foto KTP <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                <div class="flex items-center gap-1.5">
+                                    <label class="flex-1 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 text-center cursor-pointer transition-colors flex items-center justify-center gap-1.5 bg-slate-50 hover:bg-emerald-50/50 text-slate-600">
+                                        <i class="fa-solid fa-camera text-slate-400 text-xs"></i>
+                                        <span id="ctxQuickKtpLabel" class="text-[11px] font-semibold truncate">Upload Foto KTP</span>
+                                        <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
+                                    </label>
+                                    <button type="button" id="ctxQuickKtpClearBtn" onclick="clearKtpFile('ctxQuick')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="ctxQuickKtpBase64">
+                            </div>
+                        </div>
+
+                        <!-- Row 5b: Rincian & Jumlah Yang Harus Dibayar -->
+                        <div id="ctxQuickPaymentSummaryBox" class="p-3 rounded-2xl bg-gradient-to-r from-emerald-50/80 to-teal-50/60 border border-emerald-200/80 space-y-1.5 shadow-2xs">
+                            <div class="flex items-center justify-between text-xs pb-1 border-b border-emerald-200/60">
+                                <span class="font-extrabold text-emerald-950 flex items-center gap-1.5 text-[11px]">
+                                    <i class="fa-solid fa-receipt text-emerald-600"></i>
+                                    <span>Rincian Tagihan &amp; Pembayaran</span>
+                                </span>
+                                <span id="ctxQuickSummaryTermBadge" class="text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-300/70">
+                                    1 Bulan
+                                </span>
+                            </div>
+                            <div class="space-y-1 text-[11px] text-slate-600">
+                                <div class="flex items-center justify-between">
+                                    <span>Biaya Sewa (<span id="ctxQuickSummaryDurationLabel">1 Bulan</span>):</span>
+                                    <span id="ctxQuickSummaryRentTotal" class="font-bold font-mono text-slate-800">Rp 0</span>
+                                </div>
+                                <div id="ctxQuickSummaryDepositRow" class="flex items-center justify-between">
+                                    <span>Uang Jaminan / Deposit:</span>
+                                    <span id="ctxQuickSummaryDepositTotal" class="font-bold font-mono text-slate-800">Rp 0</span>
+                                </div>
+                            </div>
+                            <div class="pt-1.5 border-t border-emerald-200/80 flex items-center justify-between">
+                                <div>
+                                    <div class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-900">Jumlah Yang Harus Dibayar</div>
+                                    <div id="ctxQuickSummaryPayNote" class="text-[10px] text-slate-500 font-medium">Pembayaran Penuh (Lunas Masuk)</div>
+                                </div>
+                                <div class="text-right">
+                                    <span id="ctxQuickSummaryTotalPayable" class="text-sm sm:text-base font-black font-mono text-emerald-700 tracking-tight">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 6: Catatan Tambahan (Opsional) -->
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Catatan Tambahan <span class="font-normal text-slate-400">(Opsional)</span></label>
+                            <input type="text" id="ctxQuickDetail" placeholder="Contoh: Bawa motor / deposit kunci" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 text-xs">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="button" id="ctxQuickSubmitBtn" onclick="submitQuickCheckIn()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm shadow-emerald-600/20 transition-all">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Konfirmasi Check-In Sekarang</span>
                         </button>
                     </div>
 
@@ -4382,12 +4571,23 @@
         }
 
         function toggleQuickDpInput() {
-            const choice = document.querySelector('input[name="ctxPayChoice"]:checked')?.value;
+            const choice = document.querySelector('input[name="ctxPayChoice"]:checked')?.value || 'lunas';
             const dpContainer = document.getElementById('ctxQuickDpContainer');
             if (dpContainer) {
                 if (choice === 'dp') dpContainer.classList.remove('hidden');
                 else dpContainer.classList.add('hidden');
             }
+
+            const lunasLabel = document.getElementById('ctxQuickPlanLabelLunas');
+            const tempoLabel = document.getElementById('ctxQuickPlanLabelTempo');
+            const dpLabel = document.getElementById('ctxQuickPlanLabelDp');
+
+            const resetClass = 'border-slate-200 text-slate-700 bg-white font-medium';
+            if (lunasLabel) lunasLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${choice === 'lunas' ? 'border-emerald-500 bg-emerald-50/70 text-emerald-800 font-bold' : resetClass}`;
+            if (tempoLabel) tempoLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${choice === 'tempo' ? 'border-amber-500 bg-amber-50/70 text-amber-800 font-bold' : resetClass}`;
+            if (dpLabel) dpLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${choice === 'dp' ? 'border-purple-500 bg-purple-50/70 text-purple-800 font-bold' : resetClass}`;
+
+            updateCtxQuickBillSummary();
         }
 
         async function submitQuickCheckIn() {
@@ -4399,6 +4599,11 @@
             const phoneInput = document.getElementById('ctxQuickPhone');
             const payChoice = document.querySelector('input[name="ctxPayChoice"]:checked')?.value || 'lunas';
             const moveInDateInput = document.getElementById('ctxQuickDate')?.value;
+            const rentTerm = document.getElementById('ctxQuickRentTerm')?.value || '1_bulan';
+            const dailyDays = Math.max(1, Number(document.getElementById('ctxQuickDailyDays')?.value) || 1);
+            const ktpPhoto = document.getElementById('ctxQuickKtpBase64')?.value || '';
+            const detailInput = document.getElementById('ctxQuickDetail')?.value.trim();
+            const quickDeposit = Number(document.getElementById('ctxQuickDeposit')?.value) || 0;
 
             const customerName = nameInput ? nameInput.value.trim() : '';
             if (!customerName) {
@@ -4409,15 +4614,28 @@
 
             const phone = phoneInput ? phoneInput.value.trim() : '';
 
-            // Calculate due date (+1 month safely)
-            const baseDate = moveInDateInput ? new Date(moveInDateInput + 'T00:00:00') : new Date();
-            const nextDueDate = formatDueDateIndo(addOneMonthSafe(baseDate));
+            const submitBtn = document.getElementById('ctxQuickSubmitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            }
+
+            // Calculate due date based on chosen rent term
+            const nextDueDate = calculateDueDateFromTerm(moveInDateInput, rentTerm, dailyDays);
 
             let payStatus = 'Lunas';
             let workStatus = 'Terisi';
-            let detailNote = room.detail || '';
+            let detailNote = detailInput || room.detail || 'Siap Huni';
 
             if (!room.payment_history) room.payment_history = [];
+
+            let totalTermRent = room.amount;
+            if (rentTerm === '3_bulan') totalTermRent = room.amount * 3;
+            else if (rentTerm === '6_bulan') totalTermRent = room.amount * 6;
+            else if (rentTerm === '1_tahun') totalTermRent = room.amount * 12;
+            else if (rentTerm === 'harian') totalTermRent = Math.round(room.amount / 30) * dailyDays;
+
+            let primaryReceiptTrx = null;
 
             if (payChoice === 'tempo') {
                 payStatus = 'Belum Lunas';
@@ -4426,28 +4644,29 @@
                 const dpAmount = document.getElementById('ctxQuickDpAmount')?.value || '300000';
                 payStatus = 'DP Terbayar';
                 workStatus = 'Booking Baru';
-                detailNote = `DP Rp ${Number(dpAmount).toLocaleString('id-ID')} • Rencana Masuk ${moveInDateInput || '-'}`;
-                room.payment_history.push({
+                detailNote = `DP Rp ${Number(dpAmount).toLocaleString('id-ID')} • Rencana Masuk: ${moveInDateInput || '-'}` + (detailInput ? ` • ${detailInput}` : '');
+                primaryReceiptTrx = {
                     id: 'TRX-' + Date.now().toString().slice(-8),
                     date: moveInDateInput || new Date().toISOString().slice(0, 10),
                     type: 'dp',
                     desc: 'Uang Muka / Booking (Quick Check-In)',
                     amount: Number(dpAmount),
                     method: 'Tunai / Transfer'
-                });
+                };
+                room.payment_history.push(primaryReceiptTrx);
             } else {
                 // Lunas
-                room.payment_history.push({
+                primaryReceiptTrx = {
                     id: 'TRX-' + Date.now().toString().slice(-8),
                     date: moveInDateInput || new Date().toISOString().slice(0, 10),
                     type: 'sewa',
-                    desc: 'Sewa Bulan Pertama (Quick Check-In)',
-                    amount: room.amount,
+                    desc: `Pembayaran Sewa (${getTermBadgeText(rentTerm, dailyDays)})`,
+                    amount: totalTermRent,
                     method: 'Tunai / Transfer'
-                });
+                };
+                room.payment_history.push(primaryReceiptTrx);
             }
 
-            const quickDeposit = Number(document.getElementById('ctxQuickDeposit')?.value) || 0;
             if (quickDeposit > 0) {
                 room.payment_history.push({
                     id: 'TRX-' + (Date.now() + 1).toString().slice(-8),
@@ -4462,12 +4681,16 @@
             const updatePayload = {
                 customer: customerName,
                 phone: phone,
+                amount: room.amount,
                 pay_status: payStatus,
                 work_status: workStatus,
                 date: nextDueDate,
                 detail: detailNote,
+                rent_term: rentTerm,
+                daily_days: dailyDays,
                 deposit_amount: quickDeposit,
                 deposit_status: quickDeposit > 0 ? 'Tersimpan' : 'Tidak Ada',
+                ktp_photo: ktpPhoto,
                 payment_history: room.payment_history
             };
 
@@ -4483,10 +4706,18 @@
             saveRoomsLocal();
             closeSmartRoomModal();
             renderAllViews();
-            showToast(`Check-in Kamar ${room.id} berhasil! Penghuni: ${customerName}`, 'success');
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Konfirmasi Check-In Sekarang</span>';
+            }
+
+            showToast(`Check-in Kamar ${room.id} (${customerName}) berhasil!`, 'success');
 
             if (payChoice === 'lunas' || payChoice === 'dp') {
-                openReceiptForItem(id);
+                setTimeout(() => {
+                    openReceiptForItem(id, primaryReceiptTrx);
+                }, 300);
             }
         }
 
