@@ -3577,6 +3577,35 @@
                 }
             };
 
+            // Kirim data registrasi ke server pusat RAM.AI.ID agar langsung masuk ke Dashboard Admin
+            try {
+                fetch('https://ram.ai.id/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: newTenantId,
+                        invoice_num: invoiceNum,
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        business_name: kostName,
+                        kost_name: kostName,
+                        password: pass,
+                        plan_name: planName,
+                        price: price,
+                        active_app: 'simkost',
+                        role: 'tenant',
+                        license_status: 'pending_payment'
+                    })
+                }).then(function(r) { return r.json(); }).then(function(res) {
+                    console.log('[API Register] Berhasil sync ke database pusat ram.ai.id:', res);
+                }).catch(function(err) {
+                    console.warn('[API Register] Gagal sync ke ram.ai.id (offline fallback):', err);
+                });
+            } catch (apiErr) {
+                console.warn('[API Register] Error dispatching request:', apiErr);
+            }
+
             accounts.push(newAccount);
             saveAccountsRegistry(accounts);
 
@@ -3746,9 +3775,52 @@
             window.open(waUrl, '_blank');
         }
 
-        function checkInvoiceActivationStatus() {
+        async function checkInvoiceActivationStatus() {
             const acc = currentActiveInvoice;
             if (!acc) return;
+
+            showToast('Memeriksa status aktivasi akun ke server pusat ram.ai.id...', 'info');
+
+            // 1. Cek langsung ke server pusat ram.ai.id
+            try {
+                const resp = await fetch('https://ram.ai.id/api/auth/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        account_id: acc.id,
+                        email: acc.email,
+                        phone: acc.phone,
+                        app: 'simkost'
+                    })
+                });
+                const res = await resp.json();
+                if (res.status === 'success' && res.is_active) {
+                    const accounts = getAccountsRegistry();
+                    const idx = accounts.findIndex(a => a.id === acc.id || (a.email && a.email.toLowerCase() === (acc.email || '').toLowerCase()));
+                    if (idx !== -1) {
+                        accounts[idx].licenseStatus = 'active';
+                        accounts[idx].activeUntil = res.active_until || accounts[idx].activeUntil;
+                        saveAccountsRegistry(accounts);
+                    }
+                    showToast('Selamat! Akun Anda telah diaktifkan oleh Admin RAM.', 'success');
+                    closePaymentInvoiceModal();
+                    const payload = JSON.stringify({
+                        user: acc.name,
+                        email: acc.email,
+                        role: acc.role || 'tenant',
+                        tenantId: acc.id,
+                        loginTime: new Date().toISOString()
+                    });
+                    localStorage.setItem(AUTH_SESSION_KEY, payload);
+                    applyTenantSession(JSON.parse(payload));
+                    checkAuthSession();
+                    return;
+                }
+            } catch (netErr) {
+                console.warn('[Verify Status] Gagal menghubungi ram.ai.id:', netErr);
+            }
+
+            // 2. Fallback check lokal
             const fresh = getAccountByTenantId(acc.id);
             if (fresh && fresh.licenseStatus === 'active') {
                 showToast('Selamat! Akun Anda telah diaktifkan oleh Admin RAM.', 'success');
