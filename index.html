@@ -39,6 +39,9 @@
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- html2canvas for High-Res Receipt Image Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
     <style>
         /* Thermal Receipt Paper Styling */
         .receipt-paper {
@@ -980,14 +983,18 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="pt-1 flex items-center gap-2">
-                        <button onclick="printReceiptNow()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs bg-slate-900 hover:bg-slate-800 shadow-sm flex items-center justify-center gap-1.5 transition-all">
+                    <div class="pt-1 grid grid-cols-12 gap-2">
+                        <button type="button" onclick="printReceiptNow()" class="col-span-4 py-2.5 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-slate-200 shadow-2xs" title="Cetak struk ke printer thermal / PDF">
                             <i class="fa-solid fa-print"></i>
-                            <span>Cetak Struk</span>
+                            <span>Cetak</span>
                         </button>
-                        <button onclick="sendReceiptViaWA()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all" title="Kirim Nota via WhatsApp">
+                        <button type="button" onclick="downloadReceiptAsJpg()" class="col-span-3 py-2.5 rounded-xl text-emerald-800 bg-emerald-50 hover:bg-emerald-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-emerald-200/80 shadow-2xs" title="Unduh struk sebagai file gambar JPG">
+                            <i class="fa-solid fa-image"></i>
+                            <span>JPG</span>
+                        </button>
+                        <button type="button" id="btnSendReceiptWaJpg" onclick="sendReceiptViaWA()" class="col-span-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all" title="Kirim Struk Gambar via WhatsApp">
                             <i class="fa-brands fa-whatsapp text-sm"></i>
-                            <span>Kirim WA</span>
+                            <span>Kirim Struk WA</span>
                         </button>
                     </div>
 
@@ -6388,10 +6395,196 @@
 
         function printReceiptNow() { window.print(); }
 
-        function sendReceiptViaWA() {
-            const cust = document.getElementById('receiptCustomerText').innerText;
-            const nota = document.getElementById('receiptIdText').innerText;
-            const total = document.getElementById('receiptGrandTotalText').innerText;
+        async function generateReceiptImageBlob() {
+            const paper = document.getElementById('printableReceiptArea');
+            if (!paper) return null;
+
+            // Strategy 1: html2canvas for pixel-perfect thermal receipt rendering
+            if (window.html2canvas) {
+                try {
+                    const canvas = await window.html2canvas(paper, {
+                        scale: 2, // 2x retina clarity
+                        backgroundColor: '#ffffff',
+                        useCORS: true,
+                        logging: false
+                    });
+                    return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                } catch (err) {
+                    console.warn('html2canvas capture error, switching to canvas fallback', err);
+                }
+            }
+
+            // Strategy 2: Native HTML5 Canvas render fallback (100% offline & dependency-free)
+            return generateReceiptCanvasFallback();
+        }
+
+        function generateReceiptCanvasFallback() {
+            const store = document.getElementById('receiptStoreName')?.innerText || 'KOST MAGNOLIA RESIDENCE';
+            const addr = document.getElementById('receiptStoreAddress')?.innerText || '';
+            const phone = document.getElementById('receiptStorePhone')?.innerText || '';
+            const nota = document.getElementById('receiptIdText')?.innerText || '';
+            const date = document.getElementById('receiptDateText')?.innerText || '';
+            const cust = document.getElementById('receiptCustomerText')?.innerText || '';
+            const total = document.getElementById('receiptGrandTotalText')?.innerText || 'Rp 0';
+
+            const canvas = document.createElement('canvas');
+            const width = 600;
+            const height = 750 + (receiptRows.length * 36);
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            // Background & Border
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(12, 12, width - 24, height - 24);
+
+            // Store Header
+            ctx.fillStyle = '#059669';
+            ctx.font = 'bold 22px "Plus Jakarta Sans", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(store, width / 2, 60);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '13px monospace';
+            if (addr) ctx.fillText(addr, width / 2, 88);
+            if (phone) ctx.fillText(phone, width / 2, 108);
+
+            // Dashed Divider
+            ctx.setLineDash([6, 4]);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.beginPath();
+            ctx.moveTo(30, 130);
+            ctx.lineTo(width - 30, 130);
+            ctx.stroke();
+
+            // Transaction Details
+            ctx.setLineDash([]);
+            ctx.textAlign = 'left';
+            ctx.font = '14px monospace';
+            ctx.fillStyle = '#334155';
+            ctx.fillText(`No. Nota  : ${nota}`, 40, 165);
+            ctx.fillText(`Tanggal   : ${date}`, 40, 195);
+            ctx.fillText(`Penyewa   : ${cust}`, 40, 225);
+
+            // Divider
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(30, 250);
+            ctx.lineTo(width - 30, 250);
+            ctx.stroke();
+
+            // Items Header
+            ctx.setLineDash([]);
+            ctx.font = 'bold 13px monospace';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('RINCIAN PEMBAYARAN', 40, 280);
+            ctx.textAlign = 'right';
+            ctx.fillText('TOTAL', width - 40, 280);
+
+            // Line Items
+            let curY = 315;
+            ctx.font = '14px monospace';
+            ctx.fillStyle = '#1e293b';
+            receiptRows.forEach(item => {
+                ctx.textAlign = 'left';
+                ctx.fillText(`${item.desc} (${item.qty}x)`, 40, curY);
+                ctx.textAlign = 'right';
+                ctx.fillText(`Rp ${Number(item.qty * item.price).toLocaleString('id-ID')}`, width - 40, curY);
+                curY += 34;
+            });
+
+            // Divider
+            ctx.setLineDash([6, 4]);
+            ctx.beginPath();
+            ctx.moveTo(30, curY + 10);
+            ctx.lineTo(width - 30, curY + 10);
+            ctx.stroke();
+
+            // Total Section
+            ctx.setLineDash([]);
+            curY += 45;
+            ctx.font = 'bold 18px monospace';
+            ctx.fillStyle = '#0f172a';
+            ctx.textAlign = 'left';
+            ctx.fillText('TOTAL DIBAYAR', 40, curY);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#059669';
+            ctx.fillText(total, width - 40, curY);
+
+            // LUNAS Stamp
+            curY += 60;
+            ctx.textAlign = 'center';
+            ctx.strokeStyle = '#059669';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(width / 2 - 90, curY - 28, 180, 42);
+            ctx.fillStyle = '#059669';
+            ctx.font = 'bold 20px monospace';
+            ctx.fillText('✓ LUNAS', width / 2, curY);
+
+            // Footer
+            curY += 55;
+            ctx.font = '12px monospace';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('*** BUKTI PEMBAYARAN SAH ***', width / 2, curY);
+            ctx.fillText('Simpan kuitansi ini sebagai bukti sewa yang sah.', width / 2, curY + 22);
+
+            return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+        }
+
+        async function convertJpegToPngBlob(jpegBlob) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(resolve, 'image/png');
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(jpegBlob);
+            });
+        }
+
+        function downloadBlobAsFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        async function downloadReceiptAsJpg() {
+            const nota = document.getElementById('receiptIdText')?.innerText || 'KMR';
+            const safeNota = nota.replace(/[^a-zA-Z0-9]/g, '-');
+            const fileName = `struk-${safeNota}.jpg`;
+
+            showToast('Menyiapkan gambar struk JPG...', 'info');
+            try {
+                const blob = await generateReceiptImageBlob();
+                if (blob) {
+                    downloadBlobAsFile(blob, fileName);
+                    showToast('Struk berhasil diunduh sebagai file JPG!', 'success');
+                } else {
+                    showToast('Gagal memproses gambar struk', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal mengunduh gambar struk', 'error');
+            }
+        }
+
+        async function sendReceiptViaWA() {
+            const cust = document.getElementById('receiptCustomerText')?.innerText || 'Penyewa';
+            const nota = document.getElementById('receiptIdText')?.innerText || 'KMR';
+            const total = document.getElementById('receiptGrandTotalText')?.innerText || 'Rp 0';
             const store = appSettings.storeName || DEFAULT_SETTINGS.storeName;
             const targetPhone = formatIndonesianWaNumber(currentReceiptItem?.phone);
 
@@ -6408,7 +6601,71 @@
             if (targetPhone) {
                 waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
             }
-            window.open(waUrl, '_blank');
+
+            const sendBtn = document.getElementById('btnSendReceiptWaJpg');
+            const origHtml = sendBtn ? sendBtn.innerHTML : '';
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> <span>Menyiapkan JPG...</span>';
+            }
+
+            try {
+                const blob = await generateReceiptImageBlob();
+                const safeNota = nota.replace(/[^a-zA-Z0-9]/g, '-');
+                const fileName = `struk-${safeNota}.jpg`;
+
+                // 1. Mobile Web Share API: share image file directly to WhatsApp if supported
+                if (navigator.canShare && blob) {
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: `Struk Pembayaran ${store}`,
+                            text: decodeURIComponent(msg.replace(/%0A/g, '\n')),
+                            files: [file]
+                        });
+                        if (sendBtn) {
+                            sendBtn.disabled = false;
+                            sendBtn.innerHTML = origHtml;
+                        }
+                        return;
+                    }
+                }
+
+                // 2. Desktop Clipboard Copy (Paste via Ctrl+V in WhatsApp Web)
+                let copiedToClipboard = false;
+                if (navigator.clipboard && window.ClipboardItem && blob) {
+                    try {
+                        const pngBlob = await convertJpegToPngBlob(blob);
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': pngBlob })
+                        ]);
+                        copiedToClipboard = true;
+                    } catch (clipErr) {
+                        console.warn('Clipboard write image failed, providing file download', clipErr);
+                    }
+                }
+
+                // Automatic file download as guaranteed backup
+                if (blob) {
+                    downloadBlobAsFile(blob, fileName);
+                }
+
+                if (copiedToClipboard) {
+                    showToast('Gambar struk disalin ke Clipboard! Tekan Ctrl+V di chat WhatsApp.', 'success');
+                } else {
+                    showToast('File gambar struk diunduh & WhatsApp dibuka.', 'success');
+                }
+
+                window.open(waUrl, '_blank');
+            } catch (err) {
+                console.error('Gagal memproses struk gambar', err);
+                window.open(waUrl, '_blank');
+            } finally {
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = origHtml;
+                }
+            }
         }
 
         // ── MONTHLY RECAP REPORT MODAL (A4 PRINTABLE) ─────────────────────────
