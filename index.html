@@ -459,6 +459,46 @@
                     </p>
                 </form>
             </div>
+
+            <!-- CONTAINER 3: EMAIL VERIFICATION NOTICE -->
+            <div id="authVerifyNoticeContainer" class="space-y-4 hidden text-center">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
+                    <i class="fa-solid fa-envelope-circle-check text-emerald-500"></i>
+                </div>
+                <div class="space-y-1">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-emerald-100 text-emerald-800">
+                        ⚡ Satu Langkah Lagi
+                    </span>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Periksa Email Anda</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Kami telah mengirimkan tautan aktivasi akun ke <strong id="verifyNoticeEmail" class="text-slate-800 font-bold">email@anda.com</strong>
+                    </p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-1.5 text-xs text-slate-600">
+                    <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-emerald-600"></i>
+                        <span>Instruksi Aktivasi:</span>
+                    </div>
+                    <ol class="list-decimal pl-4 space-y-1 text-[11px] text-slate-600">
+                        <li>Buka kotak masuk (Inbox) atau folder Spam email Anda.</li>
+                        <li>Cari email dari <b>SIMKOST Pro by RAM.AI.ID</b>.</li>
+                        <li>Klik tombol <b>Aktifkan Akun Saya Sekarang</b>.</li>
+                        <li>Akses Free Trial 14 Hari akan langsung aktif seketika!</li>
+                    </ol>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                    <button type="button" id="btnResendVerification" onclick="handleResendFromNotice()" class="w-full py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-paper-plane text-emerald-600"></i>
+                        <span>Kirim Ulang Email Aktivasi</span>
+                    </button>
+                    <button type="button" onclick="switchAuthTab('login')" class="w-full py-2 rounded-xl text-slate-500 hover:text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-arrow-left text-xs"></i>
+                        <span>Kembali ke Halaman Masuk</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3640,6 +3680,9 @@
             const regBtn = document.getElementById('authTabBtnRegister');
             const loginCont = document.getElementById('authLoginContainer');
             const regCont = document.getElementById('authRegisterContainer');
+            const noticeCont = document.getElementById('authVerifyNoticeContainer');
+
+            if (noticeCont) noticeCont.classList.add('hidden');
 
             if (tab === 'login') {
                 if (loginBtn) {
@@ -3662,7 +3705,46 @@
             }
         }
 
-        function handleAuthRegister(e) {
+        function showEmailVerificationNotice(email) {
+            const loginCont = document.getElementById('authLoginContainer');
+            const regCont = document.getElementById('authRegisterContainer');
+            const noticeCont = document.getElementById('authVerifyNoticeContainer');
+            const emailEl = document.getElementById('verifyNoticeEmail');
+            if (loginCont) loginCont.classList.add('hidden');
+            if (regCont) regCont.classList.add('hidden');
+            if (noticeCont) noticeCont.classList.remove('hidden');
+            if (emailEl) emailEl.innerText = email;
+            window._pendingVerificationEmail = email;
+        }
+
+        async function handleResendFromNotice() {
+            const email = window._pendingVerificationEmail;
+            if (!email) {
+                showToast('Email tidak ditemukan.', 'warning');
+                return;
+            }
+            const btn = document.getElementById('btnResendVerification');
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-600"></i> <span>Mengirim...</span>';
+            try {
+                const resp = await fetch('https://ram.ai.id/api/auth/resend-verification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const res = await resp.json();
+                if (res.status === 'success') {
+                    showToast('✅ Tautan aktivasi baru telah dikirim! Periksa Inbox atau Spam email Anda.', 'success');
+                } else {
+                    showToast(res.message || 'Gagal mengirim ulang email.', 'warning');
+                }
+            } catch (e) {
+                showToast('Gagal menghubungi server.', 'error');
+            } finally {
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-paper-plane text-emerald-600"></i> <span>Kirim Ulang Email Aktivasi</span>';
+            }
+        }
+
+        async function handleAuthRegister(e) {
             e.preventDefault();
             const name = (document.getElementById('regFullName')?.value || '').trim();
             const phone = (document.getElementById('regPhone')?.value || '').trim();
@@ -3680,13 +3762,21 @@
 
             const accounts = getAccountsRegistry();
             const existing = accounts.find(a => a.email.toLowerCase() === email.toLowerCase() || a.phone === phone);
-            if (existing) {
+            if (existing && existing.emailVerified) {
                 showToast('Email atau Nomor WhatsApp sudah terdaftar! Silakan langsung login.', 'error');
                 switchAuthTab('login');
                 const loginInp = document.getElementById('loginUsername');
                 if (loginInp) loginInp.value = email;
                 return;
             }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Mendaftarkan & Mengirim Email...</span>';
+            }
+
             const newTenantId = 'TNT-RAM-' + Math.floor(1000 + Math.random() * 9000);
             const invoiceNum = 'INV-RAM-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
             const uniqueCode = Math.floor(100 + Math.random() * 900);
@@ -3694,7 +3784,6 @@
             const trialDays = 14;
             const trialUntil = new Date(now.getTime() + trialDays * 24 * 3600 * 1000).toISOString();
 
-            // MODEL A: Default status adalah 'trial' (Free Trial 14 Hari Penuh)
             const newAccount = {
                 id: newTenantId,
                 invoiceNum: invoiceNum,
@@ -3706,7 +3795,8 @@
                 password: pass,
                 kostName: kostName,
                 role: 'tenant',
-                licenseStatus: 'trial',
+                licenseStatus: 'pending_verification',
+                emailVerified: false,
                 paymentStatus: 'unpaid',
                 paymentPlan: plan,
                 plan: planName,
@@ -3716,15 +3806,14 @@
                 activeUntil: trialUntil,
                 proofImage: '',
                 apps: {
-                    simkost: { status: "trial", name: "SIMKOST Pro" },
+                    simkost: { status: "pending_verification", name: "SIMKOST Pro" },
                     simlaundry: { status: "unsubscribed", name: "SIM-Laundry POS" },
                     simpos: { status: "unsubscribed", name: "SIM-Kasir Retail & Resto" }
                 }
             };
 
-            // Kirim pendaftaran akun ke server pusat RAM.AI.ID
             try {
-                fetch('https://ram.ai.id/api/auth/register', {
+                const resp = await fetch('https://ram.ai.id/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -3742,57 +3831,45 @@
                         price: price,
                         active_app: 'simkost',
                         role: 'tenant',
-                        license_status: 'trial',
+                        license_status: 'pending_verification',
                         trial_days: trialDays
                     })
-                }).then(function(r) { return r.json(); }).then(function(res) {
-                    console.log('[API Register] Berhasil sync ke server pusat ram.ai.id:', res);
-                    if (res && res.account && res.account.unique_code) {
-                        newAccount.uniqueCode = res.account.unique_code;
-                        saveAccountsRegistry(accounts);
-                    }
-                }).catch(function(err) {
-                    console.warn('[API Register] Offline fallback:', err);
                 });
-            } catch (apiErr) {
-                console.warn('[API Register] Error dispatching request:', apiErr);
+                const res = await resp.json();
+
+                if (res.status === 'success' || res.needs_verification) {
+                    if (res.account && res.account.id) newAccount.id = res.account.id;
+                    if (res.account && res.account.unique_code) newAccount.uniqueCode = res.account.unique_code;
+
+                    const idx = accounts.findIndex(a => a.email.toLowerCase() === email.toLowerCase());
+                    if (idx !== -1) accounts[idx] = newAccount;
+                    else accounts.push(newAccount);
+                    saveAccountsRegistry(accounts);
+
+                    showToast(`📧 Tautan aktivasi akun telah dikirim ke ${email}!`, 'success');
+                    showEmailVerificationNotice(email);
+                } else if (res.status === 'pending_verification') {
+                    showToast(res.message, 'warning');
+                    showEmailVerificationNotice(email);
+                } else {
+                    showToast(res.message || 'Gagal mendaftar akun.', 'error');
+                }
+            } catch (netErr) {
+                console.warn('[Register Error]', netErr);
+                showToast('Gagal menghubungi server pendaftaran.', 'error');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = origBtnHtml;
+                }
             }
-
-            accounts.push(newAccount);
-            saveAccountsRegistry(accounts);
-
-            // MODEL A: Langsung login instan ke dashboard Kost milik user!
-            const payload = JSON.stringify({
-                user: name,
-                email: email,
-                role: 'tenant',
-                tenantId: newTenantId,
-                loginTime: new Date().toISOString()
-            });
-            localStorage.setItem(AUTH_SESSION_KEY, payload);
-            applyTenantSession(JSON.parse(payload));
-
-            // Set nama kost langsung
-            appSettings.storeName = kostName;
-            appSettings.phone = phone;
-            appSettings.isDemoMode = false;
-            saveSettingsLocal();
-            updateStoreLabels();
-            checkAuthSession();
-
-            // Tutup modal login/register
-            const authModal = document.getElementById('authModal');
-            if (authModal) authModal.classList.add('hidden');
-
-            // Notifikasi onboarding Free Trial 14 Hari
-            showToast(`🎉 Selamat datang, ${name}! Masa Uji Coba Gratis 14 Hari aktif untuk ${kostName}.`, 'success');
         }
 
         function loginAsDemoUser() {
             const payload = JSON.stringify({
                 user: 'Pengelola Demo',
                 role: 'demo',
-                tenantId: 'TNT-RAM-ADMIN',
+                tenantId: 'TNT-RAM-DEMO',
                 loginTime: new Date().toISOString()
             });
             localStorage.setItem(AUTH_SESSION_KEY, payload);
@@ -3804,7 +3881,7 @@
             showToast('Selamat datang! Masuk dalam Mode Demo (Simulasi Aktif).', 'success');
         }
 
-        function handleAuthLogin(e) {
+        async function handleAuthLogin(e) {
             e.preventDefault();
             const u = (document.getElementById('loginUsername')?.value || '').trim();
             const p = (document.getElementById('loginPassword')?.value || '').trim();
@@ -3815,52 +3892,130 @@
                 return;
             }
 
-            // Check in registered accounts
-            const account = getAccountByUsernameOrEmail(u);
-
-            if (!account || account.password !== p) {
-                showToast('Kredensial tidak valid! Periksa email/no. WA dan kata sandi Anda.', 'error');
-                return;
+            const loginBtn = e.target.querySelector('button[type="submit"]');
+            const origLoginHtml = loginBtn ? loginBtn.innerHTML : '';
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memeriksa Akun...</span>';
             }
 
-            // MODEL A: Cek masa berlaku Free Trial 14 Hari
-            if (account.licenseStatus === 'trial') {
-                const now = new Date();
-                const trialEnd = account.trialUntil ? new Date(account.trialUntil) : new Date(Date.now() + 14 * 24 * 3600 * 1000);
-                if (now > trialEnd) {
-                    showToast('Masa Uji Coba Gratis 14 Hari Anda telah berakhir. Silakan pilih paket berlangganan untuk melanjutkan.', 'warning');
+            try {
+                // Check in registered accounts locally
+                let account = getAccountByUsernameOrEmail(u);
+
+                // Sinkronkan ke cloud API jika akun belum ada atau masih status pending_verification
+                if (!account || account.licenseStatus === 'pending_verification' || account.emailVerified === false) {
+                    try {
+                        const resp = await fetch('https://ram.ai.id/api/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ identifier: u, password: p })
+                        });
+                        const res = await resp.json();
+                        if (res.status === 'success' && res.account) {
+                            const sAcc = res.account;
+                            const accounts = getAccountsRegistry();
+                            let localAcc = accounts.find(a => a.id === sAcc.id || (a.email && a.email.toLowerCase() === (sAcc.email || '').toLowerCase()));
+                            if (localAcc) {
+                                localAcc.emailVerified = true;
+                                localAcc.licenseStatus = sAcc.license_status;
+                                localAcc.trialUntil = sAcc.trial_until;
+                                localAcc.activeUntil = sAcc.active_until;
+                                localAcc.password = p;
+                                if (localAcc.apps && localAcc.apps.simkost) {
+                                    localAcc.apps.simkost.status = sAcc.license_status;
+                                }
+                            } else {
+                                localAcc = {
+                                    id: sAcc.id,
+                                    name: sAcc.name || 'Pengelola Kost',
+                                    username: (sAcc.email || '').split('@')[0],
+                                    email: sAcc.email,
+                                    phone: sAcc.phone || '',
+                                    password: p,
+                                    kostName: sAcc.business_name || 'Kost Saya',
+                                    role: sAcc.role || 'tenant',
+                                    licenseStatus: sAcc.license_status,
+                                    emailVerified: true,
+                                    paymentStatus: sAcc.payment_status || 'unpaid',
+                                    paymentPlan: sAcc.payment_plan || 'monthly',
+                                    plan: sAcc.plan_name || 'Free Trial 14 Hari',
+                                    price: sAcc.price || 0,
+                                    registeredAt: (sAcc.registered_at || '').slice(0, 10),
+                                    trialUntil: sAcc.trial_until,
+                                    activeUntil: sAcc.active_until,
+                                    apps: sAcc.apps || { simkost: { status: sAcc.license_status, name: "SIMKOST Pro" } }
+                                };
+                                accounts.push(localAcc);
+                            }
+                            saveAccountsRegistry(accounts);
+                            account = localAcc;
+                        } else if (res.status === 'pending_verification') {
+                            showToast(res.message || 'Akun Anda belum diaktifkan! Silakan periksa inbox/spam email Anda.', 'warning');
+                            showEmailVerificationNotice(res.email || u);
+                            return;
+                        }
+                    } catch (netErr) {
+                        console.warn('[Sync Login Error]', netErr);
+                    }
+                }
+
+                if (!account || (account.password && account.password !== p)) {
+                    showToast('Kredensial tidak valid! Periksa email/no. WA dan kata sandi Anda.', 'error');
+                    return;
+                }
+
+                // Cek apakah akun masih menunggu aktivasi via tautan email
+                if (account.licenseStatus === 'pending_verification' || account.emailVerified === false) {
+                    showToast('Akun Anda belum diaktifkan! Silakan periksa inbox/spam email Anda.', 'warning');
+                    showEmailVerificationNotice(account.email);
+                    return;
+                }
+
+                // MODEL A: Cek masa berlaku Free Trial 14 Hari
+                if (account.licenseStatus === 'trial') {
+                    const now = new Date();
+                    const trialEnd = account.trialUntil ? new Date(account.trialUntil) : new Date(Date.now() + 14 * 24 * 3600 * 1000);
+                    if (now > trialEnd) {
+                        showToast('Masa Uji Coba Gratis 14 Hari Anda telah berakhir. Silakan pilih paket berlangganan untuk melanjutkan.', 'warning');
+                        openPaymentInvoiceModal(account);
+                        return;
+                    }
+                }
+
+                // Check account status
+                if (account.licenseStatus === 'pending_payment' && (!account.paymentStatus || account.paymentStatus === 'unpaid')) {
+                    showToast('Akun Anda sedang menunggu konfirmasi pembayaran transfer manual.', 'warning');
                     openPaymentInvoiceModal(account);
                     return;
                 }
+
+                if (account.licenseStatus === 'suspended') {
+                    showToast('Akun Anda ditangguhkan oleh Administrator RAM. Hubungi WhatsApp Admin.', 'error');
+                    return;
+                }
+
+                // Account is valid (Active or Active Free Trial)
+                const payload = JSON.stringify({
+                    user: account.name,
+                    email: account.email,
+                    role: account.role || 'tenant',
+                    tenantId: account.id,
+                    loginTime: new Date().toISOString()
+                });
+
+                if (remember) localStorage.setItem(AUTH_SESSION_KEY, payload);
+                else sessionStorage.setItem(AUTH_SESSION_KEY, payload);
+
+                applyTenantSession(JSON.parse(payload));
+                checkAuthSession();
+                showToast(`Selamat datang kembali, ${account.name}! Masuk ke ${account.kostName}.`, 'success');
+            } finally {
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = origLoginHtml;
+                }
             }
-
-            // Check account status
-            if (account.licenseStatus === 'pending_payment' && (!account.paymentStatus || account.paymentStatus === 'unpaid')) {
-                showToast('Akun Anda sedang menunggu konfirmasi pembayaran transfer manual.', 'warning');
-                openPaymentInvoiceModal(account);
-                return;
-            }
-
-            if (account.licenseStatus === 'suspended') {
-                showToast('Akun Anda ditangguhkan oleh Administrator RAM. Hubungi WhatsApp Admin.', 'error');
-                return;
-            }
-
-            // Account is valid (Active or Active Free Trial)
-            const payload = JSON.stringify({
-                user: account.name,
-                email: account.email,
-                role: account.role || 'tenant',
-                tenantId: account.id,
-                loginTime: new Date().toISOString()
-            });
-
-            if (remember) localStorage.setItem(AUTH_SESSION_KEY, payload);
-            else sessionStorage.setItem(AUTH_SESSION_KEY, payload);
-
-            applyTenantSession(JSON.parse(payload));
-            checkAuthSession();
-            showToast(`Selamat datang kembali, ${account.name}! Masuk ke ${account.kostName}.`, 'success');
         }
 
         async function handleAuthLogout() {
@@ -4578,6 +4733,84 @@
 
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
+            // Cek jika diarahkan dari tautan aktivasi email: /kost/?email_verified=true...
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('email_verified') === 'true') {
+                    const verifiedEmail = (urlParams.get('email') || '').trim();
+                    const verifiedName = (urlParams.get('name') || '').trim();
+                    const verifiedKost = (urlParams.get('kost') || '').trim();
+                    const verifiedTenantId = (urlParams.get('tenant_id') || '').trim();
+
+                    const accounts = getAccountsRegistry();
+                    let acc = accounts.find(a => 
+                        (verifiedTenantId && a.id === verifiedTenantId) || 
+                        (verifiedEmail && a.email && a.email.toLowerCase() === verifiedEmail.toLowerCase())
+                    );
+
+                    const now = new Date();
+                    const trialUntil = new Date(now.getTime() + 14 * 24 * 3600 * 1000).toISOString();
+
+                    if (acc) {
+                        acc.emailVerified = true;
+                        acc.licenseStatus = 'trial';
+                        acc.trialUntil = trialUntil;
+                        acc.activeUntil = trialUntil;
+                        if (acc.apps && acc.apps.simkost) acc.apps.simkost.status = 'trial';
+                    } else if (verifiedEmail) {
+                        acc = {
+                            id: verifiedTenantId || ('TNT-RAM-' + Math.floor(1000 + Math.random() * 9000)),
+                            name: verifiedName || 'Pengelola Kost',
+                            username: verifiedEmail.split('@')[0],
+                            email: verifiedEmail,
+                            phone: '',
+                            password: '',
+                            kostName: verifiedKost || 'Kost Saya',
+                            role: 'tenant',
+                            licenseStatus: 'trial',
+                            emailVerified: true,
+                            paymentStatus: 'unpaid',
+                            paymentPlan: 'monthly',
+                            plan: 'Free Trial 14 Hari',
+                            price: 0,
+                            registeredAt: now.toISOString().slice(0, 10),
+                            trialUntil: trialUntil,
+                            activeUntil: trialUntil,
+                            apps: {
+                                simkost: { status: "trial", name: "SIMKOST Pro" },
+                                simlaundry: { status: "unsubscribed", name: "SIM-Laundry POS" },
+                                simpos: { status: "unsubscribed", name: "SIM-Kasir Retail & Resto" }
+                            }
+                        };
+                        accounts.push(acc);
+                    }
+
+                    saveAccountsRegistry(accounts);
+
+                    if (acc) {
+                        const sessionPayload = {
+                            user: acc.name,
+                            email: acc.email,
+                            role: acc.role || 'tenant',
+                            tenantId: acc.id,
+                            loginTime: new Date().toISOString()
+                        };
+                        localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(sessionPayload));
+                        applyTenantSession(sessionPayload);
+                    }
+
+                    if (window.history && window.history.replaceState) {
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+
+                    setTimeout(() => {
+                        showToast(`🎉 Selamat! Email ${verifiedEmail || ''} berhasil diverifikasi. Free Trial 14 Hari SIMKOST Pro telah aktif!`, 'success');
+                    }, 300);
+                }
+            } catch (urlErr) {
+                console.warn('[URL Verification Param Error]', urlErr);
+            }
+
             // Segera sinkronkan tampilan auth tanpa menunggu sinkronisasi database/network
             checkAuthSession();
 
