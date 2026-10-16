@@ -278,14 +278,6 @@
                         <span>Buku Kas &amp; Pengeluaran</span>
                     </button>
 
-                    <button onclick="openBulkWaModal()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-800 transition-colors text-left group cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <i class="fa-brands fa-whatsapp w-5 text-center text-emerald-600"></i>
-                            <span>Broadcast Tagihan WA</span>
-                        </div>
-                        <span id="navBulkWaBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 hidden">0</span>
-                    </button>
-
                     <div class="pt-3 px-3 pb-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Laporan &amp; Sistem</div>
 
                     <button onclick="openMonthlyReportModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
@@ -505,16 +497,10 @@
                             <span id="urgentRibbonSubtitle" class="text-[10px] text-amber-700/90 block truncate">Penghuni menunggu konfirmasi pembayaran</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="openBulkWaModal()" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1 cursor-pointer" title="Kirim Pengingat Tagihan Massal via WhatsApp">
-                            <i class="fa-brands fa-whatsapp text-xs"></i>
-                            <span class="hidden xs:inline">Broadcast WA</span>
-                        </button>
-                        <button id="urgentRibbonBtn" onclick="handleUrgentRibbonClick()" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1 cursor-pointer">
-                            <span id="urgentRibbonBtnText">Lihat</span>
-                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
-                    </div>
+                    <button id="urgentRibbonBtn" onclick="handleUrgentRibbonClick()" class="px-2.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shrink-0 shadow-2xs transition-colors flex items-center gap-1">
+                        <span id="urgentRibbonBtnText">Lihat</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
                 </div>
 
                 <!-- ── 4. SEGMENTED VIEW CONTROL & UTILITY BAR (DESKTOP ONLY) ────────── -->
@@ -573,10 +559,6 @@
                         </button>
                         <button onclick="setFilter('Perbaikan', this)" data-filter="Perbaikan" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 shrink-0">
                             Perbaikan (<span id="countFilterRepair">0</span>)
-                        </button>
-                        <button id="bulkWaQuickTriggerBtn" onclick="openBulkWaModal()" class="filter-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 shrink-0 flex items-center gap-1.5 shadow-2xs cursor-pointer ml-auto" title="Kirim Pengingat Tagihan Massal via WhatsApp">
-                            <i class="fa-brands fa-whatsapp text-emerald-600 text-xs"></i>
-                            <span>Broadcast Tagihan (<span id="bulkWaFilterCount">0</span>)</span>
                         </button>
                     </div>
 
@@ -735,114 +717,6 @@
             <span>Pengaturan</span>
         </button>
     </nav>
-
-    <!-- ================================================================== -->
-    <!-- MODAL 1B: BROADCAST PENGINGAT TAGIHAN WHATSAPP (BULK WA REMINDER)  -->
-    <!-- ================================================================== -->
-    <div id="bulkWaModal" onclick="if(event.target === this) closeBulkWaModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh] my-0 sm:my-4 transition-all">
-            
-            <!-- Mobile pull handle -->
-            <div class="sm:hidden w-12 h-1 bg-slate-200 rounded-full mx-auto mt-3 mb-1"></div>
-
-            <!-- Modal Header -->
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50 via-teal-50/40 to-white shrink-0">
-                <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-emerald-600/25 shrink-0">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </span>
-                    <div>
-                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                            <span>Broadcast Pengingat Tagihan WhatsApp</span>
-                            <span class="text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Otomatis</span>
-                        </h3>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Kirim pesan tagihan sewa berurutan ke penghuni yang perlu ditagih</p>
-                    </div>
-                </div>
-                <button onclick="closeBulkWaModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors cursor-pointer">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Scope Tabs & Progress Summary Strip -->
-            <div class="px-4 sm:px-5 py-3 border-b border-slate-100 bg-slate-50/70 shrink-0 space-y-2.5">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <!-- Scope Filter Buttons -->
-                    <div class="inline-flex p-1 bg-slate-200/70 rounded-xl text-xs font-semibold gap-1">
-                        <button type="button" onclick="setBulkWaScope('all')" id="bulkWaScopeBtn-all" class="px-3 py-1 rounded-lg font-bold text-xs bg-white text-slate-900 shadow-2xs transition-all cursor-pointer">
-                            Semua (<span id="bulkWaScopeCount-all">0</span>)
-                        </button>
-                        <button type="button" onclick="setBulkWaScope('due')" id="bulkWaScopeBtn-due" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
-                            Segera Tempo (<span id="bulkWaScopeCount-due">0</span>)
-                        </button>
-                        <button type="button" onclick="setBulkWaScope('late')" id="bulkWaScopeBtn-late" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer">
-                            Menunggak (<span id="bulkWaScopeCount-late">0</span>)
-                        </button>
-                    </div>
-
-                    <!-- Progress Badge -->
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="text-slate-500 text-[11px]">Progress Kirim:</span>
-                        <span id="bulkWaProgressBadge" class="font-mono font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-lg text-xs">
-                            0 / 0 Terkirim
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
-                    <div id="bulkWaProgressBar" class="bg-emerald-600 h-1.5 rounded-full transition-all duration-300 w-0"></div>
-                </div>
-            </div>
-
-            <!-- Content Body: Interactive Queue List -->
-            <div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-3">
-                
-                <!-- Helper Alert / Guidance -->
-                <div class="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-start gap-2.5 text-xs text-emerald-950">
-                    <i class="fa-solid fa-circle-info text-emerald-600 text-sm mt-0.5 shrink-0"></i>
-                    <div class="flex-1 text-[11px] leading-snug">
-                        <strong>Metode Pengiriman Berurutan Aman:</strong> Klik tombol <em>"Kirim WA"</em> pada penghuni atau klik tombol utama <em>"Kirim Antrean Berikutnya"</em> di bawah. WhatsApp akan otomatis terbuka dengan pesan tagihan yang dipersonalisasi lengkap dengan nomor rekening bank pengelola kost.
-                    </div>
-                </div>
-
-                <!-- Queue List Container -->
-                <div id="bulkWaQueueContainer" class="space-y-2">
-                    <!-- Injected dynamically by renderBulkWaModal() -->
-                </div>
-
-                <!-- Empty State (Hidden if there are items) -->
-                <div id="bulkWaEmptyState" class="hidden text-center py-10 px-4 space-y-2">
-                    <div class="w-14 h-14 rounded-3xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center text-2xl shadow-sm">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </div>
-                    <h4 class="text-sm font-extrabold text-slate-800">Semua Tagihan Beres!</h4>
-                    <p class="text-xs text-slate-500 max-w-xs mx-auto">Tidak ada kamar yang berstatus jatuh tempo atau menunggak pada pilihan filter ini.</p>
-                </div>
-            </div>
-
-            <!-- Modal Footer (Fixed Actions) -->
-            <div class="px-4 sm:px-5 py-3 border-t border-slate-100 bg-slate-50/90 flex flex-col sm:flex-row items-center justify-between gap-2.5 shrink-0">
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-                    <button type="button" onclick="toggleBulkWaSelectAll()" id="bulkWaSelectAllBtn" class="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer">
-                        Pilih Semua
-                    </button>
-                    <span id="bulkWaSelectedSummary" class="text-[11px] text-slate-500 font-medium">0 kamar terpilih</span>
-                </div>
-                
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button type="button" onclick="closeBulkWaModal()" class="flex-1 sm:flex-none px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-200/60 font-bold text-xs transition-colors cursor-pointer">
-                        Tutup
-                    </button>
-                    <button type="button" id="bulkWaNextBtn" onclick="sendNextBulkWa()" class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="fa-brands fa-whatsapp text-sm"></i>
-                        <span id="bulkWaNextBtnText">Kirim Antrean Berikutnya</span>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
 
     <!-- ================================================================== -->
     <!-- MODAL 1: SMART RECEIPT & KUITANSI (PRINT & WHATSAPP)               -->
@@ -2104,12 +1978,6 @@
                 const cm = document.getElementById('confirmModal');
                 if (cm && !cm.classList.contains('hidden')) {
                     closeConfirmModal(false);
-                    return;
-                }
-                const bulkWa = document.getElementById('bulkWaModal');
-                if (bulkWa && !bulkWa.classList.contains('hidden')) {
-                    closeBulkWaModal();
-                    return;
                 }
             }
         });
@@ -2447,7 +2315,6 @@
             renderDenah();
             renderExpenses();
             updateKPIs();
-            updateBulkWaBadges();
         }
 
         // ── 6-STATE CONTEXTUAL ROOM CONDITION ENGINE ──────────────────────────
@@ -3990,259 +3857,6 @@
             let waUrl = `https://api.whatsapp.com/send?text=${msg}`;
             if (targetPhone) waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${msg}`;
             window.open(waUrl, '_blank');
-        }
-
-        // ── BROADCAST PENGINGAT TAGIHAN MASSAL WHATSAPP (BULK WA REMINDER) ───
-        let bulkWaScope = 'all'; // 'all' | 'due' | 'late'
-        let bulkWaItems = [];    // [{ id, customer, phone, service, amount, date, rack, condition, diffDays, selected, sent, sentAt }]
-        const bulkWaSentHistory = new Map(); // roomId -> timestamp
-
-        function openBulkWaModal(preferredScope = null) {
-            if (preferredScope) bulkWaScope = preferredScope;
-            initBulkWaData();
-            renderBulkWaModal();
-            const modal = document.getElementById('bulkWaModal');
-            if (modal) modal.classList.remove('hidden');
-        }
-
-        function closeBulkWaModal() {
-            const modal = document.getElementById('bulkWaModal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function setBulkWaScope(scope) {
-            bulkWaScope = scope;
-            renderBulkWaModal();
-        }
-
-        function initBulkWaData() {
-            const today = new Date();
-            today.setHours(0,0,0,0);
-
-            // Ambil semua kamar yang perlu ditagih (jatuh tempo H-3 s/d H-0 & menunggak)
-            const actionableRooms = appData.filter(r => {
-                const cond = getRoomCondition(r);
-                return cond === 'jatuh_tempo' || cond === 'menunggak';
-            });
-
-            bulkWaItems = actionableRooms.map(r => {
-                const cond = getRoomCondition(r);
-                const d = parseCustomDate(r.date);
-                let diffDays = 0;
-                if (d) {
-                    const checkDate = new Date(d);
-                    checkDate.setHours(0,0,0,0);
-                    diffDays = Math.ceil((checkDate - today) / (1000 * 60 * 60 * 24));
-                }
-
-                const existingSent = bulkWaSentHistory.get(r.id);
-
-                return {
-                    id: r.id,
-                    customer: r.customer,
-                    phone: r.phone || '',
-                    service: r.service,
-                    amount: Number(r.amount) || 0,
-                    date: r.date,
-                    rack: r.rack || 'Lantai 1',
-                    condition: cond,
-                    diffDays: diffDays,
-                    selected: true,
-                    sent: !!existingSent,
-                    sentAt: existingSent || null
-                };
-            });
-        }
-
-        function toggleBulkWaSelect(roomId) {
-            const item = bulkWaItems.find(x => x.id === roomId);
-            if (item) {
-                item.selected = !item.selected;
-                renderBulkWaModal();
-            }
-        }
-
-        function toggleBulkWaSelectAll() {
-            const visibleItems = getVisibleBulkWaItems();
-            const anyUnselected = visibleItems.some(x => !x.selected);
-            visibleItems.forEach(x => {
-                x.selected = anyUnselected;
-            });
-            renderBulkWaModal();
-        }
-
-        function getVisibleBulkWaItems() {
-            if (bulkWaScope === 'due') {
-                return bulkWaItems.filter(x => x.condition === 'jatuh_tempo');
-            } else if (bulkWaScope === 'late') {
-                return bulkWaItems.filter(x => x.condition === 'menunggak');
-            }
-            return bulkWaItems;
-        }
-
-        function renderBulkWaModal() {
-            // Update Scope Buttons & Badges
-            const allCount = bulkWaItems.length;
-            const dueCount = bulkWaItems.filter(x => x.condition === 'jatuh_tempo').length;
-            const lateCount = bulkWaItems.filter(x => x.condition === 'menunggak').length;
-
-            const cAll = document.getElementById('bulkWaScopeCount-all');
-            const cDue = document.getElementById('bulkWaScopeCount-due');
-            const cLate = document.getElementById('bulkWaScopeCount-late');
-            if (cAll) cAll.innerText = allCount;
-            if (cDue) cDue.innerText = dueCount;
-            if (cLate) cLate.innerText = lateCount;
-
-            ['all', 'due', 'late'].forEach(s => {
-                const btn = document.getElementById(`bulkWaScopeBtn-${s}`);
-                if (btn) {
-                    if (s === bulkWaScope) {
-                        btn.className = "px-3 py-1 rounded-lg font-bold text-xs bg-white text-slate-900 shadow-2xs transition-all cursor-pointer";
-                    } else {
-                        btn.className = "px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer";
-                    }
-                }
-            });
-
-            const visibleItems = getVisibleBulkWaItems();
-            const container = document.getElementById('bulkWaQueueContainer');
-            const emptyEl = document.getElementById('bulkWaEmptyState');
-
-            if (!visibleItems || visibleItems.length === 0) {
-                if (container) container.innerHTML = '';
-                if (emptyEl) emptyEl.classList.remove('hidden');
-            } else {
-                if (emptyEl) emptyEl.classList.add('hidden');
-                if (container) {
-                    container.innerHTML = visibleItems.map((item, idx) => {
-                        const isLate = item.condition === 'menunggak';
-                        const statusBadge = isLate
-                            ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Telat ${Math.abs(item.diffDays) || 1} Hari (${item.date})</span>`
-                            : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200"><i class="fa-solid fa-clock text-[9px]"></i> Tempo: ${item.date} (${item.diffDays === 0 ? 'Hari Ini' : 'H' + item.diffDays})</span>`;
-
-                        const sentBadge = item.sent
-                            ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200"><i class="fa-solid fa-check text-[9px]"></i> Terkirim ${item.sentAt}</span>`
-                            : `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">Antrean #${idx + 1}</span>`;
-
-                        const hasPhone = item.phone && item.phone.trim().length > 5;
-                        const phoneDisplay = hasPhone
-                            ? `<span class="font-mono text-slate-500 text-[11px]">${item.phone}</span>`
-                            : `<span class="text-rose-500 font-bold text-[10px] flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Belum ada No WA</span>`;
-
-                        const actionBtn = item.sent
-                            ? `<button type="button" onclick="sendSingleBulkWa('${item.id}')" class="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 bg-white hover:bg-emerald-50/50 text-slate-600 hover:text-emerald-700 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0" title="Kirim ulang pesan WhatsApp">
-                                 <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
-                                 <span>Kirim Ulang</span>
-                               </button>`
-                            : `<button type="button" onclick="sendSingleBulkWa('${item.id}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all cursor-pointer shrink-0">
-                                 <i class="fa-brands fa-whatsapp text-xs"></i>
-                                 <span>Kirim WA</span>
-                               </button>`;
-
-                        return `
-                            <div class="p-3 sm:p-3.5 rounded-2xl border transition-all flex items-center gap-3 ${item.selected ? (item.sent ? 'bg-emerald-50/30 border-emerald-200' : 'bg-white border-slate-200 hover:border-slate-300 shadow-2xs') : 'bg-slate-50/60 border-slate-200 opacity-60'}">
-                                <input type="checkbox" onchange="toggleBulkWaSelect('${item.id}')" ${item.selected ? 'checked' : ''} class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer shrink-0">
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex flex-wrap items-center gap-1.5">
-                                        <span class="px-2 py-0.5 rounded-lg bg-slate-900 text-white font-mono font-extrabold text-[10px]">${item.id}</span>
-                                        <span class="font-extrabold text-slate-900 text-xs truncate">${item.customer}</span>
-                                        ${statusBadge}
-                                        ${sentBadge}
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                                        <span>${phoneDisplay}</span>
-                                        <span class="text-slate-300">•</span>
-                                        <span class="truncate max-w-[160px]">${item.service}</span>
-                                        <span class="text-slate-300">•</span>
-                                        <span class="font-mono font-extrabold text-slate-900">Rp ${item.amount.toLocaleString('id-ID')}</span>
-                                    </div>
-                                </div>
-                                ${actionBtn}
-                            </div>
-                        `;
-                    }).join('');
-                }
-            }
-
-            // Update Progress & Next Button
-            const selectedItems = visibleItems.filter(x => x.selected);
-            const sentItems = selectedItems.filter(x => x.sent);
-            const pct = selectedItems.length > 0 ? Math.round((sentItems.length / selectedItems.length) * 100) : 0;
-
-            const progressBar = document.getElementById('bulkWaProgressBar');
-            const progressBadge = document.getElementById('bulkWaProgressBadge');
-            if (progressBar) progressBar.style.width = `${pct}%`;
-            if (progressBadge) progressBadge.innerText = `${sentItems.length} / ${selectedItems.length} Terkirim (${pct}%)`;
-
-            const selectSummary = document.getElementById('bulkWaSelectedSummary');
-            if (selectSummary) selectSummary.innerText = `${selectedItems.length} kamar dipilih (${visibleItems.length} dalam filter)`;
-
-            const nextBtn = document.getElementById('bulkWaNextBtn');
-            const nextBtnText = document.getElementById('bulkWaNextBtnText');
-
-            const nextItem = selectedItems.find(x => !x.sent);
-            if (nextBtn && nextBtnText) {
-                if (nextItem) {
-                    nextBtn.disabled = false;
-                    nextBtn.className = "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer";
-                    nextBtnText.innerText = `Kirim ke ${nextItem.customer} (${nextItem.id}) ➔`;
-                } else if (selectedItems.length > 0 && sentItems.length === selectedItems.length) {
-                    nextBtn.disabled = true;
-                    nextBtn.className = "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-default";
-                    nextBtnText.innerText = `Semua Antrean Selesai Terkirim ✓`;
-                } else {
-                    nextBtn.disabled = true;
-                    nextBtn.className = "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-slate-200 text-slate-400 font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-not-allowed";
-                    nextBtnText.innerText = `Pilih Kamar Terlebih Dahulu`;
-                }
-            }
-        }
-
-        function sendSingleBulkWa(roomId) {
-            const item = bulkWaItems.find(x => x.id === roomId);
-            if (!item) return;
-
-            // Trigger personalized WA reminder
-            sendBillingReminderWA(roomId, 'auto');
-
-            // Record sent status
-            const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            item.sent = true;
-            item.sentAt = timeStr;
-            bulkWaSentHistory.set(roomId, timeStr);
-
-            renderBulkWaModal();
-            showToast(`Tagihan WhatsApp untuk ${item.customer} (${item.id}) dibuka!`, 'success');
-        }
-
-        function sendNextBulkWa() {
-            const visibleItems = getVisibleBulkWaItems();
-            const nextItem = visibleItems.find(x => x.selected && !x.sent);
-            if (nextItem) {
-                sendSingleBulkWa(nextItem.id);
-            } else {
-                showToast('Semua pengingat tagihan terpilih sudah dikirim!', 'info');
-            }
-        }
-
-        function updateBulkWaBadges() {
-            let actionableCount = 0;
-            appData.forEach(r => {
-                const cond = getRoomCondition(r);
-                if (cond === 'jatuh_tempo' || cond === 'menunggak') {
-                    actionableCount++;
-                }
-            });
-
-            const filterCount = document.getElementById('bulkWaFilterCount');
-            const navBadge = document.getElementById('navBulkWaBadge');
-
-            if (filterCount) filterCount.innerText = actionableCount;
-            if (navBadge) {
-                navBadge.innerText = actionableCount;
-                if (actionableCount > 0) navBadge.classList.remove('hidden');
-                else navBadge.classList.add('hidden');
-            }
         }
 
         // ── SMART RENT RENEWAL & ADVANCE DUE DATE (+1 MONTH) ───────────────────
