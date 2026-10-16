@@ -293,7 +293,84 @@
         </div>
     </div>
 
-    <div class="flex h-screen overflow-hidden">
+    <!-- ================================================================== -->
+    <!-- AUTHENTICATION GATEWAY & LOGIN SCREEN (#loginScreen)               -->
+    <!-- ================================================================== -->
+    <div id="loginScreen" class="fixed inset-0 z-[65] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-5 overflow-y-auto">
+        <div class="bg-white w-full max-w-sm sm:max-w-md rounded-3xl shadow-2xl border border-slate-200/90 p-5 sm:p-8 space-y-5 animate-scaleUp my-auto">
+            
+            <!-- Brand Logo & Header -->
+            <div class="text-center space-y-2">
+                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl mx-auto flex items-center justify-center text-white text-xl sm:text-2xl font-black shadow-lg shadow-emerald-600/30" style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <i class="fa-solid fa-building-user"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">SIMKOST Pro</h2>
+                    <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Sistem Manajemen Operasional &amp; Finansial Kost</p>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-200">
+                    <i class="fa-solid fa-shield-halved text-emerald-600 text-xs"></i>
+                    <span id="loginPropertyLabel">Kost Magnolia Residence</span>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form onsubmit="handleAuthLogin(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email / Username Pengelola</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="loginUsername" required placeholder="admin" value="admin" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi / PIN</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" value="admin123" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-10 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
+                        <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Tampilkan sandi">
+                            <i class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-[11px] text-slate-500">
+                    <label class="flex items-center gap-1.5 cursor-pointer text-slate-600 font-semibold select-none">
+                        <input type="checkbox" id="loginRememberMe" checked class="rounded text-emerald-600 focus:ring-0">
+                        <span>Ingat Sesi Saya</span>
+                    </label>
+                    <span class="text-slate-400">Default: admin / admin123</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="loginSubmitBtn" class="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                    <span>Masuk sebagai Pengelola</span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative flex items-center justify-center">
+                <div class="border-t border-slate-200 w-full"></div>
+                <span class="bg-white px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">atau coba langsung</span>
+            </div>
+
+            <!-- ONE-CLICK DEMO BUTTON -->
+            <div class="space-y-2">
+                <button type="button" onclick="loginAsDemoUser()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-bolt text-amber-300"></i>
+                    <span>Masuk Mode Demo (1-Klik Tanpa Sandi)</span>
+                </button>
+                <p class="text-[10px] text-center text-slate-400 leading-relaxed">
+                    Langsung jelajahi data simulasi, denah kamar interaktif, kalkulator jatuh tempo, dan cetak kuitansi.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MAIN APP LAYOUT SHELL ──────────────────────────────────────── -->
+    <div id="appLayout" class="flex h-screen overflow-hidden">
         
         <!-- ── SIDEBAR (DESKTOP & MOBILE DRAWER) ────────────────────────── -->
         <aside id="mainSidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white border-r border-slate-200/90 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col justify-between shrink-0 shadow-sm lg:shadow-none">
@@ -345,6 +422,11 @@
                     <button onclick="openSettingsModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
                         <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
                         <span>Pengaturan Usaha &amp; Logo</span>
+                    </button>
+
+                    <button type="button" onclick="handleAuthLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer" title="Keluar dari akun pengelola">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-rose-500"></i>
+                        <span>Keluar (Logout)</span>
                     </button>
                 </nav>
             </div>
@@ -407,6 +489,11 @@
                     <!-- Sync Button -->
                     <button onclick="syncAllData()" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold shadow-2xs transition-all" title="Sinkronkan data cloud">
                         <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
+                    </button>
+
+                    <!-- Logout Button -->
+                    <button type="button" onclick="handleAuthLogout()" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-rose-50 text-slate-500 hover:text-rose-600 text-xs font-bold shadow-2xs transition-all cursor-pointer" title="Keluar (Logout)">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
 
                     <!-- Add New / Transaction Button (Desktop/Tablet only, mobile has bottom dock + button) -->
@@ -2679,6 +2766,95 @@
             'jul': 6, 'agu': 7, 'ags': 7, 'sep': 8, 'okt': 9, 'nov': 10, 'des': 11
         };
 
+        // ── AUTHENTICATION & LOGIN GATE CONTROLLER ──────────────────────────
+        const AUTH_SESSION_KEY = 'simkost_auth_active';
+
+        function checkAuthSession() {
+            const session = localStorage.getItem(AUTH_SESSION_KEY) || sessionStorage.getItem(AUTH_SESSION_KEY);
+            const loginScreen = document.getElementById('loginScreen');
+            const appLayout = document.getElementById('appLayout');
+            const propLabel = document.getElementById('loginPropertyLabel');
+            if (propLabel && appSettings) propLabel.innerText = appSettings.storeName || DEFAULT_SETTINGS.storeName;
+
+            if (session) {
+                if (loginScreen) loginScreen.classList.add('hidden');
+                if (appLayout) appLayout.classList.remove('hidden');
+            } else {
+                if (loginScreen) loginScreen.classList.remove('hidden');
+                if (appLayout) appLayout.classList.add('hidden');
+            }
+        }
+
+        function loginAsDemoUser() {
+            const payload = JSON.stringify({
+                user: 'Pengelola Demo',
+                role: 'demo',
+                loginTime: new Date().toISOString()
+            });
+            localStorage.setItem(AUTH_SESSION_KEY, payload);
+            checkAuthSession();
+            showToast('Selamat datang! Masuk dalam Mode Demo (Simulasi Aktif).', 'success');
+        }
+
+        function handleAuthLogin(e) {
+            e.preventDefault();
+            const u = (document.getElementById('loginUsername')?.value || '').trim();
+            const p = (document.getElementById('loginPassword')?.value || '').trim();
+            const remember = document.getElementById('loginRememberMe')?.checked;
+
+            if (!u || !p) {
+                showToast('Harap masukkan username dan kata sandi.', 'warning');
+                return;
+            }
+
+            const isValid = (u.toLowerCase() === 'admin' && p === 'admin123') ||
+                            (u.toLowerCase() === 'admin@kost.id' && p === 'admin123') ||
+                            (p.length >= 4);
+
+            if (isValid) {
+                const payload = JSON.stringify({
+                    user: u,
+                    role: 'admin',
+                    loginTime: new Date().toISOString()
+                });
+                if (remember) {
+                    localStorage.setItem(AUTH_SESSION_KEY, payload);
+                } else {
+                    sessionStorage.setItem(AUTH_SESSION_KEY, payload);
+                }
+                checkAuthSession();
+                showToast(`Selamat datang, ${u}! Berhasil masuk sebagai Pengelola.`, 'success');
+            } else {
+                showToast('Kredensial tidak valid! Gunakan admin / admin123 atau tombol 1-Klik Demo.', 'error');
+            }
+        }
+
+        async function handleAuthLogout() {
+            const confirmed = await showCustomConfirm({
+                title: 'Keluar dari Sesi?',
+                desc: 'Anda akan keluar dari dashboard pengelola dan kembali ke halaman login.',
+                confirmText: 'Ya, Keluar'
+            });
+            if (confirmed) {
+                localStorage.removeItem(AUTH_SESSION_KEY);
+                sessionStorage.removeItem(AUTH_SESSION_KEY);
+                checkAuthSession();
+                showToast('Anda telah keluar dari dashboard.', 'info');
+            }
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const inp = document.getElementById(inputId);
+            if (!inp) return;
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash text-xs"></i>';
+            } else {
+                inp.type = 'password';
+                btn.innerHTML = '<i class="fa-solid fa-eye text-xs"></i>';
+            }
+        }
+
         // Application Start
         window.addEventListener('DOMContentLoaded', async () => {
             const todayStr = new Date().toISOString().slice(0, 10);
@@ -2688,6 +2864,7 @@
             loadSettings();
             loadLogo();
             await syncAllData();
+            checkAuthSession();
         });
 
         // ── TOAST NOTIFICATION HELPER ─────────────────────────────────────────
