@@ -1263,8 +1263,16 @@
                             <input type="date" id="checkInStartDate" onchange="updateCheckInDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-2.5 py-2 outline-none focus:border-emerald-500 bg-white font-medium text-xs">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Tarif Sewa (Rp) *</label>
-                            <input type="number" id="checkInAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 outline-none focus:border-emerald-500 font-mono font-bold text-xs">
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block font-bold text-slate-700 text-[11px]">Tarif Pokok / Bln *</label>
+                                <span class="text-[9px] text-slate-400 font-medium flex items-center gap-0.5" title="Tarif sewa sudah ditetapkan di master kamar">
+                                    <i class="fa-solid fa-lock text-[8px]"></i> Tetap
+                                </span>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-2 text-[11px] font-bold text-slate-400 font-mono">Rp</span>
+                                <input type="number" id="checkInAmount" readonly required min="50000" class="w-full border border-slate-200 rounded-xl pl-8 pr-2.5 py-2 bg-slate-100 font-mono font-bold text-xs text-slate-700 cursor-not-allowed outline-none select-none" title="Tarif sewa sudah ditetapkan dari data master kamar dan tidak dapat diubah di form check-in">
+                            </div>
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1 text-[11px]">Durasi Sewa *</label>
@@ -1319,7 +1327,7 @@
                     <!-- Row 4b: DP Input (conditional) -->
                     <div id="checkInDpSection" class="hidden p-2.5 rounded-xl bg-purple-50/60 border border-purple-200 space-y-1">
                         <label class="block font-bold text-purple-900 text-[11px]">Nominal DP Masuk (Rp) *</label>
-                        <input type="number" id="checkInDpAmount" min="50000" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-1.5 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
+                        <input type="number" id="checkInDpAmount" min="50000" oninput="updateCheckInBillSummary()" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-1.5 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
                     </div>
 
                     <!-- Row 5: Deposit & KTP Attachment (2 cols) -->
@@ -1329,7 +1337,7 @@
                                 <label class="block font-bold text-slate-700 text-[11px]">Uang Jaminan / Deposit <span class="font-normal text-slate-400">(Opsional)</span></label>
                                 <span class="text-[9px] text-slate-400">Bisa Rp 0</span>
                             </div>
-                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 font-mono text-xs">
+                            <input type="number" id="checkInDeposit" min="0" step="50000" oninput="updateCheckInBillSummary()" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 font-mono text-xs">
                             <div class="flex items-center gap-1 mt-1">
                                 <button type="button" onclick="setCheckInDeposit(0)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[9px] font-semibold text-slate-600 transition-colors">Rp 0</button>
                                 <button type="button" onclick="setCheckInDeposit(250000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">250k</button>
@@ -1350,6 +1358,38 @@
                                 </button>
                             </div>
                             <input type="hidden" id="checkInKtpBase64">
+                        </div>
+                    </div>
+
+                    <!-- Row 5b: Rincian & Jumlah Yang Harus Dibayar -->
+                    <div id="checkInPaymentSummaryBox" class="p-3 rounded-2xl bg-gradient-to-r from-emerald-50/80 to-teal-50/60 border border-emerald-200/80 space-y-1.5 shadow-2xs">
+                        <div class="flex items-center justify-between text-xs pb-1 border-b border-emerald-200/60">
+                            <span class="font-extrabold text-emerald-950 flex items-center gap-1.5 text-[11px]">
+                                <i class="fa-solid fa-receipt text-emerald-600"></i>
+                                <span>Rincian Tagihan &amp; Pembayaran</span>
+                            </span>
+                            <span id="checkInSummaryTermBadge" class="text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-full border border-emerald-300/70">
+                                1 Bulan
+                            </span>
+                        </div>
+                        <div class="space-y-1 text-[11px] text-slate-600">
+                            <div class="flex items-center justify-between">
+                                <span>Biaya Sewa (<span id="checkInSummaryDurationLabel">1 Bulan</span>):</span>
+                                <span id="checkInSummaryRentTotal" class="font-bold font-mono text-slate-800">Rp 0</span>
+                            </div>
+                            <div id="checkInSummaryDepositRow" class="flex items-center justify-between">
+                                <span>Uang Jaminan / Deposit:</span>
+                                <span id="checkInSummaryDepositTotal" class="font-bold font-mono text-slate-800">Rp 0</span>
+                            </div>
+                        </div>
+                        <div class="pt-1.5 border-t border-emerald-200/80 flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-900">Jumlah Yang Harus Dibayar</div>
+                                <div id="checkInSummaryPayNote" class="text-[10px] text-slate-500 font-medium">Pembayaran Penuh (Lunas Masuk)</div>
+                            </div>
+                            <div class="text-right">
+                                <span id="checkInSummaryTotalPayable" class="text-sm sm:text-base font-black font-mono text-emerald-700 tracking-tight">Rp 0</span>
+                            </div>
                         </div>
                     </div>
 
@@ -3953,6 +3993,73 @@
             if (dueText) {
                 dueText.innerText = calculateDueDateFromTerm(startVal, termVal, daysVal);
             }
+            updateCheckInBillSummary();
+        }
+
+        function updateCheckInBillSummary() {
+            const monthlyRate = Number(document.getElementById('checkInAmount')?.value) || 0;
+            const rentTerm = document.getElementById('checkInRentTerm')?.value || '1_bulan';
+            const dailyDays = Math.max(1, Number(document.getElementById('checkInDailyDays')?.value) || 1);
+            const deposit = Number(document.getElementById('checkInDeposit')?.value) || 0;
+            const payPlan = document.querySelector('input[name="checkInPayPlan"]:checked')?.value || 'lunas';
+            const dpAmount = Number(document.getElementById('checkInDpAmount')?.value) || 0;
+            const dueText = document.getElementById('checkInDueDateText')?.innerText || '-';
+
+            let totalRent = monthlyRate;
+            let durationLabel = '1 Bulan';
+            let termBadgeText = '1 Bulan';
+
+            if (rentTerm === '1_bulan') {
+                totalRent = monthlyRate;
+                durationLabel = '1 Bulan';
+                termBadgeText = '1 Bulan';
+            } else if (rentTerm === '3_bulan') {
+                totalRent = monthlyRate * 3;
+                durationLabel = '3 Bulan (Kuartal)';
+                termBadgeText = '3 Bulan';
+            } else if (rentTerm === '6_bulan') {
+                totalRent = monthlyRate * 6;
+                durationLabel = '6 Bulan (Semester)';
+                termBadgeText = '6 Bulan';
+            } else if (rentTerm === '1_tahun') {
+                totalRent = monthlyRate * 12;
+                durationLabel = '1 Tahun (12 Bln)';
+                termBadgeText = '1 Tahun';
+            } else if (rentTerm === 'harian') {
+                const dailyRate = Math.round(monthlyRate / 30);
+                totalRent = dailyRate * dailyDays;
+                durationLabel = `${dailyDays} Hari (Transit)`;
+                termBadgeText = `${dailyDays} Hari`;
+            }
+
+            const badgeEl = document.getElementById('checkInSummaryTermBadge');
+            const durationLabelEl = document.getElementById('checkInSummaryDurationLabel');
+            const rentTotalEl = document.getElementById('checkInSummaryRentTotal');
+            const depositTotalEl = document.getElementById('checkInSummaryDepositTotal');
+            const totalPayableEl = document.getElementById('checkInSummaryTotalPayable');
+            const noteEl = document.getElementById('checkInSummaryPayNote');
+
+            if (badgeEl) badgeEl.innerText = termBadgeText;
+            if (durationLabelEl) durationLabelEl.innerText = durationLabel;
+            if (rentTotalEl) rentTotalEl.innerText = 'Rp ' + totalRent.toLocaleString('id-ID');
+            if (depositTotalEl) depositTotalEl.innerText = 'Rp ' + deposit.toLocaleString('id-ID');
+
+            if (payPlan === 'lunas') {
+                const payableNow = totalRent + deposit;
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp ' + payableNow.toLocaleString('id-ID');
+                if (noteEl) noteEl.innerText = deposit > 0 
+                    ? 'Sewa ' + termBadgeText + ' + Uang Jaminan (Lunas)' 
+                    : 'Pembayaran Sewa Penuh (Lunas Masuk)';
+            } else if (payPlan === 'tempo') {
+                const totalBill = totalRent + deposit;
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp 0 (Ditagih Nanti)';
+                if (noteEl) noteEl.innerText = `Tagihan Rp ${totalBill.toLocaleString('id-ID')} dibayar saat tempo (${dueText})`;
+            } else if (payPlan === 'dp') {
+                const payableNow = dpAmount + deposit;
+                const remainingSewa = Math.max(0, totalRent - dpAmount);
+                if (totalPayableEl) totalPayableEl.innerText = 'Rp ' + payableNow.toLocaleString('id-ID');
+                if (noteEl) noteEl.innerText = `DP Rp ${dpAmount.toLocaleString('id-ID')} (Sisa tagihan: Rp ${remainingSewa.toLocaleString('id-ID')})`;
+            }
         }
 
         function setCheckInDeposit(val) {
@@ -3960,6 +4067,7 @@
             if (input) {
                 input.value = val === 0 ? '' : val;
             }
+            updateCheckInBillSummary();
         }
 
         function setCtxQuickDeposit(val) {
@@ -5388,6 +5496,8 @@
             if (lunasLabel) lunasLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'lunas' ? 'border-emerald-500 bg-emerald-50/70 text-emerald-800 font-bold' : resetClass}`;
             if (tempoLabel) tempoLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'tempo' ? 'border-amber-500 bg-amber-50/70 text-amber-800 font-bold' : resetClass}`;
             if (dpLabel) dpLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'dp' ? 'border-purple-500 bg-purple-50/70 text-purple-800 font-bold' : resetClass}`;
+
+            updateCheckInBillSummary();
         }
 
         async function handleCheckInSubmit(e) {
@@ -5431,6 +5541,13 @@
 
             if (!room.payment_history) room.payment_history = [];
 
+            // Calculate exact total rent for chosen duration
+            let totalTermRent = rentAmount;
+            if (rentTerm === '3_bulan') totalTermRent = rentAmount * 3;
+            else if (rentTerm === '6_bulan') totalTermRent = rentAmount * 6;
+            else if (rentTerm === '1_tahun') totalTermRent = rentAmount * 12;
+            else if (rentTerm === 'harian') totalTermRent = Math.round(rentAmount / 30) * Math.max(1, dailyDays);
+
             let primaryReceiptTrx = null;
 
             if (payPlan === 'tempo') {
@@ -5458,7 +5575,7 @@
                     date: startVal || new Date().toISOString().slice(0, 10),
                     type: 'sewa',
                     desc: `Pembayaran Sewa (${getTermBadgeText(rentTerm, dailyDays)})`,
-                    amount: rentAmount,
+                    amount: totalTermRent,
                     method: 'Tunai / Transfer'
                 };
                 room.payment_history.push(primaryReceiptTrx);
