@@ -778,8 +778,8 @@
     <!-- ================================================================== -->
     <!-- MODAL 1: SMART RECEIPT & KUITANSI (PRINT & WHATSAPP)               -->
     <!-- ================================================================== -->
-    <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto max-h-[82vh] sm:max-h-[85vh]">
+    <div id="receiptModal" onclick="if(event.target === this) closeReceiptModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto max-h-[82vh] sm:max-h-[85vh] animate-scaleUp">
             
             <!-- Modal Header -->
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
@@ -791,154 +791,125 @@
                         <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Kuitansi Pembayaran Sewa</h3>
                     </div>
                 </div>
-                <button onclick="closeReceiptModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
+                <button type="button" onclick="closeReceiptModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <!-- Modal Body (Grid: Left Paper Preview, Right Editor) -->
-            <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 overflow-y-auto overscroll-contain flex-1">
+            <!-- Toolbar Format Kertas -->
+            <div class="px-5 py-2 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between shrink-0">
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-print text-slate-400 text-xs"></i> Format Kertas
+                </span>
+                <div class="flex items-center gap-1 text-[11px]">
+                    <button type="button" onclick="setReceiptFormat('58mm')" id="btnFormat58" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-900 text-white font-bold transition-all shadow-2xs">58mm</button>
+                    <button type="button" onclick="setReceiptFormat('80mm')" id="btnFormat80" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 font-semibold hover:bg-slate-50 transition-all">80mm</button>
+                    <button type="button" onclick="setReceiptFormat('a4')" id="btnFormatA4" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-600 font-semibold hover:bg-slate-50 transition-all">A4</button>
+                </div>
+            </div>
+
+            <!-- Modal Body (Centered Receipt Paper Preview) -->
+            <div class="p-4 sm:p-5 flex flex-col items-center overflow-y-auto overscroll-contain flex-1 bg-slate-100/50">
                 
-                <!-- LEFT COLUMN: RECEIPT PAPER PREVIEW -->
-                <div class="md:col-span-6 flex flex-col items-center">
-                    <div class="w-full mb-2.5 flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1">
-                            <i class="fa-solid fa-eye text-slate-400"></i> Pratinjau Struk
-                        </span>
-                        <div class="flex items-center gap-1 text-[11px]">
-                            <button onclick="setReceiptFormat('58mm')" id="btnFormat58" class="px-2 py-0.5 rounded-lg border border-slate-200 bg-slate-900 text-white font-bold">58mm</button>
-                            <button onclick="setReceiptFormat('80mm')" id="btnFormat80" class="px-2 py-0.5 rounded-lg border border-slate-200 bg-white text-slate-600 font-semibold">80mm</button>
-                            <button onclick="setReceiptFormat('a4')" id="btnFormatA4" class="px-2 py-0.5 rounded-lg border border-slate-200 bg-white text-slate-600 font-semibold">A4</button>
+                <!-- Target Print Paper -->
+                <div id="printableReceiptArea" class="receipt-paper w-full max-w-[320px] p-5 rounded-2xl text-slate-800 text-xs transition-all duration-200 bg-white shadow-sm border border-slate-200/80">
+                    
+                    <!-- Header Logo & Store -->
+                    <div class="text-center pb-3 border-b border-dashed border-slate-300">
+                        <div class="flex justify-center mb-2">
+                            <img id="receiptLogoImg" src="" alt="Logo Toko" class="max-h-12 max-w-[140px] object-contain hidden">
+                            <div id="receiptLogoDefault" class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-2xs" style="background: linear-gradient(135deg, #059669, #10b981);">
+                                <i class="fa-solid fa-building-user"></i>
+                            </div>
+                        </div>
+                        <h4 id="receiptStoreName" class="font-extrabold text-sm tracking-wide text-slate-900">KOST MAGNOLIA RESIDENCE</h4>
+                        <p id="receiptStoreAddress" class="text-[10px] text-slate-500 leading-tight mt-0.5">Jl. Melati No. 12B, Syamsudin Noor</p>
+                        <p id="receiptStorePhone" class="text-[10px] text-slate-500 mt-0.5">Telp/WA: 0813-8899-0011</p>
+                    </div>
+
+                    <!-- Transaction Meta -->
+                    <div class="py-2 text-[10px] border-b border-dashed border-slate-300 space-y-1">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">No. Nota</span>
+                            <span id="receiptIdText" class="font-bold">#KMR-101</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Tanggal</span>
+                            <span id="receiptDateText">15/10/2026</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Nama Penyewa</span>
+                            <span id="receiptCustomerText" class="font-bold">Agus Setiawan</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Pengelola</span>
+                            <span>Petugas Kost</span>
                         </div>
                     </div>
 
-                    <!-- Target Print Paper -->
-                    <div id="printableReceiptArea" class="receipt-paper w-full max-w-[320px] p-5 rounded-2xl text-slate-800 text-xs transition-all duration-200">
-                        
-                        <!-- Header Logo & Store -->
-                        <div class="text-center pb-3 border-b border-dashed border-slate-300">
-                            <div class="flex justify-center mb-2">
-                                <img id="receiptLogoImg" src="" alt="Logo Toko" class="max-h-12 max-w-[140px] object-contain hidden">
-                                <div id="receiptLogoDefault" class="w-10 h-10 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-2xs" style="background: linear-gradient(135deg, #059669, #10b981);">
-                                    <i class="fa-solid fa-building-user"></i>
-                                </div>
-                            </div>
-                            <h4 id="receiptStoreName" class="font-extrabold text-sm tracking-wide text-slate-900">KOST MAGNOLIA RESIDENCE</h4>
-                            <p id="receiptStoreAddress" class="text-[10px] text-slate-500 leading-tight mt-0.5">Jl. Melati No. 12B, Syamsudin Noor</p>
-                            <p id="receiptStorePhone" class="text-[10px] text-slate-500 mt-0.5">Telp/WA: 0813-8899-0011</p>
+                    <!-- Itemized Table -->
+                    <div class="py-2.5 border-b border-dashed border-slate-300">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex justify-between">
+                            <span>Rincian Pembayaran</span>
+                            <span>Total</span>
                         </div>
+                        <div id="receiptItemsContainer" class="space-y-1.5 text-[11px]">
+                            <!-- Dynamic Rows -->
+                        </div>
+                    </div>
 
-                        <!-- Transaction Meta -->
-                        <div class="py-2 text-[10px] border-b border-dashed border-slate-300 space-y-1">
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">No. Nota</span>
-                                <span id="receiptIdText" class="font-bold">#KMR-101</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Tanggal</span>
-                                <span id="receiptDateText">15/10/2026</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Nama Penyewa</span>
-                                <span id="receiptCustomerText" class="font-bold">Agus Setiawan</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-500">Pengelola</span>
-                                <span>Petugas Kost</span>
-                            </div>
+                    <!-- Calculation Summary -->
+                    <div class="py-2 text-[11px] space-y-1 border-b border-dashed border-slate-300">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Subtotal</span>
+                            <span id="receiptSubtotalText" class="font-semibold font-mono tabular-nums">Rp 0</span>
                         </div>
+                        <div id="receiptDiscountRow" class="flex justify-between text-rose-600 text-[10px] hidden">
+                            <span>Diskon</span>
+                            <span id="receiptDiscountText" class="font-mono tabular-nums">- Rp 0</span>
+                        </div>
+                        <div id="receiptTaxRow" class="flex justify-between text-slate-500 text-[10px] hidden">
+                            <span>Biaya Layanan/Air</span>
+                            <span id="receiptTaxText" class="font-mono tabular-nums">+ Rp 0</span>
+                        </div>
+                        <div class="flex justify-between font-extrabold text-sm text-slate-900 pt-1.5 border-t border-slate-200">
+                            <span>TOTAL DIBAYAR</span>
+                            <span id="receiptGrandTotalText" class="font-mono tabular-nums text-emerald-700 font-black">Rp 0</span>
+                        </div>
+                        <!-- Hidden legacy elements for JS safety -->
+                        <div class="hidden">
+                            <span id="receiptCashGivenText">Rp 0</span>
+                            <span id="receiptChangeText">Rp 0</span>
+                        </div>
+                    </div>
 
-                        <!-- Itemized Table -->
-                        <div class="py-2.5 border-b border-dashed border-slate-300">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex justify-between">
-                                <span>Rincian Pembayaran</span>
-                                <span>Total</span>
-                            </div>
-                            <div id="receiptItemsContainer" class="space-y-1.5 text-[11px]">
-                                <!-- Dynamic Rows -->
-                            </div>
-                        </div>
-
-                        <!-- Calculation Summary -->
-                        <div class="py-2 text-[11px] space-y-1 border-b border-dashed border-slate-300">
-                            <div class="flex justify-between text-slate-600">
-                                <span>Subtotal</span>
-                                <span id="receiptSubtotalText" class="font-semibold font-mono tabular-nums">Rp 0</span>
-                            </div>
-                            <div id="receiptDiscountRow" class="flex justify-between text-rose-600 text-[10px] hidden">
-                                <span>Diskon</span>
-                                <span id="receiptDiscountText" class="font-mono tabular-nums">- Rp 0</span>
-                            </div>
-                            <div id="receiptTaxRow" class="flex justify-between text-slate-500 text-[10px] hidden">
-                                <span>Biaya Layanan/Air</span>
-                                <span id="receiptTaxText" class="font-mono tabular-nums">+ Rp 0</span>
-                            </div>
-                            <div class="flex justify-between font-extrabold text-sm text-slate-900 pt-1.5 border-t border-slate-200">
-                                <span>TOTAL DIBAYAR</span>
-                                <span id="receiptGrandTotalText" class="font-mono tabular-nums">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between text-[10px] text-slate-600 pt-1">
-                                <span>Nominal Diterima</span>
-                                <span id="receiptCashGivenText" class="font-mono tabular-nums">Rp 0</span>
-                            </div>
-                            <div class="flex justify-between text-[10px] text-emerald-600 font-bold">
-                                <span>Kembalian</span>
-                                <span id="receiptChangeText" class="font-mono tabular-nums">Rp 0</span>
-                            </div>
-                        </div>
-
-                        <!-- Footer Note -->
-                        <div class="text-center pt-2 text-[10px] text-slate-400 space-y-0.5">
-                            <p class="font-bold text-slate-600">Terima Kasih</p>
-                            <p>Bukti pembayaran sewa yang sah</p>
-                        </div>
+                    <!-- Footer Note -->
+                    <div class="text-center pt-2 text-[10px] text-slate-400 space-y-0.5">
+                        <p class="font-bold text-slate-600">Terima Kasih</p>
+                        <p>Bukti pembayaran sewa yang sah</p>
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN: INTERACTIVE CONTROLS -->
-                <div class="md:col-span-6 space-y-3.5">
-                    <!-- Hidden inputs for data binding backwards-compatibility -->
-                    <input type="hidden" id="editCustomerInput">
-                    <input type="hidden" id="editIdInput">
+                <!-- Hidden inputs for backward-compatibility with JS calculations -->
+                <input type="hidden" id="editCustomerInput">
+                <input type="hidden" id="editIdInput">
+                <input type="hidden" id="editDiscountInput" value="0">
+                <input type="hidden" id="editCashInput" value="0">
+                <input type="checkbox" id="editTaxCheckbox" class="hidden">
+                <span id="editChangeDisplay" class="hidden"></span>
+                <div id="editorItemsContainer" class="hidden"></div>
+            </div>
 
-                    <!-- Hidden elements for data binding backwards-compatibility -->
-                    <div id="editorItemsContainer" class="hidden"></div>
-                    <input type="checkbox" id="editTaxCheckbox" class="hidden">
-
-                    <!-- Discount & Cash Controls -->
-                    <div class="p-3.5 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-2.5 text-xs">
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">Diskon (Rp)</label>
-                                <input type="number" id="editDiscountInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 outline-none font-mono">
-                            </div>
-                            <div>
-                                <label class="block font-bold text-slate-700 mb-1">Uang Diterima (Rp)</label>
-                                <input type="number" id="editCashInput" value="0" min="0" oninput="recalculateReceipt()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none font-mono">
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-200/80 text-xs">
-                            <span class="font-bold text-slate-600">Kembalian:</span>
-                            <span id="editChangeDisplay" class="px-2.5 py-1 rounded-lg bg-emerald-100/70 text-emerald-800 font-black border border-emerald-300 font-mono text-xs">
-                                Rp 0
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons: 2 Direct Primary Actions -->
-                    <div class="pt-1 grid grid-cols-2 gap-2.5">
-                        <button type="button" onclick="printReceiptNow()" class="py-2.5 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition-all border border-slate-200 shadow-2xs" title="Print struk kuitansi (Thermal / PDF)">
-                            <i class="fa-solid fa-print text-sm"></i>
-                            <span>Print Struk</span>
-                        </button>
-                        <button type="button" id="btnSendReceiptWaJpg" onclick="sendReceiptViaWA()" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all" title="Kirim Struk Gambar via WhatsApp">
-                            <i class="fa-brands fa-whatsapp text-sm"></i>
-                            <span>Kirim Struk WA</span>
-                        </button>
-                    </div>
-
-                </div>
+            <!-- Pinned Sticky Action Footer: Print & WA -->
+            <div class="px-4 sm:px-5 py-3 bg-white border-t border-slate-100 grid grid-cols-2 gap-2.5 shrink-0">
+                <button type="button" onclick="printReceiptNow()" class="py-2.5 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition-all border border-slate-200 shadow-2xs cursor-pointer" title="Print struk kuitansi (Thermal / PDF)">
+                    <i class="fa-solid fa-print text-sm"></i>
+                    <span>Print Struk</span>
+                </button>
+                <button type="button" id="btnSendReceiptWaJpg" onclick="sendReceiptViaWA()" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer" title="Kirim Struk Gambar via WhatsApp">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Kirim Struk WA</span>
+                </button>
             </div>
 
         </div>
