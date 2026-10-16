@@ -1215,7 +1215,7 @@
                 <div id="checkInFormFields" class="space-y-3">
                     <!-- Row 1: Room Selector (Hanya Kamar Kosong Tanpa Dropdown) -->
                     <div>
-                        <div class="flex items-center justify-between mb-1.5">
+                        <div id="checkInRoomChipsHeader" class="flex items-center justify-between mb-1.5">
                             <label class="block font-bold text-slate-700 text-[11px]">Pilih Kamar Kosong *</label>
                             <span id="checkInAvailableCount" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                                 0 Kamar Tersedia
@@ -1233,14 +1233,17 @@
                         <!-- Selected Room Clean Info -->
                         <div id="checkInRoomPreview" class="flex items-center justify-between text-[11px] text-slate-600 bg-emerald-50/50 border border-emerald-200/60 rounded-xl px-3 py-1.5 mt-1.5">
                             <div class="flex items-center gap-1.5 truncate">
-                                <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-200">Kamar Terpilih</span>
+                                <span id="checkInRoomStatusBadge" class="text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-200">Kamar Terpilih</span>
                                 <span id="checkInPreviewId" class="font-bold text-slate-900 font-mono">KMR</span>
                                 <span class="text-slate-300">•</span>
                                 <span id="checkInPreviewService" class="text-slate-700 font-medium">Tipe Kamar</span>
                                 <span class="text-slate-300">•</span>
                                 <span id="checkInPreviewRack" class="text-slate-500 text-[10px]">Lantai 1</span>
                             </div>
-                            <span id="checkInPreviewAmount" class="font-bold text-emerald-700 font-mono shrink-0 ml-2">Rp 0</span>
+                            <div class="flex items-center gap-2 shrink-0 ml-2">
+                                <span id="checkInPreviewAmount" class="font-bold text-emerald-700 font-mono">Rp 0</span>
+                                <button type="button" id="checkInRoomChangeBtn" onclick="unlockCheckInRoomSelection()" class="hidden text-[10px] text-emerald-700 hover:text-emerald-900 font-bold hover:underline bg-white px-1.5 py-0.5 rounded border border-emerald-200/70 transition-colors" title="Ganti pilihan kamar">Ganti</button>
+                            </div>
                         </div>
                     </div>
 
@@ -5605,12 +5608,36 @@
                         `).join('');
                     }
 
-                    // Select default empty room
-                    let selectedId = emptyRooms[0].id;
-                    if (preselectedId && emptyRooms.some(r => r.id === preselectedId)) {
-                        selectedId = preselectedId;
-                    }
+                    // Check if a specific room was pre-selected (e.g. from table row or card)
+                    const isPreselected = Boolean(preselectedId && emptyRooms.some(r => r.id === preselectedId));
+                    let selectedId = isPreselected ? preselectedId : emptyRooms[0].id;
                     selectCheckInRoom(selectedId);
+
+                    const chipsHeader = document.getElementById('checkInRoomChipsHeader');
+                    const statusBadge = document.getElementById('checkInRoomStatusBadge');
+                    const changeBtn = document.getElementById('checkInRoomChangeBtn');
+
+                    if (isPreselected) {
+                        // Room was already chosen directly from the table or card:
+                        // Hide room picker chips so user doesn't see redundant room selection!
+                        if (chipsHeader) chipsHeader.classList.add('hidden');
+                        if (chipsContainer) chipsContainer.classList.add('hidden');
+                        if (statusBadge) {
+                            statusBadge.innerHTML = '<i class="fa-solid fa-lock text-[8px] mr-1"></i> Kamar Terkunci';
+                            statusBadge.className = 'text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-300';
+                        }
+                        if (changeBtn) changeBtn.classList.remove('hidden');
+                    } else {
+                        // Opened from generic "+" button:
+                        // Show room selection chips so user can choose an empty room
+                        if (chipsHeader) chipsHeader.classList.remove('hidden');
+                        if (chipsContainer) chipsContainer.classList.remove('hidden');
+                        if (statusBadge) {
+                            statusBadge.innerHTML = 'Kamar Terpilih';
+                            statusBadge.className = 'text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-200';
+                        }
+                        if (changeBtn) changeBtn.classList.add('hidden');
+                    }
                 }
 
                 // Reset tenant inputs
@@ -5655,6 +5682,21 @@
 
             const modal = document.getElementById('checkInModal');
             if (modal) modal.classList.remove('hidden');
+        }
+
+        function unlockCheckInRoomSelection() {
+            const chipsHeader = document.getElementById('checkInRoomChipsHeader');
+            const chipsContainer = document.getElementById('checkInQuickRoomChips');
+            const statusBadge = document.getElementById('checkInRoomStatusBadge');
+            const changeBtn = document.getElementById('checkInRoomChangeBtn');
+
+            if (chipsHeader) chipsHeader.classList.remove('hidden');
+            if (chipsContainer) chipsContainer.classList.remove('hidden');
+            if (statusBadge) {
+                statusBadge.innerHTML = 'Pilih Kamar';
+                statusBadge.className = 'text-[9px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-1.5 py-0.5 rounded border border-emerald-200';
+            }
+            if (changeBtn) changeBtn.classList.add('hidden');
         }
 
         function closeCheckInModal() {
