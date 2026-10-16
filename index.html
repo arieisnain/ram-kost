@@ -1360,15 +1360,15 @@
                         </div>
                         <div>
                             <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
-                            <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                            <button type="button" onclick="openPhotoSourcePicker('checkInKtp')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
                                 <span class="flex items-center gap-1.5">
                                     <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
                                     <span>Ambil Foto / Pilih Berkas KTP</span>
                                 </span>
                                 <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
-                                <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
-                                <input type="file" id="checkInKtpCamera" class="hidden">
-                            </label>
+                            </button>
+                            <input type="file" id="checkInKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
+                            <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
                             <div id="checkInKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                 <span id="checkInKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                     <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -1391,15 +1391,15 @@
                             <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
                             <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                         </div>
-                        <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                        <button type="button" onclick="openPhotoSourcePicker('checkInProof')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-2.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
                             <span class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-receipt text-emerald-600 text-xs"></i>
                                 <span>Ambil Foto / Pilih Berkas Bukti</span>
                             </span>
                             <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
-                            <input type="file" id="checkInProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
-                            <input type="file" id="checkInProofCamera" class="hidden">
-                        </label>
+                        </button>
+                        <input type="file" id="checkInProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
+                        <input type="file" id="checkInProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'checkIn')" class="hidden">
                         <div id="checkInProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                             <span id="checkInProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                 <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -1749,15 +1749,15 @@
                 <!-- KTP Photo Attachment -->
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas Penyewa <span class="font-normal text-slate-400">(Opsional)</span></label>
-                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                    <button type="button" onclick="openPhotoSourcePicker('editKtp')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto KTP langsung atau pilih dari galeri">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-camera text-emerald-600"></i>
                             <span>Ambil Foto / Pilih Berkas KTP</span>
                         </span>
                         <span class="text-[10px] font-bold text-emerald-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
-                        <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
-                        <input type="file" id="editKtpCamera" class="hidden">
-                    </label>
+                    </button>
+                    <input type="file" id="editKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
+                    <input type="file" id="editKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'edit')" class="hidden">
                     <div id="editKtpIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
                         <span id="editKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -1844,15 +1844,15 @@
                         <label class="block font-bold text-slate-700 text-xs">Foto / Bukti Struk <span class="font-normal text-slate-400">(Opsional)</span></label>
                         <span class="text-[10px] text-slate-400">Nota / Kwitansi / Struk</span>
                     </div>
-                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-rose-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-rose-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto struk langsung atau pilih dari galeri">
+                    <button type="button" onclick="openPhotoSourcePicker('expensePhoto')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-rose-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-rose-50/40 transition-colors text-slate-700 font-semibold text-xs group" title="Ambil foto struk langsung atau pilih dari galeri">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-camera text-rose-600 text-sm"></i>
                             <span>Ambil Foto / Pilih Berkas Struk</span>
                         </span>
                         <span class="text-[10px] font-bold text-rose-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
-                        <input type="file" id="expensePhotoFile" accept="image/*" onchange="handleExpensePhotoSelect(event)" class="hidden">
-                        <input type="file" id="expensePhotoCamera" class="hidden">
-                    </label>
+                    </button>
+                    <input type="file" id="expensePhotoCamera" accept="image/*" capture="environment" onchange="handleExpensePhotoSelect(event)" class="hidden">
+                    <input type="file" id="expensePhotoFile" accept="image/*" onchange="handleExpensePhotoSelect(event)" class="hidden">
                     <div id="expensePhotoIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
                         <span id="expensePhotoName" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -2290,14 +2290,15 @@
                         <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer <span class="font-normal text-slate-400">(Opsional)</span></label>
                         <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                     </div>
-                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-emerald-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto atau pilih dari galeri">
+                    <button type="button" onclick="openPhotoSourcePicker('manualPaymentProof')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-emerald-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto atau pilih dari galeri">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
                             <span class="font-bold text-[11px] text-slate-700">Ambil Foto / Pilih Berkas Bukti</span>
                         </span>
                         <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
-                        <input type="file" id="manualPaymentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'manualPay')" class="hidden">
-                    </label>
+                    </button>
+                    <input type="file" id="manualPaymentProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'manualPay')" class="hidden">
+                    <input type="file" id="manualPaymentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'manualPay')" class="hidden">
                     <div id="manualPaymentProofIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
                         <span id="manualPaymentProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -2397,14 +2398,15 @@
                         <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer <span class="font-normal text-slate-400">(Opsional)</span></label>
                         <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                     </div>
-                    <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-blue-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-blue-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                    <button type="button" onclick="openPhotoSourcePicker('renewRentProof')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-blue-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-blue-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
                         <span class="flex items-center gap-2">
                             <i class="fa-solid fa-camera text-blue-600 text-xs"></i>
                             <span class="font-bold text-[11px] text-slate-700">Ambil Foto / Pilih Berkas Bukti</span>
                         </span>
                         <span class="text-[9px] font-bold text-blue-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
-                        <input type="file" id="renewRentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'renewRent')" class="hidden">
-                    </label>
+                    </button>
+                    <input type="file" id="renewRentProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'renewRent')" class="hidden">
+                    <input type="file" id="renewRentProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'renewRent')" class="hidden">
                     <div id="renewRentProofIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-between text-[11px]">
                         <span id="renewRentProofLabel" class="font-bold text-blue-800 truncate flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-check text-blue-600"></i>
@@ -2440,6 +2442,58 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- ACTION SHEET: PILIH SUMBER FOTO (KAMERA VS GALERI)                -->
+    <!-- ================================================================== -->
+    <div id="photoSourceModal" onclick="if(event.target === this) closePhotoSourceModal()" class="fixed inset-0 z-[75] bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4 hidden transition-all">
+        <div class="bg-white w-full max-w-sm rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                    <div>
+                        <h4 id="photoSourceTitle" class="font-bold text-xs sm:text-sm text-slate-800">Pilih Sumber Foto</h4>
+                        <p id="photoSourceSubtitle" class="text-[11px] text-slate-400">Pilih jepret langsung atau dari galeri</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closePhotoSourceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2.5">
+                <!-- Tombol Kamera Langsung -->
+                <button type="button" onclick="triggerPhotoChoice('camera')" class="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200 hover:border-emerald-400 flex items-center gap-3.5 transition-all text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg group-hover:scale-105 transition-transform shadow-xs shadow-emerald-600/30 shrink-0">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-extrabold text-xs text-slate-800 group-hover:text-emerald-900">Buka Kamera</div>
+                        <div class="text-[10px] text-slate-400">Jepret foto langsung menggunakan kamera HP</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-emerald-500"></i>
+                </button>
+
+                <!-- Tombol Galeri / File -->
+                <button type="button" onclick="triggerPhotoChoice('gallery')" class="w-full p-3.5 rounded-2xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-400 flex items-center gap-3.5 transition-all text-left group">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg group-hover:scale-105 transition-transform shadow-xs shadow-blue-600/30 shrink-0">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-extrabold text-xs text-slate-800 group-hover:text-blue-900">Pilih dari Galeri / Berkas</div>
+                        <div class="text-[10px] text-slate-400">Ambil dari galeri foto atau file manager HP</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-blue-500"></i>
+                </button>
+            </div>
+
+            <button type="button" onclick="closePhotoSourceModal()" class="w-full py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
+                Batal
+            </button>
         </div>
     </div>
 
@@ -2703,6 +2757,11 @@
 
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                const psm = document.getElementById('photoSourceModal');
+                if (psm && !psm.classList.contains('hidden')) {
+                    closePhotoSourceModal();
+                    return;
+                }
                 const cm = document.getElementById('confirmModal');
                 if (cm && !cm.classList.contains('hidden')) {
                     closeConfirmModal(false);
@@ -4365,6 +4424,100 @@
             if (modal) modal.classList.add('hidden');
         }
 
+        // ── PHOTO SOURCE PICKER (KAMERA VS GALERI) CONTROLLER ────────────────
+        let activePhotoSourceContext = null;
+
+        const PHOTO_SOURCE_MAP = {
+            'checkInKtp': {
+                camera: 'checkInKtpCamera',
+                gallery: 'checkInKtpInput',
+                title: 'Foto KTP / Identitas',
+                subtitle: 'Ambil foto KTP penghuni baru'
+            },
+            'checkInProof': {
+                camera: 'checkInProofCamera',
+                gallery: 'checkInProofInput',
+                title: 'Bukti Bayar Check-In',
+                subtitle: 'Ambil foto struk / bukti transfer check-in'
+            },
+            'editKtp': {
+                camera: 'editKtpCamera',
+                gallery: 'editKtpInput',
+                title: 'Foto KTP / Identitas',
+                subtitle: 'Perbarui foto KTP penghuni'
+            },
+            'expensePhoto': {
+                camera: 'expensePhotoCamera',
+                gallery: 'expensePhotoFile',
+                title: 'Foto Struk Pengeluaran',
+                subtitle: 'Ambil foto nota / bukti pengeluaran'
+            },
+            'manualPaymentProof': {
+                camera: 'manualPaymentProofCamera',
+                gallery: 'manualPaymentProofInput',
+                title: 'Bukti Pembayaran',
+                subtitle: 'Ambil foto struk / bukti transfer'
+            },
+            'renewRentProof': {
+                camera: 'renewRentProofCamera',
+                gallery: 'renewRentProofInput',
+                title: 'Bukti Perpanjangan Sewa',
+                subtitle: 'Ambil foto struk / transfer perpanjangan'
+            },
+            'ctxQuickKtp': {
+                camera: 'ctxQuickKtpCamera',
+                gallery: 'ctxQuickKtpInput',
+                title: 'Foto KTP Penghuni',
+                subtitle: 'Ambil foto KTP check-in cepat'
+            },
+            'ctxQuickProof': {
+                camera: 'ctxQuickProofCamera',
+                gallery: 'ctxQuickProofInput',
+                title: 'Bukti Bayar Check-In',
+                subtitle: 'Ambil foto struk / bukti bayar check-in'
+            }
+        };
+
+        function openPhotoSourcePicker(context) {
+            const config = PHOTO_SOURCE_MAP[context];
+            if (!config) {
+                console.warn('Unknown photo context:', context);
+                return;
+            }
+            activePhotoSourceContext = context;
+            const modal = document.getElementById('photoSourceModal');
+            const titleEl = document.getElementById('photoSourceTitle');
+            const subEl = document.getElementById('photoSourceSubtitle');
+            if (titleEl) titleEl.innerText = config.title;
+            if (subEl) subEl.innerText = config.subtitle;
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closePhotoSourceModal() {
+            const modal = document.getElementById('photoSourceModal');
+            if (modal) modal.classList.add('hidden');
+            activePhotoSourceContext = null;
+        }
+
+        function triggerPhotoChoice(type) {
+            if (!activePhotoSourceContext) return;
+            const config = PHOTO_SOURCE_MAP[activePhotoSourceContext];
+            if (!config) return;
+
+            const targetInputId = type === 'camera' ? config.camera : config.gallery;
+            const inputEl = document.getElementById(targetInputId);
+
+            closePhotoSourceModal();
+
+            if (inputEl) {
+                setTimeout(() => {
+                    inputEl.click();
+                }, 80);
+            } else {
+                console.warn('Target input tidak ditemukan:', targetInputId);
+            }
+        }
+
         // ── KTP ATTACHMENT HANDLERS ──────────────────────────────────────────
         async function handleKtpFileSelect(event, context = 'checkIn') {
             const file = event.target.files?.[0];
@@ -4462,11 +4615,13 @@
                 hiddenBase64 = document.getElementById('ctxQuickProofBase64');
                 indicator = document.getElementById('ctxQuickProofIndicator');
             } else if (context === 'manualPay') {
+                camInput = document.getElementById('manualPaymentProofCamera');
                 fileInput = document.getElementById('manualPaymentProofInput');
                 clearBtn = document.getElementById('manualPaymentProofClearBtn');
                 hiddenBase64 = document.getElementById('manualPaymentProofBase64');
                 indicator = document.getElementById('manualPaymentProofIndicator');
             } else if (context === 'renewRent') {
+                camInput = document.getElementById('renewRentProofCamera');
                 fileInput = document.getElementById('renewRentProofInput');
                 clearBtn = document.getElementById('renewRentProofClearBtn');
                 hiddenBase64 = document.getElementById('renewRentProofBase64');
@@ -4997,15 +5152,15 @@
                             </div>
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
-                                <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 transition-colors bg-slate-50 hover:bg-emerald-50/50 text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
+                                <button type="button" onclick="openPhotoSourcePicker('ctxQuickKtp')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 transition-colors bg-slate-50 hover:bg-emerald-50/50 text-slate-700 font-semibold text-[11px] group" title="Ambil foto KTP langsung atau pilih dari galeri">
                                     <span class="flex items-center gap-1.5">
                                         <i class="fa-solid fa-camera text-emerald-600 text-xs"></i>
                                         <span>Ambil Foto / Berkas KTP</span>
                                     </span>
                                     <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
-                                    <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
-                                    <input type="file" id="ctxQuickKtpCamera" class="hidden">
-                                </label>
+                                </button>
+                                <input type="file" id="ctxQuickKtpCamera" accept="image/*" capture="environment" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
+                                <input type="file" id="ctxQuickKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'ctxQuick')" class="hidden">
                                 <div id="ctxQuickKtpIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                     <span id="ctxQuickKtpLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
@@ -5028,15 +5183,15 @@
                                 <label class="block font-bold text-slate-700 text-[11px]">Bukti Pembayaran / Transfer / DP <span class="font-normal text-slate-400">(Opsional)</span></label>
                                 <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
                             </div>
-                            <label class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
+                            <button type="button" onclick="openPhotoSourcePicker('ctxQuickProof')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50/40 transition-colors text-slate-700 font-semibold text-[11px] group" title="Ambil foto bukti bayar langsung atau pilih dari galeri">
                                 <span class="flex items-center gap-1.5">
                                     <i class="fa-solid fa-receipt text-emerald-600 text-xs"></i>
                                     <span>Ambil Foto / Pilih Berkas Bukti</span>
                                 </span>
                                 <span class="text-[9px] font-bold text-emerald-700 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">Pilih</span>
-                                <input type="file" id="ctxQuickProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
-                                <input type="file" id="ctxQuickProofCamera" class="hidden">
-                            </label>
+                            </button>
+                            <input type="file" id="ctxQuickProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
+                            <input type="file" id="ctxQuickProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'ctxQuick')" class="hidden">
                             <div id="ctxQuickProofIndicator" class="hidden mt-1 p-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[10px]">
                                 <span id="ctxQuickProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1">
                                     <i class="fa-solid fa-circle-check text-emerald-600"></i>
