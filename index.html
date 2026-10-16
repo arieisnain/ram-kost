@@ -918,7 +918,7 @@
     <!-- ================================================================== -->
     <!-- MODAL: PRINTABLE MONTHLY REPORT (REKAP KEUANGAN & OKUPANSI A4)     -->
     <!-- ================================================================== -->
-    <div id="monthlyReportModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-6 hidden overflow-y-auto">
+    <div id="monthlyReportModal" onclick="if(event.target === this) closeMonthlyReportModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-6 hidden overflow-y-auto">
         <div class="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto max-h-[82vh] sm:max-h-[85vh]">
             <div class="px-3.5 sm:px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 gap-2 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5 sm:gap-2 min-w-0">
@@ -1510,7 +1510,7 @@
     <!-- ================================================================== -->
     <!-- MODAL 3: EDIT DATA KAMAR & PENGHUNI (UPDATE / RENEWAL)             -->
     <!-- ================================================================== -->
-    <div id="editRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+    <div id="editRoomModal" onclick="if(event.target === this) closeEditModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
@@ -1669,7 +1669,7 @@
     <!-- ================================================================== -->
     <!-- MODAL 4: CATAT PENGELUARAN OPERASIONAL KOST (BUKU KAS)             -->
     <!-- ================================================================== -->
-    <div id="expenseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+    <div id="expenseModal" onclick="if(event.target === this) closeExpenseModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
         <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
@@ -2009,7 +2009,7 @@
     <!-- ================================================================== -->
     <!-- MODAL 6: INFO AKUN DEMO & RESET DATA SIMULASI                      -->
     <!-- ================================================================== -->
-    <div id="demoInfoModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+    <div id="demoInfoModal" onclick="if(event.target === this) closeDemoInfoModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
             <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-amber-500/10">
                 <div class="flex items-center gap-2.5">
@@ -6654,6 +6654,7 @@
         function closeEditModal() {
             document.getElementById('editRoomModal').classList.add('hidden');
         }
+        window.closeEditRoomModal = closeEditModal;
 
         async function handleEditSubmit(e) {
             e.preventDefault();
@@ -7514,6 +7515,10 @@
         function closeReceiptModal() {
             document.getElementById('receiptModal').classList.add('hidden');
         }
+        function openReceiptModal(id) {
+            openReceiptForItem(id);
+        }
+        window.openReceiptModal = openReceiptModal;
 
         function addReceiptRow() {
             receiptRows.push({ desc: 'Biaya Tambahan', qty: 1, price: 50000 });
