@@ -163,7 +163,7 @@
         <!-- Click backdrop to close -->
         <div id="actionSheetBackdrop" class="fixed inset-0" onclick="closeSmartRoomModal()"></div>
         
-        <div id="smartRoomContainer" class="relative z-10 bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 max-h-[92vh] flex flex-col pb-safe">
+        <div id="smartRoomContainer" class="relative z-10 bg-white w-full max-w-lg rounded-t-[28px] sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transform translate-y-full sm:translate-y-0 transition-transform duration-300 max-h-[80vh] sm:max-h-[84vh] flex flex-col pb-safe">
             
             <!-- Mobile Drawer Grabber Pill -->
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto my-2.5 sm:hidden shrink-0"></div>
@@ -199,7 +199,7 @@
             </div>
 
             <!-- Modal Scrollable Body -->
-            <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
+            <div class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-4 flex-1">
                 
                 <!-- SUB-TAB 1: OVERVIEW & ACTIONS -->
                 <div id="ctxSubTabOverview" class="space-y-4">
@@ -782,10 +782,10 @@
     <!-- MODAL 1: SMART RECEIPT & KUITANSI (PRINT & WHATSAPP)               -->
     <!-- ================================================================== -->
     <div id="receiptModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
+        <div class="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto max-h-[82vh] sm:max-h-[85vh]">
             
             <!-- Modal Header -->
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <div class="flex items-center gap-2">
                     <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs bg-emerald-50 text-emerald-600 font-bold shadow-2xs">
                         <i class="fa-solid fa-receipt"></i>
@@ -800,7 +800,7 @@
             </div>
 
             <!-- Modal Body (Grid: Left Paper Preview, Right Editor) -->
-            <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 overflow-y-auto flex-1">
+            <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 overflow-y-auto overscroll-contain flex-1">
                 
                 <!-- LEFT COLUMN: RECEIPT PAPER PREVIEW -->
                 <div class="md:col-span-6 flex flex-col items-center">
@@ -1014,8 +1014,8 @@
     <!-- MODAL: PRINTABLE MONTHLY REPORT (REKAP KEUANGAN & OKUPANSI A4)     -->
     <!-- ================================================================== -->
     <div id="monthlyReportModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-6 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[96vh] sm:max-h-[92vh]">
-            <div class="px-3.5 sm:px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 gap-2">
+        <div class="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto max-h-[82vh] sm:max-h-[85vh]">
+            <div class="px-3.5 sm:px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 gap-2 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-1.5 sm:gap-2 min-w-0">
                     <i class="fa-solid fa-file-invoice text-emerald-600 shrink-0"></i>
                     <span class="truncate">Rekap Laporan Bulanan (A4)</span>
@@ -1032,7 +1032,7 @@
                 </div>
             </div>
             
-            <div class="p-2 sm:p-6 overflow-y-auto flex-1 bg-slate-100/60">
+            <div class="p-2 sm:p-6 overflow-y-auto overscroll-contain flex-1 bg-slate-100/60">
                 <div id="printableMonthlyReport" class="bg-white p-4 sm:p-8 rounded-2xl shadow-sm border border-slate-200 max-w-3xl mx-auto space-y-4 sm:space-y-6 text-xs text-slate-800">
                     <!-- Report Header -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b pb-4 border-slate-200">
@@ -1200,7 +1200,7 @@
     <!-- MODAL 2B: CHECK-IN PENGHUNI BARU (#checkInModal)                   -->
     <!-- ================================================================== -->
     <div id="checkInModal" onclick="if(event.target === this) closeCheckInModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col animate-scaleUp">
+        <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
             <!-- Modal Header -->
             <div class="px-4 sm:px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
                 <div class="flex items-center gap-2">
@@ -1218,9 +1218,10 @@
             </div>
 
             <!-- Form -->
-            <form onsubmit="handleCheckInSubmit(event)" class="p-4 sm:p-5 overflow-y-auto space-y-3 text-xs flex-1">
-                <!-- Info banner (if all occupied or note) -->
-                <div id="checkInNoRoomAlert" class="hidden p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+            <form onsubmit="handleCheckInSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 overflow-y-auto overscroll-contain space-y-3 text-xs flex-1">
+                    <!-- Info banner (if all occupied or note) -->
+                    <div id="checkInNoRoomAlert" class="hidden p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
                     <!-- Populated dynamically via JS -->
                 </div>
 
@@ -1454,12 +1455,14 @@
                     </div>
                 </div>
 
-                <!-- Footer Buttons -->
-                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100 shrink-0">
-                    <button type="button" onclick="closeCheckInModal()" class="px-4 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeCheckInModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="checkInSubmitBtn" class="px-5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                    <button type="submit" id="checkInSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
                         <i class="fa-solid fa-check text-xs"></i>
                         <span>Simpan Check-In</span>
                     </button>
@@ -1472,7 +1475,7 @@
     <!-- MODAL 2C: TAMBAH UNIT KAMAR FISIK (#addRoomModal)                  -->
     <!-- ================================================================== -->
     <div id="addRoomModal" onclick="if(event.target === this) closeAddRoomModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 max-h-[92vh] flex flex-col">
+        <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
             <!-- Modal Header -->
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
                 <div>
@@ -1487,7 +1490,8 @@
             </div>
 
             <!-- Form -->
-            <form onsubmit="handleAddRoomSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs overflow-y-auto scrollbar-thin flex-1">
+            <form onsubmit="handleAddRoomSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3.5 text-xs overflow-y-auto overscroll-contain flex-1">
                 <!-- Info notice -->
                 <div class="p-2.5 rounded-2xl bg-blue-50/70 border border-blue-200/70 text-blue-900 flex items-center gap-2.5">
                     <i class="fa-solid fa-circle-info text-blue-600 text-sm shrink-0"></i>
@@ -1621,13 +1625,15 @@
                     </span>
                 </div>
 
-                <!-- Footer Buttons -->
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 shrink-0">
-                    <button type="button" onclick="closeAddRoomModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeAddRoomModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="addRoomSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i>
+                    <button type="submit" id="addRoomSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus text-xs"></i>
                         <span>Daftarkan Kamar</span>
                     </button>
                 </div>
@@ -1639,8 +1645,8 @@
     <!-- MODAL 3: EDIT DATA KAMAR & PENGHUNI (UPDATE / RENEWAL)             -->
     <!-- ================================================================== -->
     <div id="editRoomModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Edit Kamar &amp; Data Sewa
                 </h3>
@@ -1648,7 +1654,8 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleEditSubmit(event)" class="p-4 sm:p-5 space-y-3 text-xs">
+            <form onsubmit="handleEditSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3 text-xs overflow-y-auto overscroll-contain flex-1">
                 <input type="hidden" id="editRoomOriginalId">
                 
                 <div class="grid grid-cols-2 gap-2.5">
@@ -1773,15 +1780,18 @@
                     <input type="hidden" id="editKtpBase64">
                 </div>
 
-                <div class="pt-2.5 flex items-center justify-between border-t border-slate-100">
-                    <button type="button" onclick="checkoutCurrentRoom()" class="px-3 py-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 font-bold flex items-center gap-1.5 transition-colors text-xs" title="Kosongkan kamar ini">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-between shrink-0">
+                    <button type="button" onclick="checkoutCurrentRoom()" class="px-3.5 py-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 font-bold flex items-center gap-1.5 transition-colors text-xs" title="Kosongkan kamar ini">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         <span>Kosongkan</span>
                     </button>
                     
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="closeEditModal()" class="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                        <button type="submit" id="editSubmitBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">Batal</button>
+                        <button type="submit" id="editSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20">
                             <span>Simpan</span>
                         </button>
                     </div>
@@ -1794,8 +1804,8 @@
     <!-- MODAL 4: CATAT PENGELUARAN OPERASIONAL KOST (BUKU KAS)             -->
     <!-- ================================================================== -->
     <div id="expenseModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-receipt text-rose-600"></i> Catat Pengeluaran
                 </h3>
@@ -1803,7 +1813,8 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleExpenseSubmit(event)" class="p-4 sm:p-5 space-y-3 text-xs">
+            <form onsubmit="handleExpenseSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3 text-xs overflow-y-auto overscroll-contain flex-1">
                 
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Keperluan Pengeluaran *</label>
@@ -1870,9 +1881,12 @@
                     <input type="hidden" id="expensePhotoBase64">
                 </div>
 
-                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" id="expenseSubmitBtn" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all shadow-sm shadow-rose-600/20">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">Batal</button>
+                    <button type="submit" id="expenseSubmitBtn" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-all shadow-sm shadow-rose-600/20">
                         <span>Simpan</span>
                     </button>
                 </div>
@@ -1884,7 +1898,7 @@
     <!-- MODAL 5: PENGATURAN USAHA & SISTEM (TABBED & RAPI)                 -->
     <!-- ================================================================== -->
     <div id="settingsModal" onclick="if(event.target === this) closeSettingsModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 hidden overflow-y-auto">
-        <div class="bg-white w-[94%] sm:w-full max-w-lg md:max-w-xl max-h-[88vh] sm:max-h-[82vh] rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto transition-all">
+        <div class="bg-white w-[94%] sm:w-full max-w-lg md:max-w-xl max-h-[82vh] sm:max-h-[85vh] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col my-auto transition-all animate-scaleUp">
             
             <!-- Modal Header (Fixed) -->
             <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
@@ -2228,8 +2242,8 @@
     <!-- MODAL 8: CATAT PEMBAYARAN MANUAL PER KAMAR (#manualPaymentModal)   -->
     <!-- ================================================================== -->
     <div id="manualPaymentModal" onclick="if(event.target === this) closeManualPaymentModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+        <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
                 <div>
                     <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-cash-register text-emerald-600"></i> Catat Pembayaran Kamar
@@ -2240,7 +2254,8 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleManualPaymentSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+            <form onsubmit="handleManualPaymentSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3.5 text-xs overflow-y-auto overscroll-contain flex-1">
                 <input type="hidden" id="manualPaymentRoomId">
 
                 <div class="grid grid-cols-2 gap-2.5">
@@ -2319,12 +2334,15 @@
                     <span>Setelah disimpan, nota kuitansi dapat langsung dilihat dan dicetak.</span>
                 </div>
 
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeManualPaymentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeManualPaymentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="manualPaymentSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-check"></i>
+                    <button type="submit" id="manualPaymentSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-xs"></i>
                         <span>Simpan Transaksi</span>
                     </button>
                 </div>
@@ -2336,8 +2354,8 @@
     <!-- MODAL 9: PERPANJANGAN SEWA KAMAR (#renewRentModal)                -->
     <!-- ================================================================== -->
     <div id="renewRentModal" onclick="if(event.target === this) closeRenewRentModal()" class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50/80 to-indigo-50/60">
+        <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50/80 to-indigo-50/60 shrink-0">
                 <div>
                     <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-calendar-plus text-blue-600"></i> Perpanjangan Sewa Kamar
@@ -2348,7 +2366,8 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleRenewRentSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+            <form onsubmit="handleRenewRentSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3.5 text-xs overflow-y-auto overscroll-contain flex-1">
                 <input type="hidden" id="renewRentRoomId">
 
                 <!-- Periode Perpanjangan Card -->
@@ -2467,12 +2486,15 @@
                     <span id="renewRentInfoNote">Status kamar akan otomatis diperbarui menjadi Lunas & kuitansi siap dicetak/dikirim.</span>
                 </div>
 
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeRenewRentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeRenewRentModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="renewRentSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-calendar-check"></i>
+                    <button type="submit" id="renewRentSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-check text-xs"></i>
                         <span id="renewRentSubmitBtnText">Simpan &amp; Perpanjang</span>
                     </button>
                 </div>
@@ -2484,8 +2506,8 @@
     <!-- MODAL 10: PELUNASAN SISA SEWA KAMAR (#settleBalanceModal)          -->
     <!-- ================================================================== -->
     <div id="settleBalanceModal" onclick="if(event.target === this) closeSettleBalanceModal()" class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50/90 to-orange-50/70">
+        <div class="bg-white w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[82vh] sm:max-h-[85vh] flex flex-col animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50/90 to-orange-50/70 shrink-0">
                 <div>
                     <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-coins text-amber-600"></i> Pelunasan Sisa Sewa Kamar
@@ -2496,7 +2518,8 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleSettleBalanceSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+            <form onsubmit="handleSettleBalanceSubmit(event)" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+                <div class="p-4 sm:p-5 space-y-3.5 text-xs overflow-y-auto overscroll-contain flex-1">
                 <input type="hidden" id="settleBalanceRoomId">
 
                 <!-- Sisa Tagihan Info Banner -->
@@ -2574,12 +2597,15 @@
                     <span>Setelah lunas, status kamar otomatis kembali menjadi Lunas dan kuitansi pelunasan resmi diterbitkan.</span>
                 </div>
 
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeSettleBalanceModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                </div>
+
+                <!-- Pinned Sticky Footer -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-t border-slate-100 flex items-center justify-end gap-2 shrink-0">
+                    <button type="button" onclick="closeSettleBalanceModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="settleBalanceSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-check"></i>
+                    <button type="submit" id="settleBalanceSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-xs"></i>
                         <span>Simpan &amp; Lunasi</span>
                     </button>
                 </div>
