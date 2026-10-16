@@ -1127,65 +1127,56 @@
     <!-- MODAL 2A: PILIHAN AKSI CEPAT (+ TAMBAH) (#quickAddChoiceModal)     -->
     <!-- ================================================================== -->
     <div id="quickAddChoiceModal" onclick="if(event.target === this) closeQuickAddChoiceModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-0 sm:my-4 transition-all">
+        <div class="bg-white w-full max-w-sm rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-0 sm:my-4 transition-all">
             <!-- Mobile pull handle -->
-            <div class="sm:hidden w-12 h-1 bg-slate-200 rounded-full mx-auto mt-3 mb-1"></div>
+            <div class="sm:hidden w-10 h-1 bg-slate-200 rounded-full mx-auto mt-2.5 mb-1"></div>
 
-            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
                 <div>
                     <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-emerald-600"></i> Pilih Jenis Tindakan
+                        <i class="fa-solid fa-layer-group text-emerald-600"></i> Menu Cepat Tambah
                     </h3>
-                    <p class="text-[11px] text-slate-500 mt-0.5">Pilih alur transaksi kost yang ingin Anda lakukan</p>
+                    <p class="text-[11px] text-slate-500">Pilih jenis tindakan yang ingin dilakukan</p>
                 </div>
-                <button onclick="closeQuickAddChoiceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeQuickAddChoiceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
 
-            <div class="p-4 sm:p-5 space-y-3">
-                <!-- Option 1: Check-In Penghuni Baru (Primary / Frequent) -->
-                <button type="button" onclick="closeQuickAddChoiceModal(); openCheckInModal();" class="w-full group p-4 rounded-2xl border-2 border-emerald-500/40 hover:border-emerald-600 bg-gradient-to-r from-emerald-50/60 via-teal-50/30 to-white hover:from-emerald-50 hover:to-teal-50/60 transition-all text-left flex items-center gap-3.5 shadow-2xs hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-md shadow-emerald-600/25 group-hover:scale-105 transition-transform">
+            <div class="p-3 sm:p-3.5 space-y-2">
+                <!-- Option 1: Check-In Penghuni Baru -->
+                <button type="button" onclick="closeQuickAddChoiceModal(); openCheckInModal();" class="w-full group p-3 rounded-xl border border-emerald-500/30 hover:border-emerald-500 bg-emerald-50/40 hover:bg-emerald-50 transition-all text-left flex items-center gap-3 shadow-2xs hover:shadow-xs cursor-pointer">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shrink-0 shadow-xs shadow-emerald-600/20 group-hover:scale-105 transition-transform">
                         <i class="fa-solid fa-user-plus"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">Check-In Penghuni Baru</span>
-                            <span class="text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">Rutin</span>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">Check-In Penghuni Baru</span>
+                            <span id="quickChoiceEmptyBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">0 Kamar Siap Huni</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">Penyewa baru masuk ke kamar kosong yang tersedia, isi biodata &amp; cetak nota.</p>
-                        <div class="mt-2 flex items-center gap-2 text-[10px] font-bold text-emerald-700">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-emerald-200 shadow-2xs">
-                                <i class="fa-solid fa-circle-check text-[9px] text-emerald-500"></i>
-                                <span id="quickChoiceEmptyBadge">0 Kamar Siap Huni</span>
-                            </span>
-                        </div>
+                        <p class="text-[11px] text-slate-500 mt-0.5 truncate">Penyewa baru masuk kamar, catat uang sewa &amp; kuitansi.</p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all text-xs"></i>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-600 text-xs"></i>
                 </button>
 
-                <!-- Option 2: Tambah Unit Kamar Fisik (Secondary / Infrequent) -->
-                <button type="button" onclick="closeQuickAddChoiceModal(); openAddRoomModal();" class="w-full group p-4 rounded-2xl border border-slate-200 hover:border-blue-500 bg-white hover:bg-blue-50/40 transition-all text-left flex items-center gap-3.5 shadow-2xs hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xl shrink-0 shadow-md shadow-blue-600/25 group-hover:scale-105 transition-transform">
+                <!-- Option 2: Tambah Unit Kamar Baru -->
+                <button type="button" onclick="closeQuickAddChoiceModal(); openAddRoomModal();" class="w-full group p-3 rounded-xl border border-slate-200 hover:border-blue-500 bg-white hover:bg-blue-50/30 transition-all text-left flex items-center gap-3 shadow-2xs hover:shadow-xs cursor-pointer">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base shrink-0 shadow-xs shadow-blue-600/20 group-hover:scale-105 transition-transform">
                         <i class="fa-solid fa-door-open"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors">Tambah Unit Kamar Baru</span>
-                            <span class="text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0">Aset Master</span>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors">Tambah Unit Kamar Baru</span>
+                            <span class="text-[9px] font-semibold text-slate-400">Master Aset</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-1 leading-snug">Daftarkan nomor/unit kamar fisik baru ke sistem (renovasi/bangun kamar baru).</p>
-                        <div class="mt-2 text-[10px] font-semibold text-slate-400">
-                            Status awal otomatis Siap Huni
-                        </div>
+                        <p class="text-[11px] text-slate-500 mt-0.5 truncate">Daftarkan nomor/unit fisik kamar baru kost ke sistem.</p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all text-xs"></i>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-600 text-xs"></i>
                 </button>
             </div>
 
-            <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button type="button" onclick="closeQuickAddChoiceModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-200/60 font-bold text-xs transition-colors">
+            <div class="p-2.5 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button type="button" onclick="closeQuickAddChoiceModal()" class="w-full sm:w-auto px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-200/60 font-bold text-xs transition-colors">
                     Tutup
                 </button>
             </div>
@@ -1195,143 +1186,162 @@
     <!-- ================================================================== -->
     <!-- MODAL 2B: CHECK-IN PENGHUNI BARU (#checkInModal)                   -->
     <!-- ================================================================== -->
-    <div id="checkInModal" onclick="if(event.target === this) closeCheckInModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+    <div id="checkInModal" onclick="if(event.target === this) closeCheckInModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto max-h-[92vh] flex flex-col animate-scaleUp">
             <!-- Modal Header -->
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
-                <div>
-                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus text-emerald-600"></i> Check-In Penghuni Baru
-                    </h3>
-                    <p class="text-[11px] text-slate-500">Pilih kamar kosong &amp; masukkan data penyewa baru</p>
+            <div class="px-4 sm:px-5 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900">Check-In Penghuni Baru</h3>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500">Pilih kamar &amp; isi biodata penyewa baru</p>
+                    </div>
                 </div>
                 <button onclick="closeCheckInModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                    <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
 
             <!-- Form -->
-            <form onsubmit="handleCheckInSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
-                <!-- Alert if no empty rooms available -->
-                <div id="checkInNoRoomAlert" class="hidden p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-2">
-                    <div class="flex items-start gap-2.5">
-                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base mt-0.5 shrink-0"></i>
-                        <div>
-                            <div class="font-bold text-xs">Semua Kamar Saat Ini Sedang Penuh!</div>
-                            <div class="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
-                                Tidak ada kamar dengan status <strong>Siap Huni</strong>. Anda dapat mengosongkan kamar yang sudah selesai sewa atau mendaftarkan unit kamar fisik baru.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pt-1 flex items-center gap-2 justify-end">
-                        <button type="button" onclick="closeCheckInModal(); openAddRoomModal();" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-[11px] flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> Tambah Unit Kamar Fisik
-                        </button>
-                    </div>
+            <form onsubmit="handleCheckInSubmit(event)" class="p-4 sm:p-5 overflow-y-auto space-y-3 text-xs flex-1">
+                <!-- Info banner (if all occupied or note) -->
+                <div id="checkInNoRoomAlert" class="hidden p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                    <!-- Populated dynamically via JS -->
                 </div>
 
                 <!-- Main Form Body -->
-                <div id="checkInFormFields" class="space-y-3.5">
-                    <!-- Room Selector -->
+                <div id="checkInFormFields" class="space-y-3">
+                    <!-- Row 1: Room Selector -->
                     <div>
                         <div class="flex items-center justify-between mb-1">
-                            <label class="block font-bold text-slate-700">Pilih Kamar Kosong (Siap Huni) *</label>
+                            <label class="block font-bold text-slate-700 text-[11px]">Pilih Kamar *</label>
                             <span id="checkInAvailableCount" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                                 0 Kamar Tersedia
                             </span>
                         </div>
-                        <select id="checkInRoomSelect" onchange="onCheckInRoomSelected(this.value)" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 bg-white font-bold text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-2xs">
+                        <select id="checkInRoomSelect" onchange="onCheckInRoomSelected(this.value)" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-bold text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 shadow-2xs">
                             <!-- Populated dynamically via JS -->
                         </select>
                     </div>
 
-                    <!-- Selected Room Info Snapshot -->
-                    <div id="checkInRoomPreview" class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs font-mono">
-                                <span id="checkInPreviewId">KMR</span>
-                            </div>
-                            <div>
-                                <div id="checkInPreviewService" class="font-bold text-slate-800 text-[11px]">Tipe Kamar</div>
-                                <div id="checkInPreviewRack" class="text-[10px] text-slate-500">Lantai 1</div>
-                            </div>
+                    <!-- Selected Room Info Snapshot (Sleek Compact Strip) -->
+                    <div id="checkInRoomPreview" class="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-[11px]">
+                        <div class="flex items-center gap-1.5 truncate">
+                            <span id="checkInPreviewId" class="font-bold font-mono text-slate-900 px-1.5 py-0.5 rounded bg-white border border-slate-200 text-[10px]">KMR</span>
+                            <span id="checkInPreviewService" class="font-semibold text-slate-700 truncate">Tipe Kamar</span>
+                            <span class="text-slate-300">•</span>
+                            <span id="checkInPreviewRack" class="text-slate-500 text-[10px]">Lantai 1</span>
                         </div>
-                        <div class="text-right">
-                            <div class="text-[10px] text-slate-400 font-semibold">Tarif Standar</div>
-                            <div id="checkInPreviewAmount" class="font-extrabold text-slate-900 font-mono text-xs">Rp 0</div>
+                        <div class="text-right shrink-0">
+                            <span class="text-[10px] text-slate-400 font-medium mr-1">Tarif:</span>
+                            <span id="checkInPreviewAmount" class="font-extrabold text-emerald-700 font-mono text-xs">Rp 0</span>
                         </div>
                     </div>
 
-                    <!-- Tenant Details -->
+                    <!-- Row 2: Tenant Name & Phone (2 cols) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Penghuni *</label>
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Nama Lengkap Penghuni *</label>
                             <input type="text" id="checkInCustomer" required placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-semibold text-xs">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">No. WhatsApp / HP *</label>
-                            <input type="text" id="checkInPhone" required placeholder="08123456789" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">No. WhatsApp / HP *</label>
+                            <input type="text" id="checkInPhone" required placeholder="08xxxxxxxxxx" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
                         </div>
                     </div>
 
-                    <!-- Rental Date & Rent Amount -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- Row 3: Rent Date, Rent Amount, & Rent Term (3 cols on desktop) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai Masuk *</label>
-                            <input type="date" id="checkInStartDate" onchange="updateCheckInDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 bg-white font-medium text-xs">
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Tgl Masuk *</label>
+                            <input type="date" id="checkInStartDate" onchange="updateCheckInDueDatePreview()" required class="w-full border border-slate-200 rounded-xl px-2.5 py-2 outline-none focus:border-emerald-500 bg-white font-medium text-xs">
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Tarif Sewa (Rp) *</label>
-                            <input type="number" id="checkInAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono font-bold text-xs">
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Tarif Sewa (Rp) *</label>
+                            <input type="number" id="checkInAmount" required min="50000" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 outline-none focus:border-emerald-500 font-mono font-bold text-xs">
                         </div>
-                    </div>
-
-                    <!-- Rental Duration (Term) & Daily Counter -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Pilihan Durasi Sewa *</label>
-                            <select id="checkInRentTerm" onchange="onRentTermChange(this.value, 'checkIn')" class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-                                <option value="1_bulan" selected>Bulanan (1 Bulan Standar)</option>
-                                <option value="3_bulan">Kuartal (3 Bulan)</option>
-                                <option value="6_bulan">Semester (6 Bulan)</option>
-                                <option value="1_tahun">Tahunan (1 Tahun)</option>
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Durasi Sewa *</label>
+                            <select id="checkInRentTerm" onchange="onRentTermChange(this.value, 'checkIn')" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white font-semibold text-xs outline-none focus:border-emerald-500">
+                                <option value="1_bulan" selected>1 Bulan (Standar)</option>
+                                <option value="3_bulan">3 Bulan (Kuartal)</option>
+                                <option value="6_bulan">6 Bulan (Semester)</option>
+                                <option value="1_tahun">1 Tahun (Tahunan)</option>
                                 <option value="harian">Transit / Harian</option>
                             </select>
                         </div>
-                        <div id="checkInDailyContainer" class="hidden">
-                            <label class="block font-bold text-slate-700 mb-1">Jumlah Hari Sewa *</label>
-                            <div class="relative">
-                                <input type="number" id="checkInDailyDays" value="3" min="1" max="30" oninput="updateCheckInDueDatePreview()" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-emerald-500">
-                                <span class="absolute right-3 top-2 text-slate-400 text-xs font-semibold">Hari</span>
-                            </div>
+                    </div>
+
+                    <!-- Row 3b: Daily Days Counter (if harian selected) -->
+                    <div id="checkInDailyContainer" class="hidden">
+                        <label class="block font-bold text-slate-700 mb-1 text-[11px]">Jumlah Hari Sewa *</label>
+                        <div class="relative max-w-xs">
+                            <input type="number" id="checkInDailyDays" value="3" min="1" max="30" oninput="updateCheckInDueDatePreview()" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 font-mono font-bold text-xs outline-none focus:border-emerald-500">
+                            <span class="absolute right-3 top-1.5 text-slate-400 text-xs font-semibold">Hari</span>
                         </div>
                     </div>
 
-                    <!-- Deposit & KTP Attachment -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- Row 4: Payment Plan Segmented Control -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block font-bold text-slate-700 text-[11px]">Status Pembayaran Pertama *</label>
+                            <div class="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
+                                <i class="fa-regular fa-calendar-check text-emerald-600"></i>
+                                <span>Tempo:</span>
+                                <span id="checkInDueDateText" class="font-bold text-slate-800 font-mono">-</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
+                            <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-emerald-500 bg-emerald-50/70 text-emerald-800 font-bold" id="checkInPlanLabelLunas">
+                                <input type="radio" name="checkInPayPlan" value="lunas" checked onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                                <span>Lunas</span>
+                            </label>
+                            <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 font-medium" id="checkInPlanLabelTempo">
+                                <input type="radio" name="checkInPayPlan" value="tempo" onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-clock text-amber-500 text-xs"></i>
+                                <span>Tempo / Nanti</span>
+                            </label>
+                            <label class="cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 font-medium" id="checkInPlanLabelDp">
+                                <input type="radio" name="checkInPayPlan" value="dp" onchange="toggleCheckInDp(this.value)" class="sr-only">
+                                <i class="fa-solid fa-bookmark text-purple-500 text-xs"></i>
+                                <span>DP / Booking</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Row 4b: DP Input (conditional) -->
+                    <div id="checkInDpSection" class="hidden p-2.5 rounded-xl bg-purple-50/60 border border-purple-200 space-y-1">
+                        <label class="block font-bold text-purple-900 text-[11px]">Nominal DP Masuk (Rp) *</label>
+                        <input type="number" id="checkInDpAmount" min="50000" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-1.5 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
+                    </div>
+
+                    <!-- Row 5: Deposit & KTP Attachment (2 cols) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 border-t border-slate-100">
                         <div>
                             <div class="flex items-center justify-between mb-1">
-                                <label class="block font-bold text-slate-700">Uang Jaminan / Deposit <span class="font-normal text-slate-400 text-[11px]">(Opsional)</span></label>
-                                <span class="text-[10px] text-slate-400">Bisa diisi Rp 0</span>
+                                <label class="block font-bold text-slate-700 text-[11px]">Uang Jaminan / Deposit <span class="font-normal text-slate-400">(Opsional)</span></label>
+                                <span class="text-[9px] text-slate-400">Bisa Rp 0</span>
                             </div>
-                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs">
-                            <div class="flex items-center gap-1.5 mt-1.5">
-                                <button type="button" onclick="setCheckInDeposit(0)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[10px] font-semibold text-slate-600 transition-colors">Rp 0</button>
-                                <button type="button" onclick="setCheckInDeposit(250000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">250rb</button>
-                                <button type="button" onclick="setCheckInDeposit(500000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">500rb</button>
-                                <button type="button" onclick="setCheckInDeposit(1000000)" class="px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
+                            <input type="number" id="checkInDeposit" min="0" step="50000" placeholder="0 (Tanpa Deposit)" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 font-mono text-xs">
+                            <div class="flex items-center gap-1 mt-1">
+                                <button type="button" onclick="setCheckInDeposit(0)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[9px] font-semibold text-slate-600 transition-colors">Rp 0</button>
+                                <button type="button" onclick="setCheckInDeposit(250000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">250k</button>
+                                <button type="button" onclick="setCheckInDeposit(500000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">500k</button>
+                                <button type="button" onclick="setCheckInDeposit(1000000)" class="px-1.5 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[9px] font-semibold border border-amber-200/60 transition-colors">1 Jt</button>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1">Uang jaminan kerusakan/kunci, dikembalikan saat penyewa checkout.</p>
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">Foto KTP / Identitas (Opsional)</label>
+                            <label class="block font-bold text-slate-700 mb-1 text-[11px]">Foto KTP / Identitas <span class="font-normal text-slate-400">(Opsional)</span></label>
                             <div class="flex items-center gap-2">
-                                <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-2 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
-                                    <i class="fa-solid fa-id-card text-emerald-600 text-sm"></i>
-                                    <span id="checkInKtpLabel" class="text-xs font-semibold truncate">Upload Foto KTP</span>
+                                <label class="flex-1 cursor-pointer flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-emerald-500 rounded-xl py-1.5 px-3 bg-slate-50 hover:bg-emerald-50/30 transition-colors text-slate-600">
+                                    <i class="fa-solid fa-id-card text-emerald-600 text-xs"></i>
+                                    <span id="checkInKtpLabel" class="text-[11px] font-semibold truncate">Upload Foto KTP</span>
                                     <input type="file" id="checkInKtpInput" accept="image/*" onchange="handleKtpFileSelect(event, 'checkIn')" class="hidden">
                                 </label>
-                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-2 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
+                                <button type="button" id="checkInKtpClearBtn" onclick="clearKtpFile('checkIn')" class="hidden p-1.5 rounded-xl text-rose-500 hover:bg-rose-50" title="Hapus foto KTP">
                                     <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
@@ -1339,60 +1349,20 @@
                         </div>
                     </div>
 
-                    <!-- Payment Plan Choices -->
-                    <div class="space-y-1.5">
-                        <label class="block font-bold text-slate-700">Status Pembayaran Pertama *</label>
-                        <div class="grid grid-cols-3 gap-2 text-center">
-                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-emerald-500 bg-emerald-50/60 text-emerald-800" id="checkInPlanLabelLunas">
-                                <input type="radio" name="checkInPayPlan" value="lunas" checked onchange="toggleCheckInDp(this.value)" class="sr-only">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
-                                <span class="font-bold text-[11px]">Lunas</span>
-                                <span class="text-[9px] text-slate-500">Masa sewa aktif</span>
-                            </label>
-                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-slate-200 text-slate-700" id="checkInPlanLabelTempo">
-                                <input type="radio" name="checkInPayPlan" value="tempo" onchange="toggleCheckInDp(this.value)" class="sr-only">
-                                <i class="fa-solid fa-clock text-amber-500 text-sm"></i>
-                                <span class="font-bold text-[11px]">Bayar Nanti</span>
-                                <span class="text-[9px] text-slate-500">Tempo / Pending</span>
-                            </label>
-                            <label class="cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all border-slate-200 text-slate-700" id="checkInPlanLabelDp">
-                                <input type="radio" name="checkInPayPlan" value="dp" onchange="toggleCheckInDp(this.value)" class="sr-only">
-                                <i class="fa-solid fa-bookmark text-purple-500 text-sm"></i>
-                                <span class="font-bold text-[11px]">DP / Booking</span>
-                                <span class="text-[9px] text-slate-500">Uang Muka</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- DP Nominal Input (conditional) -->
-                    <div id="checkInDpSection" class="hidden p-3 rounded-2xl bg-purple-50/50 border border-purple-200/80 space-y-1.5">
-                        <label class="block font-bold text-purple-900 text-[11px]">Nominal DP Masuk (Rp) *</label>
-                        <input type="number" id="checkInDpAmount" min="50000" placeholder="Contoh: 300000" class="w-full border border-purple-300 rounded-xl px-3 py-2 outline-none font-mono font-bold text-xs bg-white focus:ring-2 focus:ring-purple-500/20">
-                        <p class="text-[10px] text-purple-700">Kamar akan berstatus "Booking / DP Terbayar" hingga penghuni melunasi sisa sewa.</p>
-                    </div>
-
-                    <!-- Next Due Date Preview Badge -->
-                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between text-[11px]">
-                        <span class="text-slate-500 font-semibold flex items-center gap-1.5">
-                            <i class="fa-regular fa-calendar-check text-emerald-600"></i> Tanggal Jatuh Tempo Berikutnya:
-                        </span>
-                        <span id="checkInDueDateText" class="font-bold text-slate-800 font-mono">-</span>
-                    </div>
-
-                    <!-- Additional Details / Notes -->
+                    <!-- Row 6: Catatan Tambahan (Opsional) -->
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
-                        <input type="text" id="checkInDetail" placeholder="Contoh: Bawa motor Vario hitam / Deposit kunci" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-emerald-500 text-xs">
+                        <label class="block font-bold text-slate-700 mb-1 text-[11px]">Catatan Tambahan <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <input type="text" id="checkInDetail" placeholder="Contoh: Bawa motor / deposit kunci" class="w-full border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 text-xs">
                     </div>
                 </div>
 
                 <!-- Footer Buttons -->
-                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                    <button type="button" onclick="closeCheckInModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                <div class="pt-2.5 flex items-center justify-end gap-2 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="closeCheckInModal()" class="px-4 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors">
                         Batal
                     </button>
-                    <button type="submit" id="checkInSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
-                        <i class="fa-solid fa-check"></i>
+                    <button type="submit" id="checkInSubmitBtn" class="px-5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-check text-xs"></i>
                         <span>Simpan Check-In</span>
                     </button>
                 </div>
@@ -5123,47 +5093,93 @@
 
         // ── WORKFLOW 1: CHECK-IN PENGHUNI BARU (KAMAR KOSONG / SIAP HUNI) ──────
         function openCheckInModal(preselectedId = null) {
-            let emptyRooms = appData.filter(r => getRoomCondition(r) === 'kosong');
-            if (preselectedId && !emptyRooms.some(r => r.id === preselectedId)) {
-                const targetRoom = appData.find(r => r.id === preselectedId);
-                if (targetRoom) {
-                    emptyRooms = [targetRoom, ...emptyRooms];
-                }
-            }
+            const emptyRooms = appData.filter(r => getRoomCondition(r) === 'kosong');
+            const otherRooms = appData.filter(r => getRoomCondition(r) !== 'kosong');
             const alertEl = document.getElementById('checkInNoRoomAlert');
             const fieldsEl = document.getElementById('checkInFormFields');
             const submitBtn = document.getElementById('checkInSubmitBtn');
             const countBadge = document.getElementById('checkInAvailableCount');
             const roomSelect = document.getElementById('checkInRoomSelect');
 
-            if (countBadge) countBadge.innerText = `${emptyRooms.length} Kamar Tersedia`;
-
-            if (emptyRooms.length === 0) {
-                if (alertEl) alertEl.classList.remove('hidden');
+            if (appData.length === 0) {
+                if (alertEl) {
+                    alertEl.classList.remove('hidden');
+                    alertEl.innerHTML = `
+                        <div class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base mt-0.5 shrink-0"></i>
+                            <div>
+                                <div class="font-bold text-xs">Belum Ada Kamar Terdaftar!</div>
+                                <div class="text-[11px] text-amber-800 mt-0.5">Daftarkan unit kamar fisik terlebih dahulu ke sistem master aset.</div>
+                            </div>
+                        </div>
+                        <div class="pt-1.5 flex justify-end">
+                            <button type="button" onclick="closeCheckInModal(); openAddRoomModal();" class="px-3 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs">
+                                + Tambah Kamar Fisik
+                            </button>
+                        </div>
+                    `;
+                }
                 if (fieldsEl) fieldsEl.classList.add('hidden');
                 if (submitBtn) {
                     submitBtn.disabled = true;
                     submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 }
             } else {
-                if (alertEl) alertEl.classList.add('hidden');
+                if (alertEl) {
+                    if (emptyRooms.length === 0) {
+                        alertEl.classList.remove('hidden');
+                        alertEl.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-amber-600 text-sm shrink-0"></i>
+                                <span class="leading-snug">Seluruh kamar saat ini terisi. Anda dapat memilih kamar di bawah untuk mendaftarkan penghuni baru / menggantikan penghuni lama.</span>
+                            </div>
+                        `;
+                    } else {
+                        alertEl.classList.add('hidden');
+                    }
+                }
+
                 if (fieldsEl) fieldsEl.classList.remove('hidden');
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
 
-                // Populate empty rooms dropdown
-                if (roomSelect) {
-                    roomSelect.innerHTML = emptyRooms.map(r => `
-                        <option value="${r.id}">${r.id} - ${r.rack || 'Lantai 1'} • ${r.service} • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
-                    `).join('');
+                if (countBadge) {
+                    countBadge.innerText = emptyRooms.length > 0 
+                        ? `${emptyRooms.length} Kamar Kosong` 
+                        : `${appData.length} Total Kamar`;
+                    countBadge.className = emptyRooms.length > 0
+                        ? 'text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200'
+                        : 'text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200';
+                }
 
-                    // Pre-select if requested and valid
-                    if (preselectedId && emptyRooms.some(r => r.id === preselectedId)) {
+                // Populate room selector with categorized options
+                if (roomSelect) {
+                    let selectHtml = '';
+                    if (emptyRooms.length > 0) {
+                        selectHtml += `<optgroup label="🟢 Kamar Siap Huni (Kosong)">`;
+                        selectHtml += emptyRooms.map(r => `
+                            <option value="${r.id}">${r.id} • ${r.rack || 'Lt. 1'} • ${r.service} • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
+                        `).join('');
+                        selectHtml += `</optgroup>`;
+                    }
+                    if (otherRooms.length > 0) {
+                        selectHtml += `<optgroup label="${emptyRooms.length > 0 ? '⚪ Kamar Lainnya (Ganti Penghuni)' : 'Pilih Kamar Unit'}">`;
+                        selectHtml += otherRooms.map(r => `
+                            <option value="${r.id}">${r.id} • ${r.rack || 'Lt. 1'} (Saat ini: ${r.customer || 'Terisi'}) • Rp ${Number(r.amount).toLocaleString('id-ID')}/bln</option>
+                        `).join('');
+                        selectHtml += `</optgroup>`;
+                    }
+                    roomSelect.innerHTML = selectHtml;
+
+                    // Pre-select priority
+                    if (preselectedId && appData.some(r => r.id === preselectedId)) {
                         roomSelect.value = preselectedId;
                     } else if (emptyRooms.length > 0) {
                         roomSelect.value = emptyRooms[0].id;
+                    } else if (appData.length > 0) {
+                        roomSelect.value = appData[0].id;
                     }
 
                     onCheckInRoomSelected(roomSelect.value);
@@ -5249,10 +5265,10 @@
             const tempoLabel = document.getElementById('checkInPlanLabelTempo');
             const dpLabel = document.getElementById('checkInPlanLabelDp');
 
-            const resetClass = 'border-slate-200 text-slate-700 bg-white';
-            if (lunasLabel) lunasLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'lunas' ? 'border-emerald-500 bg-emerald-50/60 text-emerald-800' : resetClass}`;
-            if (tempoLabel) tempoLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'tempo' ? 'border-amber-500 bg-amber-50/60 text-amber-800' : resetClass}`;
-            if (dpLabel) dpLabel.className = `cursor-pointer border rounded-2xl p-2.5 flex flex-col items-center justify-center gap-1 transition-all ${plan === 'dp' ? 'border-purple-500 bg-purple-50/60 text-purple-800' : resetClass}`;
+            const resetClass = 'border-slate-200 text-slate-700 bg-white font-medium';
+            if (lunasLabel) lunasLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'lunas' ? 'border-emerald-500 bg-emerald-50/70 text-emerald-800 font-bold' : resetClass}`;
+            if (tempoLabel) tempoLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'tempo' ? 'border-amber-500 bg-amber-50/70 text-amber-800 font-bold' : resetClass}`;
+            if (dpLabel) dpLabel.className = `cursor-pointer border rounded-xl py-1.5 px-2 flex items-center justify-center gap-1.5 transition-all ${plan === 'dp' ? 'border-purple-500 bg-purple-50/70 text-purple-800 font-bold' : resetClass}`;
         }
 
         async function handleCheckInSubmit(e) {
