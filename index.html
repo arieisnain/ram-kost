@@ -2369,10 +2369,27 @@
                     </div>
                 </div>
 
+                <!-- Skema Pembayaran: Lunas Penuh vs Bayar Sebagian / Cicil -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1 text-[11px]">Skema Pembayaran *</label>
+                    <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                        <label class="cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-blue-500 bg-blue-50/70 text-blue-900 font-bold" id="renewRentPlanLabelFull">
+                            <input type="radio" name="renewRentPayPlan" value="full" checked onchange="toggleRenewRentPartialPlan()" class="sr-only">
+                            <i class="fa-solid fa-circle-check text-blue-600"></i>
+                            <span>Lunas Penuh</span>
+                        </label>
+                        <label class="cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 bg-white font-medium" id="renewRentPlanLabelPartial">
+                            <input type="radio" name="renewRentPayPlan" value="partial" onchange="toggleRenewRentPartialPlan()" class="sr-only">
+                            <i class="fa-solid fa-hand-holding-dollar text-amber-500"></i>
+                            <span>Bayar Sebagian / Cicil</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Nominal Sewa (Rp) *</label>
-                        <input type="number" id="renewRentAmount" required min="1000" step="1000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-blue-500">
+                        <label id="renewRentAmountLabel" class="block font-bold text-slate-700 mb-1">Nominal Sewa (Rp) *</label>
+                        <input type="number" id="renewRentAmount" required min="1000" step="1000" oninput="calculateRenewRentBalance()" placeholder="1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-blue-500 bg-white">
                     </div>
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">Metode Bayar *</label>
@@ -2384,6 +2401,24 @@
                             <option value="QRIS">QRIS</option>
                             <option value="Tunai / Cash">Tunai / Cash</option>
                         </select>
+                    </div>
+                </div>
+
+                <!-- Sub-Section Bayar Sebagian (Cicilan) -->
+                <div id="renewRentPartialContainer" class="hidden p-3 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2.5">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-amber-900 text-[11px] mb-1">Dibayar Sekarang (Rp) *</label>
+                            <input type="number" id="renewRentPaidNow" min="10000" step="10000" oninput="calculateRenewRentBalance()" placeholder="Contoh: 800000" class="w-full border border-amber-300 rounded-xl px-3 py-1.5 font-mono font-bold text-xs bg-white outline-none focus:ring-2 focus:ring-amber-500/20">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-amber-900 text-[11px] mb-1">Janji Pelunasan Sisa *</label>
+                            <input type="date" id="renewRentPromiseDate" class="w-full border border-amber-300 rounded-xl px-2.5 py-1.5 text-xs bg-white outline-none focus:ring-2 focus:ring-amber-500/20 font-medium">
+                        </div>
+                    </div>
+                    <div class="p-2 rounded-xl bg-white/80 border border-amber-200/80 flex items-center justify-between text-xs">
+                        <span class="text-slate-600 font-medium">Sisa Kurang Bayar:</span>
+                        <span id="renewRentBalanceDisplay" class="font-extrabold text-amber-800 font-mono text-sm tabular-nums">Rp 0</span>
                     </div>
                 </div>
 
@@ -2429,7 +2464,7 @@
 
                 <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200/70 text-[11px] text-blue-900 flex items-center gap-2">
                     <i class="fa-solid fa-info-circle text-blue-600"></i>
-                    <span>Status kamar akan otomatis diperbarui menjadi Lunas & kuitansi siap dicetak/dikirim.</span>
+                    <span id="renewRentInfoNote">Status kamar akan otomatis diperbarui menjadi Lunas & kuitansi siap dicetak/dikirim.</span>
                 </div>
 
                 <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
@@ -2438,7 +2473,114 @@
                     </button>
                     <button type="submit" id="renewRentSubmitBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-sm shadow-blue-600/20 flex items-center gap-1.5">
                         <i class="fa-solid fa-calendar-check"></i>
-                        <span>Simpan &amp; Perpanjang</span>
+                        <span id="renewRentSubmitBtnText">Simpan &amp; Perpanjang</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 10: PELUNASAN SISA SEWA KAMAR (#settleBalanceModal)          -->
+    <!-- ================================================================== -->
+    <div id="settleBalanceModal" onclick="if(event.target === this) closeSettleBalanceModal()" class="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4 animate-scaleUp">
+            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50/90 to-orange-50/70">
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-amber-600"></i> Pelunasan Sisa Sewa Kamar
+                    </h3>
+                    <p id="settleBalanceSubtitle" class="text-[11px] text-slate-500">Kamar KMR-101 • Agus Setiawan</p>
+                </div>
+                <button type="button" onclick="closeSettleBalanceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/50 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleSettleBalanceSubmit(event)" class="p-4 sm:p-5 space-y-3.5 text-xs">
+                <input type="hidden" id="settleBalanceRoomId">
+
+                <!-- Sisa Tagihan Info Banner -->
+                <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] text-amber-800 font-bold uppercase tracking-wider">Sisa Kurang Bayar</div>
+                        <div id="settleBalanceDueDisplay" class="font-extrabold text-amber-900 text-base font-mono tabular-nums mt-0.5">Rp 0</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Janji Pelunasan</div>
+                        <div id="settleBalancePromiseDisplay" class="font-bold text-slate-700 text-xs mt-0.5">-</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nominal Pelunasan (Rp) *</label>
+                        <input type="number" id="settleBalanceAmount" required min="1000" step="1000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-xs outline-none focus:border-amber-500 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Metode Bayar *</label>
+                        <select id="settleBalanceMethod" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white font-semibold text-xs outline-none focus:border-amber-500">
+                            <option value="Transfer BCA">Transfer BCA</option>
+                            <option value="Transfer Mandiri">Transfer Mandiri</option>
+                            <option value="Transfer BNI">Transfer BNI</option>
+                            <option value="Transfer BRI">Transfer BRI</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Tunai / Cash">Tunai / Cash</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Tanggal Pembayaran *</label>
+                    <input type="date" id="settleBalanceDate" required class="w-full border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs outline-none focus:border-amber-500">
+                </div>
+
+                <!-- Single Unified Upload for Settlement Payment Proof (Camera & Gallery Action Sheet) -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block font-bold text-slate-700 text-[11px]">Bukti Pelunasan / Transfer <span class="font-normal text-slate-400">(Opsional)</span></label>
+                        <span class="text-[9px] text-slate-400">Struk / Bukti Transfer</span>
+                    </div>
+                    <button type="button" onclick="openPhotoSourcePicker('settleBalanceProof')" class="cursor-pointer w-full flex items-center justify-between border border-dashed border-slate-300 hover:border-amber-500 rounded-xl py-2 px-3 bg-slate-50/80 hover:bg-amber-50/40 transition-colors text-slate-700 text-xs group" title="Ambil foto bukti transfer langsung atau pilih dari galeri">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-amber-600 text-xs"></i>
+                            <span class="font-bold text-[11px] text-slate-700">Ambil Foto / Pilih Berkas Bukti</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-amber-700 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-2xs">Pilih</span>
+                    </button>
+                    <input type="file" id="settleBalanceProofCamera" accept="image/*" capture="environment" onchange="handleProofFileSelect(event, 'settleBalance')" class="hidden">
+                    <input type="file" id="settleBalanceProofInput" accept="image/*" onchange="handleProofFileSelect(event, 'settleBalance')" class="hidden">
+                    <div id="settleBalanceProofIndicator" class="hidden mt-1.5 p-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[11px]">
+                        <span id="settleBalanceProofLabel" class="font-bold text-emerald-800 truncate flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Bukti Bayar Terpilih</span>
+                        </span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="previewProofSelected('settleBalance')" class="text-emerald-700 underline font-bold text-[11px]">Lihat</button>
+                            <button type="button" id="settleBalanceProofClearBtn" onclick="clearProofFile('settleBalance')" class="text-slate-400 hover:text-rose-600 font-bold" title="Hapus bukti bayar">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="settleBalanceProofBase64">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Catatan</label>
+                    <input type="text" id="settleBalanceNotes" placeholder="Contoh: Pelunasan sisa sewa bulan berjalan" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-500">
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/70 text-[11px] text-emerald-900 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                    <span>Setelah lunas, status kamar otomatis kembali menjadi Lunas dan kuitansi pelunasan resmi diterbitkan.</span>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                    <button type="button" onclick="closeSettleBalanceModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" id="settleBalanceSubmitBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all shadow-sm shadow-emerald-600/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Simpan &amp; Lunasi</span>
                     </button>
                 </div>
             </form>
@@ -2780,6 +2922,11 @@
                 const renewModal = document.getElementById('renewRentModal');
                 if (renewModal && !renewModal.classList.contains('hidden')) {
                     closeRenewRentModal();
+                    return;
+                }
+                const settleModal = document.getElementById('settleBalanceModal');
+                if (settleModal && !settleModal.classList.contains('hidden')) {
+                    closeSettleBalanceModal();
                     return;
                 }
                 const manualPay = document.getElementById('manualPaymentModal');
@@ -3221,6 +3368,12 @@
                 return 'booking';
             }
 
+            // 4. Kurang Bayar / Cicilan Berjalan (Tenant owes balance)
+            const unpaid = Number(room.unpaid_amount) || 0;
+            if (unpaid > 0 || payStatus === 'Kurang Bayar' || payStatus.toLowerCase().includes('kurang')) {
+                return 'kurang_bayar';
+            }
+
             // 4. Overdue vs Due Soon based on parsed due date
             const d = parseCustomDate(dateStr);
             let diffDays = null;
@@ -3312,6 +3465,37 @@
                                 <i class="fa-solid fa-receipt text-xs"></i> Nota
                             </button>
                             <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'polite')" title="WhatsApp Penghuni" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold transition-colors">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </button>
+                        `
+                    };
+                case 'kurang_bayar':
+                    const unpaidAmount = Number(room.unpaid_amount) || 0;
+                    const unpaidFormatted = unpaidAmount >= 1000 ? (Math.round(unpaidAmount / 1000)) + 'k' : unpaidAmount.toLocaleString('id-ID');
+                    return {
+                        id: 'kurang_bayar',
+                        label: `Kurang Rp ${unpaidFormatted}`,
+                        badgeClass: 'bg-amber-50 text-amber-900 border border-amber-300 font-bold',
+                        dotClass: 'bg-amber-500 animate-pulse',
+                        borderAccent: 'border-l-4 border-l-amber-500',
+                        icon: 'fa-solid fa-coins',
+                        heroBg: 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200',
+                        heroIconBg: 'bg-amber-500 text-white',
+                        heroTitle: `Kurang Bayar: Sisa Rp ${unpaidAmount.toLocaleString('id-ID')}`,
+                        heroSubtitle: `Penghuni telah membayar sebagian. Janji pelunasan sisa: ${room.promise_date || 'Belum diatur'}.`,
+                        cardActionPill: `
+                            <button onclick="event.stopPropagation(); openSettleBalanceModal('${room.id}')" class="px-2.5 py-1 rounded-xl bg-amber-600 text-white hover:bg-amber-500 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-2xs" title="Pelunasan Sisa">
+                                <i class="fa-solid fa-coins text-[10px]"></i> Lunasi
+                            </button>
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'partial')" class="p-1.5 rounded-xl bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors" title="WA Tagih Sisa">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                            </button>
+                        `,
+                        tableActionButtons: `
+                            <button onclick="event.stopPropagation(); openSettleBalanceModal('${room.id}')" title="Pelunasan Sisa Kurang Bayar" class="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] transition-colors flex items-center gap-1 shadow-2xs">
+                                <i class="fa-solid fa-coins text-xs"></i> Lunasi
+                            </button>
+                            <button onclick="event.stopPropagation(); sendBillingReminderWA('${room.id}', 'partial')" title="WhatsApp Tagih Sisa" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-700 font-bold transition-colors">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </button>
                         `
@@ -3470,6 +3654,12 @@
                 if (cond === 'lunas') {
                     totalRevenue += Number(item.amount) || 0;
                     occupiedRooms++;
+                } else if (cond === 'kurang_bayar') {
+                    const fullAmount = Number(item.amount) || 0;
+                    const unpaid = Number(item.unpaid_amount) || 0;
+                    totalRevenue += Math.max(0, fullAmount - unpaid);
+                    occupiedRooms++;
+                    dueRooms++;
                 } else if (cond === 'jatuh_tempo') {
                     dueRooms++;
                     occupiedRooms++;
@@ -3656,7 +3846,7 @@
                 } else if (currentFilter === 'Tersedia') {
                     if (cond !== 'kosong') return false;
                 } else if (currentFilter === 'Segera Tempo' || currentFilter === 'Jatuh Tempo') {
-                    if (cond !== 'jatuh_tempo') return false;
+                    if (cond !== 'jatuh_tempo' && cond !== 'kurang_bayar') return false;
                 } else if (currentFilter === 'Menunggak') {
                     if (cond !== 'menunggak') return false;
                 } else if (currentFilter === 'Booking') {
@@ -3801,6 +3991,7 @@
                                                 <h4 class="text-sm font-extrabold text-slate-900 truncate">${item.customer}</h4>
                                                 ${item.ktp_photo ? `<span title="KTP Terverifikasi" class="text-emerald-600 text-xs shrink-0"><i class="fa-solid fa-id-card"></i></span>` : ''}
                                                 ${item.deposit_amount && item.deposit_amount > 0 ? `<span class="text-amber-800 bg-amber-50 border border-amber-200/80 px-1.5 py-0.2 rounded text-[9px] font-bold font-mono shrink-0">Dep ${(item.deposit_amount >= 1000 ? (item.deposit_amount/1000) + 'k' : item.deposit_amount)}</span>` : ''}
+                                                ${item.unpaid_amount && item.unpaid_amount > 0 ? `<span class="text-amber-900 bg-amber-100 border border-amber-300 px-1.5 py-0.2 rounded text-[9px] font-bold font-mono shrink-0">Sisa ${(item.unpaid_amount >= 1000 ? (Math.round(item.unpaid_amount/1000)) + 'k' : item.unpaid_amount)}</span>` : ''}
                                             </div>
                                             ${item.phone ? `
                                                 <button type="button" onclick="event.stopPropagation(); sendBillingReminderWA('${item.id}', 'polite')" class="text-emerald-600 hover:text-emerald-700 p-1 shrink-0" title="Chat WhatsApp">
@@ -4389,6 +4580,8 @@
                 base64 = document.getElementById('manualPaymentProofBase64')?.value;
             } else if (context === 'renewRent') {
                 base64 = document.getElementById('renewRentProofBase64')?.value;
+            } else if (context === 'settleBalance') {
+                base64 = document.getElementById('settleBalanceProofBase64')?.value;
             }
 
             if (!base64) {
@@ -4479,6 +4672,12 @@
                 gallery: 'ctxQuickProofInput',
                 title: 'Bukti Bayar Check-In',
                 subtitle: 'Ambil foto struk / bukti bayar check-in'
+            },
+            'settleBalanceProof': {
+                camera: 'settleBalanceProofCamera',
+                gallery: 'settleBalanceProofInput',
+                title: 'Bukti Pelunasan Sewa',
+                subtitle: 'Ambil foto struk / transfer pelunasan'
             }
         };
 
@@ -4588,6 +4787,11 @@
                 clearBtn = document.getElementById('renewRentProofClearBtn');
                 hiddenBase64 = document.getElementById('renewRentProofBase64');
                 indicator = document.getElementById('renewRentProofIndicator');
+            } else if (context === 'settleBalance') {
+                labelEl = document.getElementById('settleBalanceProofLabel');
+                clearBtn = document.getElementById('settleBalanceProofClearBtn');
+                hiddenBase64 = document.getElementById('settleBalanceProofBase64');
+                indicator = document.getElementById('settleBalanceProofIndicator');
             }
 
             try {
@@ -4630,6 +4834,12 @@
                 clearBtn = document.getElementById('renewRentProofClearBtn');
                 hiddenBase64 = document.getElementById('renewRentProofBase64');
                 indicator = document.getElementById('renewRentProofIndicator');
+            } else if (context === 'settleBalance') {
+                camInput = document.getElementById('settleBalanceProofCamera');
+                fileInput = document.getElementById('settleBalanceProofInput');
+                clearBtn = document.getElementById('settleBalanceProofClearBtn');
+                hiddenBase64 = document.getElementById('settleBalanceProofBase64');
+                indicator = document.getElementById('settleBalanceProofIndicator');
             }
 
             if (camInput) camInput.value = '';
@@ -4639,7 +4849,71 @@
             if (indicator) indicator.classList.add('hidden');
         }
 
-        // ── RENT RENEWAL MODAL CONTROLLER ─────────────────────────────────────
+        // ── RENT RENEWAL MODAL CONTROLLER (FULL & PARTIAL PAYMENT) ───────────
+        function toggleRenewRentPartialPlan(forcedPlan = null) {
+            let plan = forcedPlan;
+            if (!plan) {
+                const checked = document.querySelector('input[name="renewRentPayPlan"]:checked');
+                plan = checked ? checked.value : 'full';
+            } else {
+                const radio = document.querySelector(`input[name="renewRentPayPlan"][value="${plan}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            const lblFull = document.getElementById('renewRentPlanLabelFull');
+            const lblPartial = document.getElementById('renewRentPlanLabelPartial');
+            const container = document.getElementById('renewRentPartialContainer');
+            const paidNowInput = document.getElementById('renewRentPaidNow');
+            const promiseInput = document.getElementById('renewRentPromiseDate');
+            const amountLabel = document.getElementById('renewRentAmountLabel');
+            const submitBtnText = document.getElementById('renewRentSubmitBtnText');
+            const infoNote = document.getElementById('renewRentInfoNote');
+
+            if (plan === 'partial') {
+                if (lblFull) lblFull.className = 'cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 bg-white font-medium';
+                if (lblPartial) lblPartial.className = 'cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-amber-500 bg-amber-50/70 text-amber-900 font-bold';
+                if (container) container.classList.remove('hidden');
+                if (amountLabel) amountLabel.innerText = 'Total Tarif Periode (Rp) *';
+                if (submitBtnText) submitBtnText.innerText = 'Simpan Bayar Sebagian';
+                if (infoNote) infoNote.innerText = 'Status kamar menjadi Kurang Bayar. Sisa tagihan dapat dilunasi kapan saja.';
+                if (paidNowInput) {
+                    paidNowInput.required = true;
+                    if (!paidNowInput.value) {
+                        const total = Number(document.getElementById('renewRentAmount')?.value) || 0;
+                        if (total > 0) paidNowInput.value = Math.round(total / 2);
+                    }
+                }
+                if (promiseInput) {
+                    promiseInput.required = true;
+                    if (!promiseInput.value) {
+                        const d = new Date();
+                        d.setDate(d.getDate() + 14); // 2 weeks default
+                        promiseInput.value = d.toISOString().slice(0, 10);
+                    }
+                }
+            } else {
+                if (lblFull) lblFull.className = 'cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-blue-500 bg-blue-50/70 text-blue-900 font-bold';
+                if (lblPartial) lblPartial.className = 'cursor-pointer border rounded-xl py-2 px-3 flex items-center justify-center gap-1.5 transition-all border-slate-200 text-slate-700 bg-white font-medium';
+                if (container) container.classList.add('hidden');
+                if (amountLabel) amountLabel.innerText = 'Nominal Sewa (Rp) *';
+                if (submitBtnText) submitBtnText.innerText = 'Simpan & Perpanjang';
+                if (infoNote) infoNote.innerText = 'Status kamar akan otomatis diperbarui menjadi Lunas & kuitansi siap dicetak/dikirim.';
+                if (paidNowInput) paidNowInput.required = false;
+                if (promiseInput) promiseInput.required = false;
+            }
+            calculateRenewRentBalance();
+        }
+
+        function calculateRenewRentBalance() {
+            const planChecked = document.querySelector('input[name="renewRentPayPlan"]:checked');
+            const isPartial = planChecked ? planChecked.value === 'partial' : false;
+            const total = Number(document.getElementById('renewRentAmount')?.value) || 0;
+            const paid = isPartial ? (Number(document.getElementById('renewRentPaidNow')?.value) || 0) : total;
+            const sisa = Math.max(0, total - paid);
+            const disp = document.getElementById('renewRentBalanceDisplay');
+            if (disp) disp.innerText = 'Rp ' + sisa.toLocaleString('id-ID');
+        }
+
         function openRenewRentModal(roomId = null) {
             const targetId = roomId || activeContextRoomId;
             const room = appData.find(x => x.id === targetId);
@@ -4689,6 +4963,13 @@
             if (notesEl) notesEl.value = `Perpanjangan Sewa s/d ${nextDueDate} (${termBadge})`;
             if (methodEl) methodEl.value = 'Transfer BCA';
 
+            // Reset plan to full by default and clear inputs
+            const paidNowInput = document.getElementById('renewRentPaidNow');
+            if (paidNowInput) paidNowInput.value = '';
+            const promiseInput = document.getElementById('renewRentPromiseDate');
+            if (promiseInput) promiseInput.value = '';
+            toggleRenewRentPartialPlan('full');
+
             clearProofFile('renewRent');
             if (modal) modal.classList.remove('hidden');
         }
@@ -4711,35 +4992,64 @@
                 btn.innerText = 'Menyimpan...';
             }
 
+            const planChecked = document.querySelector('input[name="renewRentPayPlan"]:checked');
+            const isPartial = planChecked ? planChecked.value === 'partial' : false;
             const nextDueDate = document.getElementById('renewRentNextDue')?.innerText || advanceDueDateByOneMonth(room.date);
-            const amount = Number(document.getElementById('renewRentAmount')?.value) || room.amount || 0;
+            const totalAmount = Number(document.getElementById('renewRentAmount')?.value) || room.amount || 0;
+            const paidNow = isPartial ? (Number(document.getElementById('renewRentPaidNow')?.value) || 0) : totalAmount;
+            const promiseDate = isPartial ? (document.getElementById('renewRentPromiseDate')?.value || '') : '';
+            const unpaidAmount = Math.max(0, totalAmount - paidNow);
             const method = document.getElementById('renewRentMethod')?.value || 'Transfer BCA';
             const date = document.getElementById('renewRentDate')?.value || new Date().toISOString().slice(0, 10);
             const notes = document.getElementById('renewRentNotes')?.value.trim() || `Perpanjangan Sewa s/d ${nextDueDate}`;
             const proofBase64 = document.getElementById('renewRentProofBase64')?.value || null;
 
-            room.pay_status = 'Lunas';
-            room.date = nextDueDate;
+            if (isPartial && paidNow <= 0) {
+                showToast('Nominal dibayar sekarang harus lebih dari 0', 'warning');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> <span id="renewRentSubmitBtnText">Simpan Bayar Sebagian</span>';
+                }
+                return;
+            }
+
+            if (isPartial && unpaidAmount > 0) {
+                room.pay_status = 'Kurang Bayar';
+                room.unpaid_amount = unpaidAmount;
+                room.promise_date = promiseDate;
+                room.date = nextDueDate;
+            } else {
+                room.pay_status = 'Lunas';
+                room.unpaid_amount = 0;
+                room.promise_date = '';
+                room.date = nextDueDate;
+            }
+
             if (proofBase64) {
                 room.payment_proof = proofBase64;
             }
 
-            if (!room.payment_history) room.payment_history = [];
+            const actualCashReceived = isPartial ? paidNow : totalAmount;
             const autoTrx = {
                 id: 'TRX-' + Date.now().toString().slice(-8),
                 date: date,
                 type: 'sewa',
-                desc: notes,
-                amount: amount,
+                desc: isPartial ? `Sewa Sebagian (Sisa Rp ${unpaidAmount.toLocaleString('id-ID')}) s/d ${nextDueDate}` : notes,
+                amount: actualCashReceived,
                 method: method,
-                proof: proofBase64
+                proof: proofBase64,
+                unpaid_amount: isPartial ? unpaidAmount : 0,
+                promise_date: isPartial ? promiseDate : ''
             };
+            if (!room.payment_history) room.payment_history = [];
             room.payment_history.push(autoTrx);
 
             if (supabaseClient) {
                 try {
                     await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
-                        pay_status: 'Lunas',
+                        pay_status: room.pay_status,
+                        unpaid_amount: room.unpaid_amount,
+                        promise_date: room.promise_date,
                         date: nextDueDate,
                         payment_proof: room.payment_proof,
                         payment_history: room.payment_history
@@ -4756,11 +5066,136 @@
 
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> <span>Simpan &amp; Perpanjang</span>';
+                btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> <span id="renewRentSubmitBtnText">Simpan &amp; Perpanjang</span>';
             }
 
-            showToast(`Sewa Kamar ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
+            showToast(isPartial ? `Bayar sebagian Kamar ${room.id} tercatat Rp ${paidNow.toLocaleString('id-ID')} (Sisa Rp ${unpaidAmount.toLocaleString('id-ID')})` : `Sewa Kamar ${room.id} (${room.customer}) diperpanjang ke ${nextDueDate}!`, 'success');
             openReceiptForItem(room.id, autoTrx);
+        }
+
+        // ── SETTLEMENT BALANCE CONTROLLER (MODAL 10: PELUNASAN SISA SEWA) ──────
+        function openSettleBalanceModal(roomId = null) {
+            const targetId = roomId || activeContextRoomId;
+            const room = appData.find(x => x.id === targetId);
+            if (!room) {
+                showToast('Pilih kamar terlebih dahulu', 'warning');
+                return;
+            }
+
+            const unpaid = Number(room.unpaid_amount) || 0;
+            const modal = document.getElementById('settleBalanceModal');
+            const rId = document.getElementById('settleBalanceRoomId');
+            const sub = document.getElementById('settleBalanceSubtitle');
+            const dueDisp = document.getElementById('settleBalanceDueDisplay');
+            const promiseDisp = document.getElementById('settleBalancePromiseDisplay');
+            const amountInput = document.getElementById('settleBalanceAmount');
+            const dateInput = document.getElementById('settleBalanceDate');
+            const notesInput = document.getElementById('settleBalanceNotes');
+            const methodInput = document.getElementById('settleBalanceMethod');
+
+            if (rId) rId.value = room.id;
+            if (sub) sub.innerText = `Kamar ${room.id} • ${room.customer || 'Penghuni'}`;
+            if (dueDisp) dueDisp.innerText = 'Rp ' + unpaid.toLocaleString('id-ID');
+            if (promiseDisp) promiseDisp.innerText = room.promise_date || 'Belum diatur';
+            if (amountInput) {
+                amountInput.value = unpaid > 0 ? unpaid : (room.amount || 1500000);
+            }
+            if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+            if (notesInput) notesInput.value = `Pelunasan Sisa Sewa Kamar ${room.id}`;
+            if (methodInput) methodInput.value = 'Transfer BCA';
+
+            clearProofFile('settleBalance');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeSettleBalanceModal() {
+            clearProofFile('settleBalance');
+            const modal = document.getElementById('settleBalanceModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleSettleBalanceSubmit(e) {
+            e.preventDefault();
+            const roomId = document.getElementById('settleBalanceRoomId')?.value;
+            const room = appData.find(x => x.id === roomId);
+            if (!room) return;
+
+            const btn = document.getElementById('settleBalanceSubmitBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Menyimpan...';
+            }
+
+            const currentUnpaid = Number(room.unpaid_amount) || 0;
+            const settleAmount = Number(document.getElementById('settleBalanceAmount')?.value) || 0;
+            const method = document.getElementById('settleBalanceMethod')?.value || 'Transfer BCA';
+            const date = document.getElementById('settleBalanceDate')?.value || new Date().toISOString().slice(0, 10);
+            const notes = document.getElementById('settleBalanceNotes')?.value.trim() || `Pelunasan Sisa Sewa Kamar ${room.id}`;
+            const proofBase64 = document.getElementById('settleBalanceProofBase64')?.value || null;
+
+            if (settleAmount <= 0) {
+                showToast('Nominal pelunasan harus lebih dari 0', 'warning');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Simpan &amp; Lunasi</span>';
+                }
+                return;
+            }
+
+            const remainingAfterSettle = Math.max(0, currentUnpaid - settleAmount);
+
+            if (remainingAfterSettle === 0) {
+                room.pay_status = 'Lunas';
+                room.unpaid_amount = 0;
+                room.promise_date = '';
+            } else {
+                room.pay_status = 'Kurang Bayar';
+                room.unpaid_amount = remainingAfterSettle;
+            }
+
+            if (proofBase64) {
+                room.payment_proof = proofBase64;
+            }
+
+            const settleTrx = {
+                id: 'TRX-' + Date.now().toString().slice(-8),
+                date: date,
+                type: 'sewa',
+                desc: remainingAfterSettle === 0 ? `Pelunasan Sisa Sewa (Lunas)` : `Cicilan Sisa Sewa (Sisa Rp ${remainingAfterSettle.toLocaleString('id-ID')})`,
+                amount: settleAmount,
+                method: method,
+                proof: proofBase64,
+                unpaid_amount: remainingAfterSettle
+            };
+            if (!room.payment_history) room.payment_history = [];
+            room.payment_history.push(settleTrx);
+
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from(SUPABASE_TABLE_ROOMS).update({
+                        pay_status: room.pay_status,
+                        unpaid_amount: room.unpaid_amount,
+                        promise_date: room.promise_date,
+                        payment_proof: room.payment_proof,
+                        payment_history: room.payment_history
+                    }).eq('id', room.id);
+                } catch (err) {
+                    console.warn('Gagal sync cloud pelunasan:', err);
+                }
+            }
+
+            saveRoomsLocal();
+            closeSettleBalanceModal();
+            closeSmartRoomModal();
+            renderAllViews();
+
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Simpan &amp; Lunasi</span>';
+            }
+
+            showToast(`Pelunasan Kamar ${room.id} sebesar Rp ${settleAmount.toLocaleString('id-ID')} berhasil dicatat!`, 'success');
+            openReceiptForItem(room.id, settleTrx);
         }
 
         // ── EXPENSE PHOTO ATTACHMENT HANDLERS ────────────────────────────────
@@ -5319,6 +5754,49 @@
                         <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
                             <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
                             <span>Edit Data Kamar &amp; Kontak Penghuni</span>
+                        </button>
+                    </div>
+                `;
+            } else if (cond === 'kurang_bayar') {
+                const unpaid = Number(room.unpaid_amount) || 0;
+                return `
+                    <div class="space-y-2 text-xs font-bold">
+                        <button onclick="openSettleBalanceModal('${room.id}')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-amber-600 text-white hover:bg-amber-500 flex items-center gap-2.5 sm:gap-3 transition-colors text-left shadow-md shadow-amber-600/20">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 flex items-center justify-center text-base sm:text-lg shrink-0">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-extrabold truncate">Lunasi Sisa Pembayaran (Rp ${unpaid.toLocaleString('id-ID')})</div>
+                                <span class="text-[11px] text-amber-100 font-normal hidden sm:block">Janji Pelunasan: ${room.promise_date || '-'} • Input bukti &amp; terbitkan kuitansi pelunasan</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-amber-200 shrink-0"></i>
+                        </button>
+
+                        <button onclick="sendBillingReminderWA('${room.id}', 'partial')" class="w-full p-2.5 sm:p-3 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-2.5 sm:gap-3 transition-colors text-left">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm sm:text-base shrink-0">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs sm:text-sm font-bold truncate">WhatsApp Pengingat Sisa Tagihan</div>
+                                <span class="text-[10px] text-emerald-700 font-normal hidden sm:block">Template sopan mencantumkan sisa kekurangan &amp; tanggal janji pelunasan</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-xs text-emerald-500 shrink-0"></i>
+                        </button>
+
+                        <button onclick="openReceiptForItem('${room.id}')" class="w-full p-2.5 rounded-xl bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-receipt text-slate-500 w-5 text-center"></i>
+                            <span>Buka Riwayat Kuitansi &amp; Pembayaran</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-1 text-xs font-bold text-slate-700">
+                        <button onclick="checkoutFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-rose-50 text-rose-600 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center"></i>
+                            <span>Check-Out (Penghuni Berhenti)</span>
+                        </button>
+                        <button onclick="openEditFromContext('${room.id}')" class="w-full p-2.5 rounded-xl hover:bg-slate-100 flex items-center gap-2.5 transition-colors text-left">
+                            <i class="fa-solid fa-pen-to-square text-slate-500 w-5 text-center"></i>
+                            <span>Edit Detail Kamar &amp; Kontak</span>
                         </button>
                     </div>
                 `;
@@ -5925,6 +6403,9 @@
                                 if (cond === 'lunas') {
                                     cardBorder = 'border-emerald-200 hover:border-emerald-400';
                                     cardBg = 'bg-emerald-50/30';
+                                } else if (cond === 'kurang_bayar') {
+                                    cardBorder = 'border-amber-300 hover:border-amber-500';
+                                    cardBg = 'bg-amber-50/40';
                                 } else if (cond === 'jatuh_tempo') {
                                     cardBorder = 'border-amber-200 hover:border-amber-400';
                                     cardBg = 'bg-amber-50/30';
@@ -5950,6 +6431,7 @@
                                                 <div class="flex items-center gap-1">
                                                     ${r.ktp_photo ? `<i class="fa-solid fa-id-card text-[9px] text-emerald-600" title="KTP Terlampir"></i>` : ''}
                                                     ${r.deposit_amount && r.deposit_amount > 0 ? `<span class="px-1 py-0.2 rounded bg-amber-100 text-amber-800 text-[8px] font-mono font-bold" title="Deposit: Rp ${Number(r.deposit_amount).toLocaleString('id-ID')}">D</span>` : ''}
+                                                    ${r.unpaid_amount && r.unpaid_amount > 0 ? `<span class="px-1 py-0.2 rounded bg-amber-200 text-amber-900 text-[8px] font-mono font-bold" title="Kurang: Rp ${Number(r.unpaid_amount).toLocaleString('id-ID')}">K</span>` : ''}
                                                     <span class="w-1.5 h-1.5 rounded-full ${meta.dotClass}" title="${meta.label}"></span>
                                                 </div>
                                             </div>
@@ -6080,9 +6562,19 @@
             }
 
             let msg = '';
-            const tone = forcedTone !== 'auto' ? forcedTone : (cond === 'menunggak' ? 'firm' : (cond === 'booking' ? 'booking' : (cond === 'lunas' ? 'receipt' : 'polite')));
+            const tone = forcedTone !== 'auto' ? forcedTone : (cond === 'kurang_bayar' ? 'partial' : (cond === 'menunggak' ? 'firm' : (cond === 'booking' ? 'booking' : (cond === 'lunas' ? 'receipt' : 'polite'))));
 
-            if (tone === 'firm') {
+            if (tone === 'partial') {
+                const unpaid = Number(room.unpaid_amount) || 0;
+                msg = `Halo Kak *${room.customer}*, salam hangat dari *${storeName}* 😊%0A%0A` +
+                      `Mengingatkan untuk sisa pembayaran sewa kamar *${room.id}*:%0A` +
+                      `• Sisa Kurang Bayar: *Rp ${unpaid.toLocaleString('id-ID')}*%0A` +
+                      `• Janji Pelunasan: *${room.promise_date || 'Sesuai kesepakatan'}*%0A%0A` +
+                      `Pembayaran dapat ditransfer via:%0A` +
+                      `*Bank ${bankName}: ${bankNum}*%0A` +
+                      `*A.N. ${bankHolder}*%0A%0A` +
+                      `Mohon konfirmasi dan kirimkan bukti transfer jika sudah melakukan pelunasan ya Kak. Terima kasih banyak 🙏`;
+            } else if (tone === 'firm') {
                 const lateDays = Math.abs(diffDays) || 1;
                 msg = `Yth. Kak *${room.customer}*,%0A%0A` +
                       `Mohon perhatian mengenai tagihan sewa kamar di *${storeName}*:%0A` +
@@ -7627,6 +8119,11 @@
                 const cond = getRoomCondition(r);
                 if (cond === 'lunas') {
                     totalRev += Number(r.amount) || 0;
+                    occupiedCount++;
+                } else if (cond === 'kurang_bayar') {
+                    const fullAmount = Number(r.amount) || 0;
+                    const unpaid = Number(r.unpaid_amount) || 0;
+                    totalRev += Math.max(0, fullAmount - unpaid);
                     occupiedCount++;
                 } else if (cond === 'jatuh_tempo' || cond === 'menunggak') {
                     occupiedCount++;
