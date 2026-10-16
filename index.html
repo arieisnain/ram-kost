@@ -314,57 +314,133 @@
                 </div>
             </div>
 
-            <!-- Login Form -->
-            <form onsubmit="handleAuthLogin(event)" class="space-y-3.5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Email / Username Pengelola</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" id="loginUsername" required placeholder="admin" value="admin" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi / PIN</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="password" id="loginPassword" required placeholder="••••••••" value="admin123" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-10 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
-                        <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Tampilkan sandi">
-                            <i class="fa-solid fa-eye text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between text-[11px] text-slate-500">
-                    <label class="flex items-center gap-1.5 cursor-pointer text-slate-600 font-semibold select-none">
-                        <input type="checkbox" id="loginRememberMe" checked class="rounded text-emerald-600 focus:ring-0">
-                        <span>Ingat Sesi Saya</span>
-                    </label>
-                    <span class="text-slate-400">Default: admin / admin123</span>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" id="loginSubmitBtn" class="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
-                    <span>Masuk sebagai Pengelola</span>
+            <!-- Auth Tab Switcher (Masuk vs Daftar Akun Baru) -->
+            <div class="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-2xl border border-slate-200/80">
+                <button type="button" id="authTabBtnLogin" onclick="switchAuthTab('login')" class="py-2 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs cursor-pointer flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-right-to-bracket text-emerald-600"></i>
+                    <span>Masuk Akun</span>
                 </button>
-            </form>
-
-            <!-- Divider -->
-            <div class="relative flex items-center justify-center">
-                <div class="border-t border-slate-200 w-full"></div>
-                <span class="bg-white px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">atau coba langsung</span>
+                <button type="button" id="authTabBtnRegister" onclick="switchAuthTab('register')" class="py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-user-plus text-blue-600"></i>
+                    <span>Daftar Baru</span>
+                </button>
             </div>
 
-            <!-- ONE-CLICK DEMO BUTTON -->
-            <div class="space-y-2">
-                <button type="button" onclick="loginAsDemoUser()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-bolt text-amber-300"></i>
-                    <span>Masuk Mode Demo (1-Klik Tanpa Sandi)</span>
-                </button>
-                <p class="text-[10px] text-center text-slate-400 leading-relaxed">
-                    Langsung jelajahi data simulasi, denah kamar interaktif, kalkulator jatuh tempo, dan cetak kuitansi.
-                </p>
+            <!-- CONTAINER 1: LOGIN TAB -->
+            <div id="authLoginContainer" class="space-y-4">
+                <form onsubmit="handleAuthLogin(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Email / Username / No. WA</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="loginUsername" required placeholder="admin / email / no. wa" value="admin" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi / PIN</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="password" id="loginPassword" required placeholder="••••••••" value="admin123" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-10 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium">
+                            <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer" title="Tampilkan sandi">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[11px] text-slate-500">
+                        <label class="flex items-center gap-1.5 cursor-pointer text-slate-600 font-semibold select-none">
+                            <input type="checkbox" id="loginRememberMe" checked class="rounded text-emerald-600 focus:ring-0">
+                            <span>Ingat Sesi Saya</span>
+                        </label>
+                        <span class="text-slate-400">Default: admin / admin123</span>
+                    </div>
+
+                    <button type="submit" id="loginSubmitBtn" class="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                        <span>Masuk sebagai Pengelola</span>
+                    </button>
+                </form>
+
+                <div class="relative flex items-center justify-center">
+                    <div class="border-t border-slate-200 w-full"></div>
+                    <span class="bg-white px-3 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">atau coba langsung</span>
+                </div>
+
+                <div class="space-y-2">
+                    <button type="button" onclick="loginAsDemoUser()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 hover:shadow-lg hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-bolt text-amber-300"></i>
+                        <span>Masuk Mode Demo (1-Klik Tanpa Sandi)</span>
+                    </button>
+                    <p class="text-[10px] text-center text-slate-400 leading-relaxed">
+                        Langsung jelajahi data simulasi, denah kamar interaktif, kalkulator jatuh tempo, dan cetak kuitansi.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CONTAINER 2: REGISTER TAB -->
+            <div id="authRegisterContainer" class="space-y-3.5 hidden">
+                <form onsubmit="handleAuthRegister(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Pemilik *</label>
+                        <input type="text" id="regFullName" required placeholder="Contoh: Hendra Setiawan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-medium">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">No. WhatsApp Aktif *</label>
+                            <input type="tel" id="regPhone" required placeholder="0812xxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Email Pengguna *</label>
+                            <input type="email" id="regEmail" required placeholder="pemilik@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-medium">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kost / Properti Anda *</label>
+                        <input type="text" id="regKostName" required placeholder="Contoh: Kost Griya Putri Asri" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-medium">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi Baru *</label>
+                        <div class="relative">
+                            <input type="password" id="regPassword" required placeholder="Minimal 4 karakter" minlength="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3.5 pr-10 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-medium">
+                            <button type="button" onclick="togglePasswordVisibility('regPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Paket Lisensi -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Paket Berlangganan</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="cursor-pointer border-2 border-emerald-500 bg-emerald-50/40 p-2.5 rounded-xl flex flex-col justify-between plan-radio-card">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-extrabold text-slate-900">Bulanan</span>
+                                    <input type="radio" name="regPlan" value="monthly" checked class="text-emerald-600">
+                                </div>
+                                <span class="text-xs font-mono font-bold text-emerald-700 mt-1">Rp 49.000<span class="text-[10px] font-normal text-slate-500">/bln</span></span>
+                            </label>
+                            <label class="cursor-pointer border-2 border-slate-200 hover:border-emerald-400 bg-white p-2.5 rounded-xl flex flex-col justify-between plan-radio-card">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-extrabold text-slate-900">Tahunan</span>
+                                    <input type="radio" name="regPlan" value="yearly" class="text-emerald-600">
+                                </div>
+                                <span class="text-xs font-mono font-bold text-emerald-700 mt-1">Rp 490.000<span class="text-[10px] font-normal text-slate-500">/thn</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 sm:py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2">
+                        <i class="fa-solid fa-receipt text-xs"></i>
+                        <span>Daftar &amp; Dapatkan Tagihan Pembayaran</span>
+                    </button>
+                    <p class="text-[10px] text-center text-slate-400">
+                        Transfer manual bank/QRIS &amp; aktivasi cepat via WhatsApp Admin ram.ai.id
+                    </p>
+                </form>
             </div>
         </div>
     </div>
@@ -419,9 +495,17 @@
                         <span>Laporan Rekap Bulanan</span>
                     </button>
 
-                    <button onclick="openSettingsModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left">
+                    <button onclick="openSettingsModal()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left cursor-pointer">
                         <i class="fa-solid fa-sliders w-5 text-center text-slate-400"></i>
                         <span>Pengaturan Usaha &amp; Logo</span>
+                    </button>
+
+                    <button onclick="openAccountManagementModal()" id="nav-account" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors text-left cursor-pointer" title="Kelola akun, lisensi SIMKOST & integrasi ram.ai.id">
+                        <i class="fa-solid fa-id-card-clip w-5 text-center text-emerald-600"></i>
+                        <div class="flex-1 flex items-center justify-between min-w-0">
+                            <span class="truncate">Manajemen Akun &amp; Lisensi</span>
+                            <span id="sidebarLicenseBadge" class="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 shrink-0">Aktif</span>
+                        </div>
                     </button>
 
                     <button type="button" onclick="handleAuthLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer" title="Keluar dari akun pengelola">
@@ -433,8 +517,8 @@
 
             <!-- Sidebar Footer (Kost Profile Card) -->
             <div class="p-3.5 border-t border-slate-100">
-                <div class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 border border-slate-200/70">
-                    <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700 shrink-0 shadow-2xs">
+                <div onclick="openAccountManagementModal()" class="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/70 hover:border-emerald-300 transition-all cursor-pointer group" title="Klik untuk Buka Manajemen Akun &amp; Lisensi">
+                    <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700 shrink-0 shadow-2xs group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                         <i class="fa-solid fa-house-chimney-user"></i>
                     </div>
                     <div class="min-w-0 flex-1">
@@ -444,6 +528,7 @@
                             <span id="sidebarModeBadgeSub" class="text-[10px] text-slate-500 font-medium truncate">Simulasi Aktif</span>
                         </div>
                     </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-emerald-600 transition-colors"></i>
                 </div>
             </div>
         </aside>
@@ -487,8 +572,13 @@
                     </div>
 
                     <!-- Sync Button -->
-                    <button onclick="syncAllData()" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold shadow-2xs transition-all" title="Sinkronkan data cloud">
+                    <button onclick="syncAllData()" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold shadow-2xs transition-all cursor-pointer" title="Sinkronkan data cloud">
                         <i id="syncIcon" class="fa-solid fa-arrows-rotate text-emerald-600"></i>
+                    </button>
+
+                    <!-- Account / License Management Button -->
+                    <button onclick="openAccountManagementModal()" id="topbarAccountBtn" class="p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-emerald-50/60 text-slate-600 hover:text-emerald-700 text-xs font-bold shadow-2xs transition-all cursor-pointer" title="Manajemen Akun &amp; Lisensi RAM (ram.ai.id)">
+                        <i class="fa-solid fa-id-card-clip text-emerald-600"></i>
                     </button>
 
                     <!-- Logout Button -->
@@ -2692,6 +2782,402 @@
     </div>
 
     <!-- ================================================================== -->
+    <!-- MODAL 8: TAGIHAN PEMBAYARAN MANUAL & AKTIVASI (#paymentInvoiceModal)-->
+    <!-- ================================================================== -->
+    <div id="paymentInvoiceModal" onclick="if(event.target === this) closePaymentInvoiceModal()" class="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-scaleUp">
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-500/10">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-2xs">
+                        <i class="fa-solid fa-receipt"></i>
+                    </span>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">Tagihan Lisensi SIMKOST Pro</h3>
+                        <p class="text-[10px] text-emerald-800 font-medium">Sistem Ekosistem RAM • ram.ai.id</p>
+                    </div>
+                </div>
+                <button onclick="closePaymentInvoiceModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-5 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
+                <!-- Status Banner -->
+                <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-start gap-3">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-600 text-base mt-0.5 shrink-0"></i>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-amber-950 text-xs">Menunggu Transfer Manual</span>
+                            <span id="invoiceStatusBadge" class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900 font-mono">PENDING</span>
+                        </div>
+                        <p class="text-[11px] text-amber-900/90 mt-0.5 leading-relaxed">
+                            Lakukan transfer sesuai tagihan di bawah, lalu kirim bukti transfer ke WhatsApp Admin untuk aktivasi instan.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Invoice Details Box -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <span class="text-slate-500 font-medium text-[11px]">Nomor Tagihan:</span>
+                        <span id="invoiceNumber" class="font-mono font-extrabold text-slate-900 text-xs">INV-RAM-2026-001</span>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <span class="text-slate-500 font-medium text-[11px]">Nama Pemilik:</span>
+                        <span id="invoiceUserName" class="font-bold text-slate-800 text-xs">-</span>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <span class="text-slate-500 font-medium text-[11px]">Nama Properti Kost:</span>
+                        <span id="invoiceKostName" class="font-bold text-slate-800 text-xs">-</span>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <span class="text-slate-500 font-medium text-[11px]">Paket Lisensi:</span>
+                        <span id="invoicePlanName" class="font-bold text-emerald-800 text-xs">Paket Bulanan (Unlimited)</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-slate-700 font-bold text-xs">Total Pembayaran:</span>
+                        <span id="invoiceTotalAmount" class="font-mono text-base font-black text-emerald-700">Rp 49.000</span>
+                    </div>
+                </div>
+
+                <!-- Rekening Tujuan Transfer Manual -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                    <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-building-columns text-emerald-600"></i> Rekening Tujuan Transfer
+                    </span>
+                    
+                    <div class="space-y-2">
+                        <!-- BCA -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                            <div>
+                                <span class="font-extrabold text-xs text-blue-900 block">Bank BCA</span>
+                                <span class="font-mono text-xs font-bold text-slate-900">822-0918-223</span>
+                                <span class="text-[10px] text-slate-400 block">a/n RAM Solusi Digital</span>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('8220918223', 'Nomor rekening BCA disalin')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition-colors cursor-pointer">
+                                Salin
+                            </button>
+                        </div>
+
+                        <!-- Mandiri -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                            <div>
+                                <span class="font-extrabold text-xs text-amber-900 block">Bank Mandiri</span>
+                                <span class="font-mono text-xs font-bold text-slate-900">137-00-19283-991</span>
+                                <span class="text-[10px] text-slate-400 block">a/n RAM Solusi Digital</span>
+                            </div>
+                            <button type="button" onclick="copyToClipboard('1370019283991', 'Nomor rekening Mandiri disalin')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition-colors cursor-pointer">
+                                Salin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2 pt-1">
+                    <button type="button" onclick="sendInvoiceWhatsAppConfirm()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span>Konfirmasi via WhatsApp Admin</span>
+                    </button>
+                    
+                    <button type="button" onclick="checkInvoiceActivationStatus()" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-arrows-rotate text-emerald-600"></i>
+                        <span>Cek Status Aktivasi Sekarang</span>
+                    </button>
+                    
+                    <button type="button" onclick="closePaymentInvoiceModal()" class="w-full py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs transition-colors cursor-pointer">
+                        Kembali ke Halaman Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- MODAL 9: MANAJEMEN AKUN & LISENSI EKOSISTEM RAM (#accountManagementModal) -->
+    <!-- ================================================================== -->
+    <div id="accountManagementModal" onclick="if(event.target === this) closeAccountManagementModal()" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+        <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-scaleUp flex flex-col max-h-[92vh]">
+            <!-- Modal Header -->
+            <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-lg font-bold shadow-sm shadow-emerald-600/30">
+                        <i class="fa-solid fa-id-card-clip"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Manajemen Akun &amp; Lisensi</h3>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-white font-mono">ram.ai.id</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 font-medium">Pusat Identitas Tunggal (SSO) &amp; Pengelolaan Multi-Aplikasi RAM</p>
+                    </div>
+                </div>
+                <button onclick="closeAccountManagementModal()" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Identity Ribbon -->
+            <div class="px-5 py-3 bg-emerald-50/40 border-b border-emerald-100/70 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs uppercase" id="accAvatarInitial">A</div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span id="accMgmtName" class="font-extrabold text-xs text-slate-900 truncate">Pengelola RAM</span>
+                            <span id="accMgmtTenantId" class="px-1.5 py-0.2 rounded bg-white text-slate-600 border border-slate-200 font-mono text-[9px]">TNT-RAM-ADMIN</span>
+                        </div>
+                        <span id="accMgmtContact" class="text-[10px] text-slate-500 block truncate">admin@ram.ai.id</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="accMgmtStatusBadge" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 shadow-2xs">
+                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                        <span>Lisensi Aktif</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="px-5 pt-3 border-b border-slate-200/80 bg-white flex items-center gap-2 shrink-0 overflow-x-auto">
+                <button type="button" id="tabBtnAccProfile" onclick="switchAccTab('profile')" class="px-4 py-2 border-b-2 border-emerald-600 text-emerald-700 font-extrabold text-xs whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>1. Profil &amp; Lisensi Saya</span>
+                </button>
+                <button type="button" id="tabBtnAccEcosystem" onclick="switchAccTab('ecosystem')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-xs whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-cubes"></i>
+                    <span>2. Ekosistem RAM (ram.ai.id)</span>
+                </button>
+                <button type="button" id="tabBtnAccAdmin" onclick="switchAccTab('admin')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-xs whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-screwdriver-wrench text-amber-600"></i>
+                    <span>3. Admin Panel Aktivasi</span>
+                    <span id="adminPendingCountBadge" class="px-1.5 py-0.2 rounded-full text-[9px] bg-amber-500 text-white font-extrabold">1</span>
+                </button>
+            </div>
+
+            <!-- Tab Content (Scrollable) -->
+            <div class="p-5 space-y-4 text-xs overflow-y-auto flex-1">
+                
+                <!-- TAB 1: PROFIL & LISENSI -->
+                <div id="accTabContentProfile" class="space-y-4">
+                    <!-- Kartu Status Lisensi SIMKOST -->
+                    <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200 space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-xs">
+                                    <i class="fa-solid fa-building-user"></i>
+                                </span>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-900">SIMKOST Pro • Lisensi Pengelola Kost</h4>
+                                    <p id="accPlanDescription" class="text-[10px] text-emerald-800 font-medium">Paket Unlimited Kamar • Sinkronisasi Cloud</p>
+                                </div>
+                            </div>
+                            <span id="accLicenseExpiryBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-emerald-900 border border-emerald-300">
+                                Aktif s/d 16 Nov 2026
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block font-medium">Nama Usaha Kost:</span>
+                                <span id="accKostLabel" class="font-bold text-slate-800 truncate block">KOST MAGNOLIA RESIDENCE</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block font-medium">Tenant ID Terisolasi:</span>
+                                <span id="accTenantLabel" class="font-mono font-bold text-slate-800 block">TNT-RAM-ADMIN</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200">
+                                <span class="text-[10px] text-slate-400 block font-medium">Metode Aktivasi:</span>
+                                <span id="accMethodLabel" class="font-bold text-emerald-700 block">Transfer Manual Terverifikasi</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-2 pt-1">
+                            <button type="button" onclick="openPaymentInvoiceModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                                <span>Lihat Tagihan / Perpanjang</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ganti Kata Sandi -->
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                        <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-key text-slate-500"></i> Keamanan &amp; Kata Sandi Akun
+                        </span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Kata Sandi Baru</label>
+                                <input type="password" id="accNewPassword" placeholder="Minimal 4 karakter" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-emerald-500 font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Konfirmasi Kata Sandi</label>
+                                <input type="password" id="accConfirmPassword" placeholder="Ulangi kata sandi baru" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-emerald-500 font-medium">
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-1">
+                            <button type="button" onclick="handleUpdatePassword()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors cursor-pointer">
+                                Simpan Kata Sandi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Tenancy Info -->
+                    <div class="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-200/70 text-[11px] text-blue-900 space-y-1">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-blue-600"></i> Jaminan Isolasi Data Multi-Tenant
+                        </span>
+                        <p class="text-blue-800/90 leading-relaxed">
+                            Data kamar, riwayat pembayaran penghuni, dan pembukuan kas Anda terikat langsung ke Tenant ID Anda. Pemilik kost lain menggunakan database mandiri sehingga data tidak akan pernah bercampur.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: EKOSISTEM RAM -->
+                <div id="accTabContentEcosystem" class="space-y-4 hidden">
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                        <h4 class="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-nodes text-emerald-600"></i>
+                            <span>1 Akun RAM untuk Seluruh Ekosistem Usaha (ram.ai.id)</span>
+                        </h4>
+                        <p class="text-[11px] text-slate-600 leading-relaxed">
+                            Akun Anda terdaftar di sistem pusat RAM. Ke depannya, Anda cukup menggunakan email dan kata sandi yang sama untuk masuk ke berbagai aplikasi bisnis RAM, dengan lisensi mandiri per aplikasi:
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- App 1: SIMKOST -->
+                        <div class="p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50/30 flex flex-col justify-between space-y-3">
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-2xs">
+                                        <i class="fa-solid fa-building-user"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-200 text-emerald-900 font-mono">AKTIF ✓</span>
+                                </div>
+                                <h5 class="font-extrabold text-xs text-slate-900">SIMKOST Pro</h5>
+                                <p class="text-[10px] text-slate-500 leading-relaxed">
+                                    Sistem manajemen kamar, jatuh tempo sewa, kuitansi digital, dan pembukuan pengeluaran kost.
+                                </p>
+                            </div>
+                            <span class="text-[10px] text-emerald-700 font-bold block pt-1">Sedang Digunakan</span>
+                        </div>
+
+                        <!-- App 2: SIM Laundry -->
+                        <div class="p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 transition-all flex flex-col justify-between space-y-3">
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold shadow-2xs">
+                                        <i class="fa-solid fa-shirt"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 font-mono">BELUM AKTIF</span>
+                                </div>
+                                <h5 class="font-extrabold text-xs text-slate-900">SIM-Laundry POS</h5>
+                                <p class="text-[10px] text-slate-500 leading-relaxed">
+                                    Antrean kiloan/satuan, integrasi timbangan, cetak nota thermal, &amp; kirim WhatsApp status cuci.
+                                </p>
+                            </div>
+                            <button type="button" onclick="contactAdminForApp('SIM-Laundry POS')" class="w-full py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-colors cursor-pointer">
+                                Berlangganan Aplikasi Ini
+                            </button>
+                        </div>
+
+                        <!-- App 3: Kasir F&B -->
+                        <div class="p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-amber-400 transition-all flex flex-col justify-between space-y-3">
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center text-sm font-bold shadow-2xs">
+                                        <i class="fa-solid fa-cash-register"></i>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 font-mono">SEGERA HADIR</span>
+                                </div>
+                                <h5 class="font-extrabold text-xs text-slate-900">SIM-Kasir Retail &amp; F&B</h5>
+                                <p class="text-[10px] text-slate-500 leading-relaxed">
+                                    Point of Sale kasir toko, kafe, manajemen meja, stok barang, barcode, &amp; laporan laba rugi.
+                                </p>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium block pt-1">Rilis Q4 2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: ADMIN PANEL AKTIVASI (ram.ai.id/admin) -->
+                <div id="accTabContentAdmin" class="space-y-4 hidden">
+                    <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-start justify-between gap-3">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-amber-600"></i>
+                                <span class="font-extrabold text-xs text-amber-950">Panel Khusus Administrator (ram.ai.id/admin)</span>
+                            </div>
+                            <p class="text-[11px] text-amber-900/90 mt-0.5 leading-relaxed">
+                                Gunakan panel ini untuk memeriksa pendaftar baru, mencocokkan mutasi transfer manual, dan mengaktifkan lisensi SIMKOST pengguna dengan 1 klik.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Mini KPI Stats -->
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="text-[10px] text-slate-400 font-bold block">Total Pengguna</span>
+                            <span id="adminStatTotalUsers" class="font-mono text-base font-extrabold text-slate-900">0</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                            <span class="text-[10px] text-amber-700 font-bold block">Menunggu Aktivasi</span>
+                            <span id="adminStatPendingUsers" class="font-mono text-base font-extrabold text-amber-700">0</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                            <span class="text-[10px] text-emerald-700 font-bold block">Lisensi Aktif</span>
+                            <span id="adminStatActiveUsers" class="font-mono text-base font-extrabold text-emerald-700">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Search -->
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" onclick="filterAdminAccounts('all')" id="btnFilterAccAll" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-white cursor-pointer">Semua</button>
+                            <button type="button" onclick="filterAdminAccounts('pending')" id="btnFilterAccPending" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Menunggu Bayar</button>
+                            <button type="button" onclick="filterAdminAccounts('active')" id="btnFilterAccActive" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Aktif</button>
+                        </div>
+                        <button type="button" onclick="renderAdminAccountsTable()" class="p-1 text-slate-400 hover:text-slate-700 text-xs cursor-pointer" title="Muat ulang tabel">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </div>
+
+                    <!-- Accounts Table Container -->
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-[11px]">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold text-[10px] uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-3 py-2">Pemilik &amp; No. WA</th>
+                                        <th class="px-3 py-2">Nama Kost</th>
+                                        <th class="px-3 py-2">Paket</th>
+                                        <th class="px-3 py-2">Status</th>
+                                        <th class="px-3 py-2 text-right">Aksi Administrator</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminAccountsTableBody" class="divide-y divide-slate-100">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-5 py-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
+                <span class="text-[10px] text-slate-400">RAM SaaS Multi-Tenancy Architecture • v2.4</span>
+                <button type="button" onclick="closeAccountManagementModal()" class="px-5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-colors cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================== -->
     <!-- JAVASCRIPT LOGIC & RESILIENT STORAGE / CLOUD ENGINE                -->
     <!-- ================================================================== -->
     <script>
@@ -2878,32 +3364,240 @@
             'jul': 6, 'agu': 7, 'ags': 7, 'sep': 8, 'okt': 9, 'nov': 10, 'des': 11
         };
 
-        // ── AUTHENTICATION & LOGIN GATE CONTROLLER ──────────────────────────
+        // ── MULTI-TENANCY & CENTRAL SSO ACCOUNTS REGISTRY (ram.ai.id) ──────
         const AUTH_SESSION_KEY = 'simkost_auth_active';
+        const ACCOUNTS_STORAGE_KEY = 'simkost_accounts_registry_v1';
+
+        let currentTenantId = 'TNT-RAM-ADMIN';
+        let currentAccount = null;
+        let currentActiveInvoice = null;
+        let currentAccTab = 'profile';
+        let adminAccountFilter = 'all';
+
+        const DEFAULT_ACCOUNTS = [
+            {
+                id: "TNT-RAM-ADMIN",
+                name: "Superadmin RAM",
+                username: "admin",
+                email: "admin@ram.ai.id",
+                phone: "0813-8899-0011",
+                password: "admin123",
+                kostName: "Kost Magnolia Residence",
+                role: "admin",
+                licenseStatus: "active",
+                plan: "Enterprise RAM Suite",
+                price: 0,
+                registeredAt: "2026-10-01",
+                activeUntil: "2027-10-01",
+                apps: {
+                    simkost: { status: "active", name: "SIMKOST Pro" },
+                    simlaundry: { status: "active", name: "SIM-Laundry POS" },
+                    simpos: { status: "active", name: "SIM-Kasir Retail & Resto" }
+                }
+            },
+            {
+                id: "TNT-RAM-7712",
+                name: "Budi Santoso",
+                username: "budi",
+                email: "budi.kost@gmail.com",
+                phone: "0852-1122-3344",
+                password: "budi123",
+                kostName: "Kost Griya Budi Mandiri",
+                role: "tenant",
+                licenseStatus: "pending_payment",
+                plan: "Paket Bulanan (Unlimited)",
+                price: 49000,
+                registeredAt: "2026-10-16",
+                activeUntil: "2026-11-16",
+                apps: {
+                    simkost: { status: "pending_payment", name: "SIMKOST Pro" },
+                    simlaundry: { status: "unsubscribed", name: "SIM-Laundry POS" },
+                    simpos: { status: "unsubscribed", name: "SIM-Kasir Retail & Resto" }
+                }
+            }
+        ];
+
+        function getAccountsRegistry() {
+            const raw = localStorage.getItem(ACCOUNTS_STORAGE_KEY);
+            if (raw) {
+                try { return JSON.parse(raw); } catch (e) { return [...DEFAULT_ACCOUNTS]; }
+            }
+            localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(DEFAULT_ACCOUNTS));
+            return [...DEFAULT_ACCOUNTS];
+        }
+
+        function saveAccountsRegistry(list) {
+            localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(list));
+        }
+
+        function getAccountByTenantId(tenantId) {
+            const list = getAccountsRegistry();
+            return list.find(a => a.id === tenantId) || null;
+        }
+
+        function getAccountByUsernameOrEmail(identifier) {
+            const list = getAccountsRegistry();
+            const idf = (identifier || '').toLowerCase().trim();
+            return list.find(a => 
+                (a.username && a.username.toLowerCase() === idf) || 
+                (a.email && a.email.toLowerCase() === idf) ||
+                (a.phone && a.phone.replace(/[^0-9]/g, '') === idf.replace(/[^0-9]/g, ''))
+            ) || null;
+        }
+
+        function getTenantStorageKey(baseKey) {
+            if (!currentTenantId || currentTenantId === 'TNT-RAM-ADMIN') {
+                return baseKey;
+            }
+            return `${baseKey}_${currentTenantId}`;
+        }
+
+        function applyTenantSession(sessionObj) {
+            if (sessionObj && sessionObj.tenantId) {
+                currentTenantId = sessionObj.tenantId;
+                currentAccount = getAccountByTenantId(currentTenantId);
+            } else {
+                currentTenantId = 'TNT-RAM-ADMIN';
+                currentAccount = null;
+            }
+            loadSettings();
+            loadRoomsLocal();
+            loadExpensesLocal();
+            renderAllViews();
+            updateKPIs();
+            updateAccountManagementUI();
+        }
 
         function checkAuthSession() {
-            const session = localStorage.getItem(AUTH_SESSION_KEY) || sessionStorage.getItem(AUTH_SESSION_KEY);
+            const sessionRaw = localStorage.getItem(AUTH_SESSION_KEY) || sessionStorage.getItem(AUTH_SESSION_KEY);
             const loginScreen = document.getElementById('loginScreen');
             const appLayout = document.getElementById('appLayout');
             const propLabel = document.getElementById('loginPropertyLabel');
             if (propLabel && appSettings) propLabel.innerText = appSettings.storeName || DEFAULT_SETTINGS.storeName;
 
-            if (session) {
+            if (sessionRaw) {
+                try {
+                    const sessionObj = JSON.parse(sessionRaw);
+                    if (sessionObj.tenantId && sessionObj.tenantId !== currentTenantId) {
+                        currentTenantId = sessionObj.tenantId;
+                        currentAccount = getAccountByTenantId(currentTenantId);
+                    }
+                } catch (e) {}
                 if (loginScreen) loginScreen.classList.add('hidden');
                 if (appLayout) appLayout.classList.remove('hidden');
+                updateAccountManagementUI();
             } else {
                 if (loginScreen) loginScreen.classList.remove('hidden');
                 if (appLayout) appLayout.classList.add('hidden');
             }
         }
 
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('authTabBtnLogin');
+            const regBtn = document.getElementById('authTabBtnRegister');
+            const loginCont = document.getElementById('authLoginContainer');
+            const regCont = document.getElementById('authRegisterContainer');
+
+            if (tab === 'login') {
+                if (loginBtn) {
+                    loginBtn.className = "py-2 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-xs cursor-pointer flex items-center justify-center gap-1.5";
+                }
+                if (regBtn) {
+                    regBtn.className = "py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5";
+                }
+                if (loginCont) loginCont.classList.remove('hidden');
+                if (regCont) regCont.classList.add('hidden');
+            } else {
+                if (regBtn) {
+                    regBtn.className = "py-2 rounded-xl text-xs font-bold transition-all bg-white text-blue-900 shadow-xs cursor-pointer flex items-center justify-center gap-1.5";
+                }
+                if (loginBtn) {
+                    loginBtn.className = "py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5";
+                }
+                if (loginCont) loginCont.classList.add('hidden');
+                if (regCont) regCont.classList.remove('hidden');
+            }
+        }
+
+        function handleAuthRegister(e) {
+            e.preventDefault();
+            const name = (document.getElementById('regFullName')?.value || '').trim();
+            const phone = (document.getElementById('regPhone')?.value || '').trim();
+            const email = (document.getElementById('regEmail')?.value || '').trim();
+            const kostName = (document.getElementById('regKostName')?.value || '').trim();
+            const pass = (document.getElementById('regPassword')?.value || '').trim();
+            const planRadios = (typeof document.getElementsByName === 'function') ? document.getElementsByName('regPlan') : [];
+            let plan = 'monthly';
+            if (planRadios && planRadios.length) {
+                for (const r of planRadios) { if (r.checked) plan = r.value; }
+            } else {
+                const checkedRadio = document.querySelector ? document.querySelector('input[name="regPlan"]:checked') : null;
+                if (checkedRadio && checkedRadio.value) plan = checkedRadio.value;
+            }
+
+            if (!name || !phone || !email || !kostName || !pass) {
+                showToast('Harap lengkapi semua data pendaftaran.', 'warning');
+                return;
+            }
+
+            const accounts = getAccountsRegistry();
+            const existing = accounts.find(a => a.email.toLowerCase() === email.toLowerCase() || a.phone === phone);
+            if (existing) {
+                showToast('Email atau Nomor WhatsApp sudah terdaftar! Silakan langsung login.', 'error');
+                switchAuthTab('login');
+                const loginInp = document.getElementById('loginUsername');
+                if (loginInp) loginInp.value = email;
+                return;
+            }
+
+            const price = plan === 'yearly' ? 490000 : 49000;
+            const planName = plan === 'yearly' ? 'Paket Tahunan (Hemat 2 Bulan)' : 'Paket Bulanan (Unlimited Kamar)';
+            const newTenantId = 'TNT-RAM-' + Math.floor(1000 + Math.random() * 9000);
+            const invoiceNum = 'INV-RAM-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+
+            const newAccount = {
+                id: newTenantId,
+                invoiceNum: invoiceNum,
+                name: name,
+                username: email.split('@')[0],
+                email: email,
+                phone: phone,
+                password: pass,
+                kostName: kostName,
+                role: 'tenant',
+                licenseStatus: 'pending_payment',
+                plan: planName,
+                price: price,
+                registeredAt: new Date().toISOString().slice(0, 10),
+                activeUntil: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().slice(0, 10),
+                apps: {
+                    simkost: { status: "pending_payment", name: "SIMKOST Pro" },
+                    simlaundry: { status: "unsubscribed", name: "SIM-Laundry POS" },
+                    simpos: { status: "unsubscribed", name: "SIM-Kasir Retail & Resto" }
+                }
+            };
+
+            accounts.push(newAccount);
+            saveAccountsRegistry(accounts);
+
+            showToast('Registrasi akun berhasil! Tagihan transfer manual dibuat.', 'success');
+
+            // Open Payment Invoice Modal
+            openPaymentInvoiceModal(newAccount);
+        }
+
         function loginAsDemoUser() {
             const payload = JSON.stringify({
                 user: 'Pengelola Demo',
                 role: 'demo',
+                tenantId: 'TNT-RAM-ADMIN',
                 loginTime: new Date().toISOString()
             });
             localStorage.setItem(AUTH_SESSION_KEY, payload);
+            applyTenantSession(JSON.parse(payload));
+            appSettings.isDemoMode = true;
+            saveSettingsLocal();
+            updateStoreLabels();
             checkAuthSession();
             showToast('Selamat datang! Masuk dalam Mode Demo (Simulasi Aktif).', 'success');
         }
@@ -2915,30 +3609,61 @@
             const remember = document.getElementById('loginRememberMe')?.checked;
 
             if (!u || !p) {
-                showToast('Harap masukkan username dan kata sandi.', 'warning');
+                showToast('Harap masukkan username/email dan kata sandi.', 'warning');
                 return;
             }
 
-            const isValid = (u.toLowerCase() === 'admin' && p === 'admin123') ||
-                            (u.toLowerCase() === 'admin@kost.id' && p === 'admin123') ||
-                            (p.length >= 4);
+            // Check in registered accounts
+            const account = getAccountByUsernameOrEmail(u);
 
-            if (isValid) {
+            // Fallback for default admin credentials
+            if (!account && (u.toLowerCase() === 'admin' || u.toLowerCase() === 'admin@kost.id') && p === 'admin123') {
                 const payload = JSON.stringify({
-                    user: u,
+                    user: 'admin',
                     role: 'admin',
+                    tenantId: 'TNT-RAM-ADMIN',
                     loginTime: new Date().toISOString()
                 });
-                if (remember) {
-                    localStorage.setItem(AUTH_SESSION_KEY, payload);
-                } else {
-                    sessionStorage.setItem(AUTH_SESSION_KEY, payload);
-                }
+                if (remember) localStorage.setItem(AUTH_SESSION_KEY, payload);
+                else sessionStorage.setItem(AUTH_SESSION_KEY, payload);
+                applyTenantSession(JSON.parse(payload));
                 checkAuthSession();
-                showToast(`Selamat datang, ${u}! Berhasil masuk sebagai Pengelola.`, 'success');
-            } else {
-                showToast('Kredensial tidak valid! Gunakan admin / admin123 atau tombol 1-Klik Demo.', 'error');
+                showToast('Selamat datang, Admin! Berhasil masuk sebagai Superadmin.', 'success');
+                return;
             }
+
+            if (!account || account.password !== p) {
+                showToast('Kredensial tidak valid! Periksa email/username dan kata sandi Anda.', 'error');
+                return;
+            }
+
+            // Check account status
+            if (account.licenseStatus === 'pending_payment') {
+                showToast('Akun Anda sedang menunggu konfirmasi pembayaran transfer manual.', 'warning');
+                openPaymentInvoiceModal(account);
+                return;
+            }
+
+            if (account.licenseStatus === 'suspended') {
+                showToast('Akun Anda ditangguhkan oleh Administrator RAM. Hubungi WhatsApp Admin.', 'error');
+                return;
+            }
+
+            // Account is active
+            const payload = JSON.stringify({
+                user: account.name,
+                email: account.email,
+                role: account.role || 'tenant',
+                tenantId: account.id,
+                loginTime: new Date().toISOString()
+            });
+
+            if (remember) localStorage.setItem(AUTH_SESSION_KEY, payload);
+            else sessionStorage.setItem(AUTH_SESSION_KEY, payload);
+
+            applyTenantSession(JSON.parse(payload));
+            checkAuthSession();
+            showToast(`Selamat datang, ${account.name}! Berhasil masuk ke ${account.kostName}.`, 'success');
         }
 
         async function handleAuthLogout() {
@@ -2950,6 +3675,8 @@
             if (confirmed) {
                 localStorage.removeItem(AUTH_SESSION_KEY);
                 sessionStorage.removeItem(AUTH_SESSION_KEY);
+                currentTenantId = 'TNT-RAM-ADMIN';
+                currentAccount = null;
                 checkAuthSession();
                 showToast('Anda telah keluar dari dashboard.', 'info');
             }
@@ -2965,6 +3692,387 @@
                 inp.type = 'password';
                 btn.innerHTML = '<i class="fa-solid fa-eye text-xs"></i>';
             }
+        }
+
+        // ── PAYMENT INVOICE CONTROLLER ──────────────────────────────────────
+        function openPaymentInvoiceModal(acc) {
+            const m = document.getElementById('paymentInvoiceModal');
+            if (!m) return;
+
+            const account = acc || currentAccount || getAccountByTenantId(currentTenantId) || getAccountsRegistry()[1];
+            currentActiveInvoice = account;
+
+            const elNum = document.getElementById('invoiceNumber');
+            const elName = document.getElementById('invoiceUserName');
+            const elKost = document.getElementById('invoiceKostName');
+            const elPlan = document.getElementById('invoicePlanName');
+            const elTotal = document.getElementById('invoiceTotalAmount');
+            const elBadge = document.getElementById('invoiceStatusBadge');
+
+            if (account) {
+                if (elNum) elNum.innerText = account.invoiceNum || ('INV-RAM-' + (account.id || '2026-001'));
+                if (elName) elName.innerText = account.name || '-';
+                if (elKost) elKost.innerText = account.kostName || '-';
+                if (elPlan) elPlan.innerText = account.plan || 'Paket Bulanan (Unlimited)';
+                if (elTotal) elTotal.innerText = 'Rp ' + (account.price || 49000).toLocaleString('id-ID');
+                if (elBadge) {
+                    if (account.licenseStatus === 'active') {
+                        elBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono";
+                        elBadge.innerText = "LUNAS / AKTIF";
+                    } else {
+                        elBadge.className = "px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-200 text-amber-900 font-mono";
+                        elBadge.innerText = "PENDING TRANSFER";
+                    }
+                }
+            }
+
+            m.classList.remove('hidden');
+        }
+
+        function closePaymentInvoiceModal() {
+            const m = document.getElementById('paymentInvoiceModal');
+            if (m) m.classList.add('hidden');
+        }
+
+        function sendInvoiceWhatsAppConfirm() {
+            const acc = currentActiveInvoice || currentAccount || {};
+            const invNum = acc.invoiceNum || 'INV-RAM-2026';
+            const name = acc.name || 'Pemilik Kost';
+            const kost = acc.kostName || 'Kost Saya';
+            const amount = (acc.price || 49000).toLocaleString('id-ID');
+
+            const message = `Halo Admin RAM (ram.ai.id), saya telah mendaftar dan mentransfer pembayaran lisensi SIMKOST Pro:\n\n*No. Tagihan:* ${invNum}\n*Nama Pemilik:* ${name}\n*Nama Kost:* ${kost}\n*Total Transfer:* Rp ${amount}\n\nMohon bantu aktivasi akun saya agar dapat segera digunakan. Terima kasih!`;
+            const waUrl = `https://wa.me/6281388990011?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function checkInvoiceActivationStatus() {
+            const acc = currentActiveInvoice;
+            if (!acc) return;
+            const fresh = getAccountByTenantId(acc.id);
+            if (fresh && fresh.licenseStatus === 'active') {
+                showToast('Selamat! Akun Anda telah diaktifkan oleh Admin RAM.', 'success');
+                closePaymentInvoiceModal();
+                const payload = JSON.stringify({
+                    user: fresh.name,
+                    email: fresh.email,
+                    role: fresh.role || 'tenant',
+                    tenantId: fresh.id,
+                    loginTime: new Date().toISOString()
+                });
+                localStorage.setItem(AUTH_SESSION_KEY, payload);
+                applyTenantSession(JSON.parse(payload));
+                checkAuthSession();
+            } else {
+                showToast('Status masih menunggu konfirmasi transfer oleh Admin RAM. Silakan hubungi WhatsApp Admin.', 'info');
+            }
+        }
+
+        // ── ACCOUNT MANAGEMENT & RAM ECOSYSTEM CONTROLLERS ──────────────────
+        function openAccountManagementModal() {
+            const m = document.getElementById('accountManagementModal');
+            if (!m) return;
+
+            updateAccountManagementUI();
+            switchAccTab('profile');
+            m.classList.remove('hidden');
+        }
+
+        function closeAccountManagementModal() {
+            const m = document.getElementById('accountManagementModal');
+            if (m) m.classList.add('hidden');
+        }
+
+        function updateAccountManagementUI() {
+            const session = localStorage.getItem(AUTH_SESSION_KEY) || sessionStorage.getItem(AUTH_SESSION_KEY);
+            let userObj = { user: 'Admin', role: 'admin', tenantId: 'TNT-RAM-ADMIN' };
+            if (session) {
+                try { userObj = JSON.parse(session); } catch (e) {}
+            }
+
+            const acc = getAccountByTenantId(userObj.tenantId) || getAccountsRegistry()[0];
+
+            const elInitial = document.getElementById('accAvatarInitial');
+            const elName = document.getElementById('accMgmtName');
+            const elContact = document.getElementById('accMgmtContact');
+            const elTenant = document.getElementById('accMgmtTenantId');
+            const elBadge = document.getElementById('accMgmtStatusBadge');
+            const elKost = document.getElementById('accKostLabel');
+            const elTenantLabel = document.getElementById('accTenantLabel');
+            const elPlanDesc = document.getElementById('accPlanDescription');
+            const elExpiry = document.getElementById('accLicenseExpiryBadge');
+            const sidebarBadge = document.getElementById('sidebarLicenseBadge');
+
+            const name = acc.name || userObj.user || 'Pengelola RAM';
+            if (elInitial) elInitial.innerText = name.charAt(0).toUpperCase();
+            if (elName) elName.innerText = name;
+            if (elContact) elContact.innerText = acc.email || acc.phone || 'admin@ram.ai.id';
+            if (elTenant) elTenant.innerText = acc.id || userObj.tenantId || 'TNT-RAM-ADMIN';
+            if (elKost) elKost.innerText = acc.kostName || appSettings.storeName || 'Kost Saya';
+            if (elTenantLabel) elTenantLabel.innerText = acc.id || userObj.tenantId || 'TNT-RAM-ADMIN';
+            if (elPlanDesc) elPlanDesc.innerText = (acc.plan || 'Paket Bulanan') + ' • Unlimited Kamar';
+            if (elExpiry) elExpiry.innerText = 'Aktif s/d ' + (acc.activeUntil || '16 Nov 2026');
+
+            const isActive = acc.licenseStatus === 'active';
+            if (elBadge) {
+                if (isActive) {
+                    elBadge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 shadow-2xs";
+                    elBadge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <span>Lisensi Aktif</span>';
+                } else {
+                    elBadge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 shadow-2xs";
+                    elBadge.innerHTML = '<i class="fa-solid fa-clock text-amber-600"></i> <span>Menunggu Bayar</span>';
+                }
+            }
+            if (sidebarBadge) {
+                sidebarBadge.className = isActive ? "text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 shrink-0" : "text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800 shrink-0";
+                sidebarBadge.innerText = isActive ? "Aktif" : "Pending";
+            }
+
+            // Admin pending count
+            const accounts = getAccountsRegistry();
+            const pendingCount = accounts.filter(a => a.licenseStatus === 'pending_payment').length;
+            const pendingBadge = document.getElementById('adminPendingCountBadge');
+            if (pendingBadge) {
+                pendingBadge.innerText = pendingCount;
+                if (pendingCount > 0) pendingBadge.classList.remove('hidden');
+                else pendingBadge.classList.add('hidden');
+            }
+
+            renderAdminAccountsTable();
+        }
+
+        function switchAccTab(tab) {
+            currentAccTab = tab;
+            const tabs = ['profile', 'ecosystem', 'admin'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tabBtnAcc' + t.charAt(0).toUpperCase() + t.slice(1));
+                const cont = document.getElementById('accTabContent' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = "px-4 py-2 border-b-2 border-emerald-600 text-emerald-700 font-extrabold text-xs whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5";
+                    } else {
+                        btn.className = "px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-xs whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5";
+                    }
+                }
+                if (cont) {
+                    if (t === tab) cont.classList.remove('hidden');
+                    else cont.classList.add('hidden');
+                }
+            });
+
+            if (tab === 'admin') {
+                renderAdminAccountsTable();
+            }
+        }
+
+        function filterAdminAccounts(filter) {
+            adminAccountFilter = filter;
+            ['all', 'pending', 'active'].forEach(f => {
+                const btn = document.getElementById('btnFilterAcc' + f.charAt(0).toUpperCase() + f.slice(1));
+                if (btn) {
+                    if (f === filter) btn.className = "px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-white cursor-pointer";
+                    else btn.className = "px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer";
+                }
+            });
+            renderAdminAccountsTable();
+        }
+
+        function renderAdminAccountsTable() {
+            const tbody = document.getElementById('adminAccountsTableBody');
+            if (!tbody) return;
+
+            const accounts = getAccountsRegistry();
+
+            // Update stats
+            const totalEl = document.getElementById('adminStatTotalUsers');
+            const pendingEl = document.getElementById('adminStatPendingUsers');
+            const activeEl = document.getElementById('adminStatActiveUsers');
+            const pendingCount = accounts.filter(a => a.licenseStatus === 'pending_payment').length;
+            const activeCount = accounts.filter(a => a.licenseStatus === 'active').length;
+
+            if (totalEl) totalEl.innerText = accounts.length;
+            if (pendingEl) pendingEl.innerText = pendingCount;
+            if (activeEl) activeEl.innerText = activeCount;
+
+            let filtered = accounts;
+            if (adminAccountFilter === 'pending') {
+                filtered = accounts.filter(a => a.licenseStatus === 'pending_payment');
+            } else if (adminAccountFilter === 'active') {
+                filtered = accounts.filter(a => a.licenseStatus === 'active');
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400 text-xs italic">Tidak ada pengguna pada kategori ini.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(acc => {
+                const isPending = acc.licenseStatus === 'pending_payment';
+                const badgeHtml = isPending ? 
+                    `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Menunggu Bayar</span>` :
+                    `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Aktif</span>`;
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-3 py-2.5">
+                            <div class="font-extrabold text-slate-900 text-xs">${acc.name}</div>
+                            <div class="text-[10px] text-slate-500 font-mono flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp text-emerald-600"></i> ${acc.phone} · ${acc.email}
+                            </div>
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <div class="font-bold text-slate-800 text-[11px]">${acc.kostName}</div>
+                            <div class="text-[9px] text-slate-400 font-mono">${acc.id}</div>
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <div class="font-bold text-slate-700 text-[10px]">${acc.plan || 'Bulanan'}</div>
+                            <div class="font-mono text-emerald-700 font-bold text-[10px]">Rp ${(acc.price || 49000).toLocaleString('id-ID')}</div>
+                        </td>
+                        <td class="px-3 py-2.5">
+                            ${badgeHtml}
+                        </td>
+                        <td class="px-3 py-2.5 text-right space-x-1">
+                            ${isPending ? `
+                                <button type="button" onclick="adminActivateAccount('${acc.id}')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] shadow-2xs transition-colors cursor-pointer inline-flex items-center gap-1" title="Aktivasi lisensi user setelah terima transfer">
+                                    <i class="fa-solid fa-check"></i> <span>Aktivasi</span>
+                                </button>
+                            ` : `
+                                <button type="button" onclick="adminSuspendAccount('${acc.id}')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-800 font-bold text-[10px] transition-colors cursor-pointer inline-flex items-center gap-1" title="Tangguhkan lisensi">
+                                    <i class="fa-solid fa-pause"></i>
+                                </button>
+                            `}
+                            ${acc.id !== 'TNT-RAM-ADMIN' ? `
+                                <button type="button" onclick="adminDeleteAccount('${acc.id}')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 font-bold text-[10px] transition-colors cursor-pointer" title="Hapus akun">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function adminActivateAccount(tenantId) {
+            const accounts = getAccountsRegistry();
+            const acc = accounts.find(a => a.id === tenantId);
+            if (!acc) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Aktivasi Lisensi ${acc.name}?`,
+                desc: `Verifikasi bahwa pembayaran transfer manual sebesar Rp ${(acc.price || 49000).toLocaleString('id-ID')} telah diterima. Akun akan langsung aktif.`,
+                confirmText: 'Ya, Aktivasi Sekarang'
+            });
+
+            if (confirmed) {
+                acc.licenseStatus = 'active';
+                acc.activeUntil = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+                if (acc.apps && acc.apps.simkost) acc.apps.simkost.status = 'active';
+                saveAccountsRegistry(accounts);
+                renderAdminAccountsTable();
+                updateAccountManagementUI();
+                showToast(`Akun ${acc.name} (${acc.kostName}) berhasil diaktifkan!`, 'success');
+            }
+        }
+
+        async function adminSuspendAccount(tenantId) {
+            const accounts = getAccountsRegistry();
+            const acc = accounts.find(a => a.id === tenantId);
+            if (!acc) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Tangguhkan Akun ${acc.name}?`,
+                desc: `Pengguna tidak akan bisa mengakses dashboard SIMKOST sampai diaktifkan kembali.`,
+                confirmText: 'Tangguhkan',
+                isDanger: true
+            });
+
+            if (confirmed) {
+                acc.licenseStatus = 'suspended';
+                saveAccountsRegistry(accounts);
+                renderAdminAccountsTable();
+                updateAccountManagementUI();
+                showToast(`Akun ${acc.name} telah ditangguhkan.`, 'warning');
+            }
+        }
+
+        async function adminDeleteAccount(tenantId) {
+            let accounts = getAccountsRegistry();
+            const acc = accounts.find(a => a.id === tenantId);
+            if (!acc) return;
+
+            const confirmed = await showCustomConfirm({
+                title: `Hapus Akun ${acc.name}?`,
+                desc: `Akun ${acc.name} (${acc.kostName}) beserta lisensinya akan dihapus permanen.`,
+                confirmText: 'Ya, Hapus Akun',
+                isDanger: true
+            });
+
+            if (confirmed) {
+                accounts = accounts.filter(a => a.id !== tenantId);
+                saveAccountsRegistry(accounts);
+                localStorage.removeItem(`${APP_STORAGE_KEY}_${tenantId}`);
+                localStorage.removeItem(`${APP_EXPENSES_KEY}_${tenantId}`);
+                localStorage.removeItem(`${APP_SETTINGS_KEY}_${tenantId}`);
+                localStorage.removeItem(`${APP_LOGO_KEY}_${tenantId}`);
+                renderAdminAccountsTable();
+                updateAccountManagementUI();
+                showToast(`Akun ${acc.name} berhasil dihapus.`, 'info');
+            }
+        }
+
+        function contactAdminForApp(appName) {
+            const msg = `Halo Admin RAM (ram.ai.id), saya pengguna SIMKOST Pro dan tertarik untuk berlangganan aplikasi *${appName}*. Mohon informasi harga paket dan aktivasi lisensinya.`;
+            window.open(`https://wa.me/6281388990011?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function handleUpdatePassword() {
+            const p1 = document.getElementById('accNewPassword')?.value || '';
+            const p2 = document.getElementById('accConfirmPassword')?.value || '';
+
+            if (!p1 || p1.length < 4) {
+                showToast('Kata sandi minimal 4 karakter.', 'warning');
+                return;
+            }
+            if (p1 !== p2) {
+                showToast('Konfirmasi kata sandi tidak cocok!', 'error');
+                return;
+            }
+
+            const accounts = getAccountsRegistry();
+            const target = accounts.find(a => a.id === currentTenantId) || accounts[0];
+            if (target) {
+                target.password = p1;
+                saveAccountsRegistry(accounts);
+                showToast('Kata sandi akun berhasil diperbarui!', 'success');
+                document.getElementById('accNewPassword').value = '';
+                document.getElementById('accConfirmPassword').value = '';
+            }
+        }
+
+        function copyToClipboard(text, msg) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(msg || 'Berhasil disalin!', 'success');
+                }).catch(() => {
+                    fallbackCopy(text, msg);
+                });
+            } else {
+                fallbackCopy(text, msg);
+            }
+        }
+
+        function fallbackCopy(text, msg) {
+            const inp = document.createElement('input');
+            inp.value = text;
+            document.body.appendChild(inp);
+            inp.select();
+            try {
+                document.execCommand('copy');
+                showToast(msg || 'Berhasil disalin!', 'success');
+            } catch (e) {
+                showToast('Gagal menyalin otomatis', 'warning');
+            }
+            document.body.removeChild(inp);
         }
 
         // Application Start
@@ -3319,15 +4427,20 @@
         }
 
         function loadRoomsLocal() {
-            const stored = localStorage.getItem(APP_STORAGE_KEY);
+            const key = getTenantStorageKey(APP_STORAGE_KEY);
+            const stored = localStorage.getItem(key);
             if (stored) {
                 try { 
                     appData = JSON.parse(stored); 
                 } catch (e) { 
-                    appData = JSON.parse(JSON.stringify(INITIAL_DATA)); 
+                    appData = (currentTenantId && currentTenantId !== 'TNT-RAM-ADMIN') ? [] : JSON.parse(JSON.stringify(INITIAL_DATA)); 
                 }
             } else {
-                appData = JSON.parse(JSON.stringify(INITIAL_DATA));
+                if (currentTenantId && currentTenantId !== 'TNT-RAM-ADMIN') {
+                    appData = [];
+                } else {
+                    appData = JSON.parse(JSON.stringify(INITIAL_DATA));
+                }
                 saveRoomsLocal();
             }
 
@@ -3344,20 +4457,26 @@
         }
 
         function loadExpensesLocal() {
-            const stored = localStorage.getItem(APP_EXPENSES_KEY);
+            const key = getTenantStorageKey(APP_EXPENSES_KEY);
+            const stored = localStorage.getItem(key);
             if (stored) {
-                try { appExpenses = JSON.parse(stored); } catch (e) { appExpenses = [...INITIAL_EXPENSES]; }
+                try { appExpenses = JSON.parse(stored); } catch (e) { appExpenses = (currentTenantId && currentTenantId !== 'TNT-RAM-ADMIN') ? [] : [...INITIAL_EXPENSES]; }
             } else {
-                appExpenses = [...INITIAL_EXPENSES];
+                appExpenses = (currentTenantId && currentTenantId !== 'TNT-RAM-ADMIN') ? [] : [...INITIAL_EXPENSES];
                 saveExpensesLocal();
             }
         }
 
-        function saveRoomsLocal() { localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appData)); }
-        function saveExpensesLocal() { localStorage.setItem(APP_EXPENSES_KEY, JSON.stringify(appExpenses)); }
+        function saveRoomsLocal() { localStorage.setItem(getTenantStorageKey(APP_STORAGE_KEY), JSON.stringify(appData)); }
+        function saveExpensesLocal() { localStorage.setItem(getTenantStorageKey(APP_EXPENSES_KEY), JSON.stringify(appExpenses)); }
+
+        function saveSettingsLocal() {
+            localStorage.setItem(getTenantStorageKey(APP_SETTINGS_KEY), JSON.stringify(appSettings));
+        }
 
         function loadSettings() {
-            const stored = localStorage.getItem(APP_SETTINGS_KEY);
+            const key = getTenantStorageKey(APP_SETTINGS_KEY);
+            const stored = localStorage.getItem(key);
             if (stored) {
                 try {
                     const parsed = JSON.parse(stored);
@@ -3366,7 +4485,17 @@
                     appSettings = { ...DEFAULT_SETTINGS };
                 }
             } else {
-                appSettings = { ...DEFAULT_SETTINGS };
+                if (currentAccount && currentAccount.kostName && currentAccount.id !== 'TNT-RAM-ADMIN') {
+                    appSettings = { 
+                        ...DEFAULT_SETTINGS, 
+                        storeName: currentAccount.kostName,
+                        phone: currentAccount.phone || DEFAULT_SETTINGS.phone,
+                        isDemoMode: false
+                    };
+                } else {
+                    appSettings = { ...DEFAULT_SETTINGS };
+                }
+                saveSettingsLocal();
             }
             updateStoreLabels();
         }
@@ -3469,7 +4598,7 @@
 
         // Logo Logic
         function loadLogo() {
-            const customLogo = localStorage.getItem(APP_LOGO_KEY);
+            const customLogo = localStorage.getItem(getTenantStorageKey(APP_LOGO_KEY));
             const receiptImg = document.getElementById('receiptLogoImg');
             const receiptDef = document.getElementById('receiptLogoDefault');
             const settingsImg = document.getElementById('settingsLogoPreview');
@@ -3494,7 +4623,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const dataUrl = e.target.result;
-                localStorage.setItem(APP_LOGO_KEY, dataUrl);
+                localStorage.setItem(getTenantStorageKey(APP_LOGO_KEY), dataUrl);
                 loadLogo();
                 showToast('Logo usaha berhasil diperbarui!', 'success');
             };
@@ -3502,7 +4631,7 @@
         }
 
         function resetLogoToDefault() {
-            localStorage.removeItem(APP_LOGO_KEY);
+            localStorage.removeItem(getTenantStorageKey(APP_LOGO_KEY));
             loadLogo();
             showToast('Logo dikembalikan ke ikon bawaan.', 'info');
         }
@@ -8518,7 +9647,7 @@
             if (isFreshStart && (appSettings.storeName === DEFAULT_SETTINGS.storeName || !appSettings.storeName)) {
                 appSettings.storeName = "NAMA KOST ANDA";
             }
-            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+            saveSettingsLocal();
             updateStoreLabels();
             closeDemoInfoModal();
 
@@ -8539,7 +9668,7 @@
             if (!confirmed) return;
 
             appSettings.isDemoMode = true;
-            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+            saveSettingsLocal();
             updateStoreLabels();
             closeDemoInfoModal();
             showToast('Beralih ke Mode Demo (Simulasi Aktif).', 'info');
@@ -8563,7 +9692,7 @@
                     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
                     saveRoomsLocal();
                     saveExpensesLocal();
-                    localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+                    saveSettingsLocal();
                     loadSettings();
 
                     if (supabaseClient) {
@@ -8623,7 +9752,7 @@
             appSettings.bankHolder = document.getElementById('settingBankHolder').value.trim();
             appSettings.defaultPaper = document.getElementById('settingDefaultPaper').value;
             
-            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+            saveSettingsLocal();
             updateStoreLabels();
             setReceiptFormat(appSettings.defaultPaper);
             closeSettingsModal();
@@ -8671,7 +9800,7 @@
                         if (Array.isArray(data.expenses)) appExpenses = data.expenses;
                         if (data.settings && typeof data.settings === 'object') {
                             appSettings = { ...DEFAULT_SETTINGS, ...data.settings };
-                            localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(appSettings));
+                            saveSettingsLocal();
                             loadSettings();
                         }
                         saveRoomsLocal();
