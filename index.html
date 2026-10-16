@@ -1449,65 +1449,75 @@
                     <input type="text" id="addRoomService" required oninput="syncAddRoomTypeChips()" placeholder="Contoh: Kamar Deluxe AC" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-semibold text-xs">
                 </div>
 
-                <!-- Row 3: Fasilitas Kamar (Tap Cepat Multi-Select + Input Manual) -->
+                <!-- Row 3: Fasilitas Kamar (Pilihan Cepat, Daftar Item Bisa Dihapus, & Form Tambah) -->
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="block font-bold text-slate-700">Fasilitas Kamar</label>
-                        <span class="text-[10px] text-slate-400">Tap untuk tambah / lepas</span>
+                        <span class="text-[10px] text-slate-400">Pilih cepat atau ketik fasilitas lain</span>
                     </div>
 
-                    <!-- Quick Tap Facilities Toggle Chips -->
-                    <div class="flex flex-wrap gap-1.5 mb-2">
-                        <button type="button" onclick="toggleAddRoomFacility('AC')" data-fac="AC" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>❄️ AC</span>
+                    <!-- Pilihan Cepat Rekomendasi Fasilitas -->
+                    <div class="flex flex-wrap gap-1 mb-2">
+                        <button type="button" onclick="addAddRoomFacility('AC')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> ❄️ AC
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('KM Dalam')" data-fac="KM Dalam" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>🚿 KM Dalam</span>
+                        <button type="button" onclick="addAddRoomFacility('KM Dalam')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 🚿 KM Dalam
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('Kasur & Lemari')" data-fac="Kasur & Lemari" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>🛏️ Kasur & Lemari</span>
+                        <button type="button" onclick="addAddRoomFacility('Kasur & Lemari')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 🛏️ Kasur & Lemari
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('WiFi')" data-fac="WiFi" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>📶 WiFi</span>
+                        <button type="button" onclick="addAddRoomFacility('WiFi')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 📶 WiFi
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('Water Heater')" data-fac="Water Heater" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>🔥 Water Heater</span>
+                        <button type="button" onclick="addAddRoomFacility('Water Heater')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 🔥 Water Heater
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('Meja & Kursi')" data-fac="Meja & Kursi" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>🪑 Meja & Kursi</span>
+                        <button type="button" onclick="addAddRoomFacility('Meja & Kursi')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 🪑 Meja & Kursi
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('Token Mandiri')" data-fac="Token Mandiri" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>⚡ Token Mandiri</span>
+                        <button type="button" onclick="addAddRoomFacility('Token Mandiri')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> ⚡ Token Mandiri
                         </button>
-                        <button type="button" onclick="toggleAddRoomFacility('Jendela Luar')" data-fac="Jendela Luar" class="add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1">
-                            <span class="chip-fac-icon w-3 h-3 flex items-center justify-center text-[10px] text-slate-400"><i class="fa-solid fa-plus"></i></span>
-                            <span>🪟 Jendela Luar</span>
+                        <button type="button" onclick="addAddRoomFacility('Jendela Luar')" class="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[8px] text-blue-600"></i> 🪟 Jendela Luar
                         </button>
                     </div>
 
-                    <input type="text" id="addRoomDetail" oninput="syncAddRoomFacChips()" placeholder="Fasilitas terpilih atau ketik spesifikasi manual..." class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-xs">
+                    <!-- Wadah Fasilitas Terpilih (Masing-masing item ada tombol hapus x) -->
+                    <div id="addRoomFacContainer" class="p-2 rounded-xl bg-slate-50 border border-slate-200/80 min-h-[40px] flex flex-wrap gap-1.5 items-center mb-2">
+                        <!-- Rendered via JS -->
+                    </div>
+
+                    <!-- Input Tambah Fasilitas Kustom / Lainnya + Tombol Tambah -->
+                    <div class="flex items-center gap-1.5">
+                        <input type="text" id="addRoomCustomFacInput" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomFacility();}" placeholder="Ketik fasilitas lain (contoh: Balkon, Smart TV, Dapur)..." class="flex-1 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-500 text-xs">
+                        <button type="button" onclick="addCustomFacility()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer shrink-0 transition-all">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>Tambah</span>
+                        </button>
+                    </div>
+
+                    <!-- Hidden input to store full comma-separated string for existing logic & form submit -->
+                    <input type="hidden" id="addRoomDetail" name="detail" value="">
                 </div>
 
-                <!-- Row 4: Tarif Sewa -->
+                <!-- Row 4: Tarif Sewa (Layout Rapi Tidak Menumpuk) -->
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block font-bold text-slate-700">Tarif Pokok Sewa / Bln (Rp) *</label>
-                        <div class="flex items-center gap-1">
-                            <button type="button" onclick="setAddRoomAmount(850000)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer">850k</button>
-                            <button type="button" onclick="setAddRoomAmount(1000000)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer">1 Jt</button>
-                            <button type="button" onclick="setAddRoomAmount(1300000)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer">1.3 Jt</button>
-                            <button type="button" onclick="setAddRoomAmount(1600000)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer">1.6 Jt</button>
-                            <button type="button" onclick="setAddRoomAmount(2000000)" class="px-1.5 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer">2 Jt</button>
-                        </div>
+                    <label class="block font-bold text-slate-700 mb-1">Tarif Pokok Sewa / Bln (Rp) *</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2.5 font-bold font-mono text-slate-400 text-xs">Rp</span>
+                        <input type="number" id="addRoomAmount" required min="50000" step="50000" placeholder="1500000" class="w-full border border-slate-200 rounded-xl pl-9 pr-3 py-2 font-bold outline-none font-mono focus:border-blue-500 text-xs">
                     </div>
-                    <input type="number" id="addRoomAmount" required min="50000" step="50000" placeholder="Contoh: 1500000" class="w-full border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none font-mono focus:border-blue-500 text-xs">
+                    <!-- Baris Pilihan Cepat Terpisah Agar Tidak Menumpuk -->
+                    <div class="flex items-center gap-1.5 mt-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                        <span class="text-[10px] text-slate-400 font-medium shrink-0">Pilihan Cepat:</span>
+                        <button type="button" onclick="setAddRoomAmount(850000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer shrink-0">850k</button>
+                        <button type="button" onclick="setAddRoomAmount(1000000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer shrink-0">1 Jt</button>
+                        <button type="button" onclick="setAddRoomAmount(1300000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer shrink-0">1.3 Jt</button>
+                        <button type="button" onclick="setAddRoomAmount(1600000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer shrink-0">1.6 Jt</button>
+                        <button type="button" onclick="setAddRoomAmount(2000000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-800 text-slate-600 text-[10px] font-semibold transition-colors cursor-pointer shrink-0">2 Jt</button>
+                    </div>
                 </div>
 
                 <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between text-[11px]">
@@ -5512,24 +5522,91 @@
         }
 
         // ── WORKFLOW 2: TAMBAH UNIT KAMAR FISIK (MASTER DATA ASET) ────────────
+        let currentAddRoomFacilities = [];
+
+        function renderAddRoomFacilities() {
+            const container = document.getElementById('addRoomFacContainer');
+            const hiddenInput = document.getElementById('addRoomDetail');
+            if (!container) return;
+
+            if (hiddenInput) {
+                hiddenInput.value = currentAddRoomFacilities.join(', ');
+            }
+
+            if (currentAddRoomFacilities.length === 0) {
+                container.innerHTML = `<span id="addRoomFacEmptyState" class="text-[11px] text-slate-400 italic">Belum ada fasilitas (pilih cepat di atas atau ketik di bawah)</span>`;
+                return;
+            }
+
+            container.innerHTML = currentAddRoomFacilities.map((fac, idx) => `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50 border border-blue-200/90 text-blue-900 text-[11px] font-bold shadow-2xs">
+                    <span>${fac}</span>
+                    <button type="button" onclick="removeAddRoomFacility(${idx})" class="text-blue-400 hover:text-rose-600 p-0.5 rounded transition-colors cursor-pointer" title="Hapus ${fac}">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </span>
+            `).join('');
+        }
+
+        function addAddRoomFacility(facName) {
+            const clean = String(facName || '').trim();
+            if (!clean) return;
+            if (!currentAddRoomFacilities.some(f => f.toLowerCase() === clean.toLowerCase())) {
+                currentAddRoomFacilities.push(clean);
+                renderAddRoomFacilities();
+            }
+        }
+
+        function removeAddRoomFacility(index) {
+            if (index >= 0 && index < currentAddRoomFacilities.length) {
+                currentAddRoomFacilities.splice(index, 1);
+                renderAddRoomFacilities();
+            }
+        }
+
+        function addCustomFacility() {
+            const input = document.getElementById('addRoomCustomFacInput');
+            if (!input) return;
+            const val = input.value.trim();
+            if (!val) {
+                input.focus();
+                return;
+            }
+            const items = val.split(',').map(s => s.trim()).filter(Boolean);
+            items.forEach(item => addAddRoomFacility(item));
+            input.value = '';
+            input.focus();
+        }
+
+        function toggleAddRoomFacility(facName) {
+            addAddRoomFacility(facName);
+        }
+
+        function syncAddRoomFacChips() {
+            // Maintained for backward compatibility
+        }
+
         function openAddRoomModal() {
             const idInput = document.getElementById('addRoomId');
             const serviceInput = document.getElementById('addRoomService');
             const amountInput = document.getElementById('addRoomAmount');
             const detailInput = document.getElementById('addRoomDetail');
+            const customFacInput = document.getElementById('addRoomCustomFacInput');
             const feedback = document.getElementById('addRoomIdFeedback');
 
             if (idInput) idInput.value = '';
             if (serviceInput) serviceInput.value = '';
             if (amountInput) amountInput.value = '';
             if (detailInput) detailInput.value = '';
+            if (customFacInput) customFacInput.value = '';
             if (feedback) {
                 feedback.className = 'text-[10px] mt-1 font-semibold hidden';
                 feedback.innerText = '';
             }
 
+            currentAddRoomFacilities = [];
+            renderAddRoomFacilities();
             syncAddRoomTypeChips();
-            syncAddRoomFacChips();
 
             const modal = document.getElementById('addRoomModal');
             if (modal) modal.classList.remove('hidden');
@@ -5566,43 +5643,6 @@
                     btn.className = 'add-room-type-btn px-2.5 py-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-[11px] font-bold shadow-2xs transition-all cursor-pointer';
                 } else {
                     btn.className = 'add-room-type-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer';
-                }
-            });
-        }
-
-        function toggleAddRoomFacility(facName) {
-            const detailInput = document.getElementById('addRoomDetail');
-            if (!detailInput) return;
-
-            let items = detailInput.value
-                .split(',')
-                .map(s => s.trim())
-                .filter(Boolean);
-
-            const index = items.findIndex(item => item.toLowerCase() === facName.toLowerCase());
-            if (index >= 0) {
-                items.splice(index, 1);
-            } else {
-                items.push(facName);
-            }
-
-            detailInput.value = items.join(', ');
-            syncAddRoomFacChips();
-        }
-
-        function syncAddRoomFacChips() {
-            const detailInput = document.getElementById('addRoomDetail');
-            const currentVal = (detailInput?.value || '').toLowerCase();
-            const buttons = document.querySelectorAll('.add-room-fac-btn');
-            buttons.forEach(btn => {
-                const fac = (btn.getAttribute('data-fac') || '').toLowerCase();
-                const icon = btn.querySelector('.chip-fac-icon');
-                if (fac && currentVal.includes(fac)) {
-                    btn.className = 'add-room-fac-btn px-2.5 py-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-[11px] font-bold shadow-2xs transition-all cursor-pointer flex items-center gap-1';
-                    if (icon) icon.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
-                } else {
-                    btn.className = 'add-room-fac-btn px-2.5 py-1 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-slate-700 text-[11px] font-semibold transition-all cursor-pointer flex items-center gap-1';
-                    if (icon) icon.innerHTML = '<i class="fa-solid fa-plus text-slate-400"></i>';
                 }
             });
         }
@@ -5656,6 +5696,12 @@
                 showToast(`Nomor Kamar ${cleanId} sudah ada di sistem!`, 'error');
                 if (idInput) idInput.focus();
                 return;
+            }
+
+            // Auto-commit custom facility if user typed something but didn't click "+ Tambah"
+            const customFacInput = document.getElementById('addRoomCustomFacInput');
+            if (customFacInput && customFacInput.value.trim()) {
+                addCustomFacility();
             }
 
             const submitBtn = document.getElementById('addRoomSubmitBtn');
